@@ -58,15 +58,29 @@ jobs:
       with:
         name: tigxa-1.0.0
         path: build/libs
-    - name: Pipe files to release
-      uses: KotwOSS/pipe-to-release@2.0.3
+    #- name: Pipe files to release
+    #  uses: KotwOSS/pipe-to-release@2.0.3
+    #  with:
+    #    token: ${{ secrets.GITHUB_TOKEN }}
+    #
+    #    filemap: |
+    #      build/libs/tigxa-${{ needs.build.outputs.RELEASE_ID }}.jar
+    #      build/libs/tigxa-${{ needs.build.outputs.RELEASE_ID }}-all.jar
+    #
+    #    skip_errors: true
+    #
+    #    release_id: ${{ needs.prepare.outputs.RELEASE_ID }}-${{ needs.prepare.outputs.BUILD_ID }}
+    - name: Create Release
+      uses: actions/create-release@v1
+      id: create_release
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
       with:
-        token: ${{ secrets.GITHUB_TOKEN }}
-
-        filemap: |
-          build/libs/tigxa-${{ needs.build.outputs.RELEASE_ID }}.jar
-          build/libs/tigxa-${{ needs.build.outputs.RELEASE_ID }}-all.jar
-
-        skip_errors: true
-
-        release_id: ${{ needs.prepare.outputs.RELEASE_ID }}-${{ needs.prepare.outputs.BUILD_ID }}
+        tag_name: ${{ github.ref }}
+        release_name: ${{ needs.prepare.outputs.RELEASE_ID }}-${{ needs.prepare.outputs.BUILD_ID }}
+        #body: |
+        #  Changes in this Release
+        #  - First Change
+        #  - Second Change
+        draft: false
+          prerelease: false
