@@ -33,7 +33,7 @@ jobs:
         token: ${{ secrets.github_token }}
 
   build:
-
+    permissions: write-all
     runs-on: ubuntu-latest
     outputs:
       RELEASE_ID: ${{ steps.build.outputs.release }}
