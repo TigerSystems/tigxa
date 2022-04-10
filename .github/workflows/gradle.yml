@@ -20,6 +20,7 @@ permissions:
 jobs:
 
   prepare:
+    permissions: write-all
     runs-on: ubuntu-latest
     outputs:
       BUILD_ID: ${{ steps.buildnumber.outputs.build_number }}
