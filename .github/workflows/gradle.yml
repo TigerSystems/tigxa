@@ -59,7 +59,7 @@ jobs:
         name: tigxa-1.0.0
         path: build/libs
     - name: Pipe files to release
-      uses: KotwOSS/pipe-to-release@<version>
+      uses: KotwOSS/pipe-to-release@2.0.3
       with:
         token: ${{ secrets.GITHUB_TOKEN }}
 
