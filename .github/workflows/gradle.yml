@@ -19,26 +19,19 @@ permissions:
 
 jobs:
 
-  prepare:
-    permissions: write-all
-    runs-on: ubuntu-latest
-    outputs:
-      BUILD_ID: ${{ steps.buildnumber.outputs.build_number }}
-    steps:
-    #- uses: actions/checkout@v2
-    - name: Generate build number
-      id: buildnumber
-      uses: einaregilsson/build-number@v3 
-      with:
-        token: ${{ secrets.github_token }}
-
   build:
     permissions: write-all
     runs-on: ubuntu-latest
     outputs:
       RELEASE_ID: ${{ steps.build.outputs.release }}
+      BUILD_ID: ${{ steps.buildnumber.outputs.build_number }}
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v2
+    - name: Generate build number
+      id: buildnumber
+      uses: einaregilsson/build-number@v3 
+      with:
+        token: ${{ secrets.github_token }}
     - name: Set up JDK 17
       uses: actions/setup-java@v3
       with:
@@ -77,7 +70,7 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
       with:
         tag_name: ${{ github.ref }}
-        release_name: ${{ needs.prepare.outputs.RELEASE_ID }}-${{ needs.prepare.outputs.BUILD_ID }}
+        release_name: ${{ needs.build.outputs.RELEASE_ID }}-${{ needs.build.outputs.BUILD_ID }}
         #body: |
         #  Changes in this Release
         #  - First Change
