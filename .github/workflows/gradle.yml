@@ -22,9 +22,6 @@ jobs:
   build:
     permissions: write-all
     runs-on: ubuntu-latest
-    outputs:
-      RELEASE_ID: ${{ steps.build.outputs.release }}
-      BUILD_ID: ${{ steps.buildnumber.outputs.build_number }}
     steps:
     - uses: actions/checkout@v2
     - name: Generate build number
@@ -70,7 +67,7 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
       with:
         tag_name: ${{ github.ref }}
-        release_name: ${{ needs.build.outputs.RELEASE_ID }}-${{ needs.build.outputs.BUILD_ID }}
+        release_name: ${{ steps.build.outputs.release }}-${{ steps.build.buildnumber.build_number }}
         #body: |
         #  Changes in this Release
         #  - First Change
