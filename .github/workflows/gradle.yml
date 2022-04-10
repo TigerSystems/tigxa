@@ -32,8 +32,13 @@ jobs:
     - name: Make gradlew executable
       run: chmod +x ./gradlew
     - name: Build with Gradle
-      run: ./gradlew build
-      working-directory: .
-      #uses: gradle/gradle-build-action@0d13054264b0bb894ded474f08ebb30921341cee
-      #with:
-      #  arguments: build
+      #run: ./gradlew build
+      #working-directory: .
+      uses: gradle/gradle-build-action@0d13054264b0bb894ded474f08ebb30921341cee
+      with:
+        arguments: build
+    - name: Upload Artifact
+      uses: actions/upload-artifact@v2.2.4
+      with:
+        name: tigxa_browser
+        path: /artifacts
