@@ -41,4 +41,4 @@ jobs:
       uses: actions/upload-artifact@v2.2.4
       with:
         name: tigxa-1.0.0
-        path: /build/libs
+        path: build/libs
