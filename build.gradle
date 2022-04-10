@@ -8,6 +8,8 @@ plugins {
 group 'de.MarkusTieger'
 version '1.0.0'
 
+System.out.println(new File(".").getAbsolutePath())
+
 repositories {
     mavenCentral()
     mavenLocal()
