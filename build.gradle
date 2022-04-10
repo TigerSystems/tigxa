@@ -8,7 +8,7 @@ plugins {
 group 'de.MarkusTieger'
 version '1.0.0'
 
-System.out.println("::set-output release=" + getVersion())
+System.out.println("::set-output name=release::" + getVersion())
 
 repositories {
     mavenCentral()
