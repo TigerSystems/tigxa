@@ -40,5 +40,5 @@ jobs:
     - name: Upload Artifact
       uses: actions/upload-artifact@v2.2.4
       with:
-        name: tigxa_browser
-        path: /artifacts
+        name: tigxa-1.0.0
+        path: /build/libs
