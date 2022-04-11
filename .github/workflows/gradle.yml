@@ -66,12 +66,12 @@ jobs:
         commit_hash: ${{ steps.commithash.outputs.sha_short }}
         
         
-    - name: Upload Artifact (Linux)
-      uses: actions/upload-artifact@v2.2.4
-      with:
-        name: tigxa-1.0.0-linux
-        path: build/libs    
-      continue-on-error: true
+    #- name: Upload Artifact (Linux)
+    #  uses: actions/upload-artifact@v2.2.4
+    #  with:
+    #    name: tigxa-1.0.0-linux
+    #    path: build/libs    
+    #  continue-on-error: true
     
     
     
@@ -147,12 +147,12 @@ jobs:
         
         
         
-    - name: Upload Artifact (Windows)
-      uses: actions/upload-artifact@v2.2.4
-      with:
-        name: tigxa-1.0.0-win
-        path: build/libs
-      continue-on-error: true
+    #- name: Upload Artifact (Windows)
+    #  uses: actions/upload-artifact@v2.2.4
+    #  with:
+    #    name: tigxa-1.0.0-win
+    #    path: build/libs
+    #  continue-on-error: true
         
         
         
@@ -218,12 +218,12 @@ jobs:
         
         
         
-    - name: Upload Artifact (Mac)
-      uses: actions/upload-artifact@v2.2.4
-      with:
-        name: tigxa-1.0.0-mac
-        path: build/libs
-      continue-on-error: true
+    #- name: Upload Artifact (Mac)
+    #  uses: actions/upload-artifact@v2.2.4
+    #  with:
+    #    name: tigxa-1.0.0-mac
+    #    path: build/libs
+    #  continue-on-error: true
         
         
         
