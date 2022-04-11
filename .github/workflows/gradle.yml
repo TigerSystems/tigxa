@@ -30,11 +30,11 @@ jobs:
     
     
     
-    - name: Generate build number
-      id: buildnumber
-      uses: einaregilsson/build-number@v3 
-      with:
-        token: ${{ secrets.github_token }}
+    #- name: Generate build number
+    #  id: buildnumber
+    #  uses: einaregilsson/build-number@v3 
+    #  with:
+    #    token: ${{ secrets.github_token }}
         
         
         
@@ -76,8 +76,8 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
       with:
-        tag_name: ${{ steps.build.outputs.release }}-${{ steps.buildnumber.outputs.build_number }}
-        release_name: ${{ steps.build.outputs.release }}-${{ steps.buildnumber.outputs.build_number }}
+        tag_name: ${{ steps.build.outputs.release }}-${{ ${{ github.run_number }} }}
+        release_name: ${{ steps.build.outputs.release }}-${{ ${{ github.run_number }} }}
         #body: |
         #  Changes in this Release
         #  - First Change
