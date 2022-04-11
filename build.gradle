@@ -36,6 +36,18 @@ javafx {
     modules = ['javafx.controls', 'javafx.fxml', 'javafx.web', 'javafx.swing']
 }
 
+jar {
+    manifest {
+        attributes 'Name': 'de/markustieger/tigxa/'
+        attributes 'Specification-Title': "Tigxa"
+        attributes 'Specification-Version': getVersion()
+        attributes 'Specification-Vendor': "MarkusTieger"
+        attributes 'Implementation-Title': application.mainModule
+        attributes 'Implementation-Version': getVersion()
+        attributes 'Implementation-Vendor': "MarkusTieger"
+    }
+}
+
 dependencies {
     implementation('org.controlsfx:controlsfx:11.1.1')
     implementation('com.dlsc.formsfx:formsfx-core:11.5.0') {

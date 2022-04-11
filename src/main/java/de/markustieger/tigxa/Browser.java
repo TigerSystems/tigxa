@@ -25,9 +25,15 @@ import java.util.Properties;
 public class Browser {
 
     public static final String DEFAULT_HOMEPAGE = "https://google.com";
-    public static final String NAME = "Tigxa";
-    public static final String FULL_NAME = NAME + " Browser";
-    public static final String VERSION = "1.0.0";
+    public static final String NAME;
+    public static final String FULL_NAME;
+    public static final String VERSION;
+
+    static {
+        NAME = Browser.class.getPackage().getSpecificationTitle();
+        FULL_NAME = NAME + " Browser";
+        VERSION = Browser.class.getPackage().getSpecificationVersion();
+    }
 
     @Getter
     private static final List<BrowserWindow> windows = Collections.synchronizedList(new ArrayList<>());
