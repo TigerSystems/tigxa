@@ -187,3 +187,67 @@ jobs:
         
         
     
+    
+    
+  build-mac:
+    needs: [build-linux]
+    permissions: write-all
+    runs-on: macos-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Set up JDK 17 (Windows)
+      uses: actions/setup-java@v3
+      with:
+        java-version: '17'
+        distribution: 'temurin'
+        
+        
+        
+        
+    - name: Build with Gradle (Mac)
+      #run: ./gradlew build
+      #working-directory: .
+      id: build-mac
+      uses: gradle/gradle-build-action@0d13054264b0bb894ded474f08ebb30921341cee
+      with:
+        arguments: build
+      env:
+        build_number: ${{ github.run_number }}
+        commit_hash: ${{ needs.build-linux.outputs.commit }}
+        
+        
+        
+    - name: Upload Artifact (Mac)
+      uses: actions/upload-artifact@v2.2.4
+      with:
+        name: tigxa-1.0.0-mac
+        path: build/libs
+        
+        
+        
+        
+    - name: Upload Build Jar (Mac)
+      id: upload-build-jar-mac
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ needs.build-linux.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps 
+        asset_path: build/libs/tigxa-${{ needs.build-linux.outputs.release }}.jar
+        asset_name: tigxa-${{ needs.build-linux.outputs.release }}-mac.jar
+        asset_content_type: application/java-archive
+        
+        
+        
+        
+        
+    - name: Upload Shadow Jar (Mac)
+      id: upload-shadow-jar-mac
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ needs.build-linux.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps 
+        asset_path: build/libs/tigxa-${{ needs.build-linux.outputs.release }}-all.jar
+        asset_name: tigxa-${{ needs.build-linux.outputs.release }}-mac-all.jar
+        asset_content_type: application/java-archive
