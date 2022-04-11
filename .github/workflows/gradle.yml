@@ -71,7 +71,7 @@ jobs:
       with:
         name: tigxa-1.0.0-linux
         path: build/libs    
-    
+      continue-on-error: true
     
     
     
@@ -102,7 +102,7 @@ jobs:
         asset_path: build/libs/tigxa-${{ steps.build.outputs.release }}.jar
         asset_name: tigxa-${{ steps.build.outputs.release }}-linux.jar
         asset_content_type: application/java-archive
-        
+      continue-on-error: true
         
         
     - name: Upload Shadow Jar (Linux)
@@ -115,7 +115,7 @@ jobs:
         asset_path: build/libs/tigxa-${{ steps.build.outputs.release }}-all.jar
         asset_name: tigxa-${{ steps.build.outputs.release }}-linux-all.jar
         asset_content_type: application/java-archive
-        
+      continue-on-error: true
         
         
         
@@ -152,7 +152,7 @@ jobs:
       with:
         name: tigxa-1.0.0-win
         path: build/libs
-        
+      continue-on-error: true
         
         
         
@@ -166,7 +166,7 @@ jobs:
         asset_path: build/libs/tigxa-${{ needs.build-linux.outputs.release }}.jar
         asset_name: tigxa-${{ needs.build-linux.outputs.release }}-win.jar
         asset_content_type: application/java-archive
-        
+      continue-on-error: true
         
         
         
@@ -181,7 +181,7 @@ jobs:
         asset_path: build/libs/tigxa-${{ needs.build-linux.outputs.release }}-all.jar
         asset_name: tigxa-${{ needs.build-linux.outputs.release }}-win-all.jar
         asset_content_type: application/java-archive
-        
+      continue-on-error: true
         
         
         
@@ -223,7 +223,7 @@ jobs:
       with:
         name: tigxa-1.0.0-mac
         path: build/libs
-        
+      continue-on-error: true
         
         
         
@@ -237,7 +237,7 @@ jobs:
         asset_path: build/libs/tigxa-${{ needs.build-linux.outputs.release }}.jar
         asset_name: tigxa-${{ needs.build-linux.outputs.release }}-mac.jar
         asset_content_type: application/java-archive
-        
+      continue-on-error: true
         
         
         
@@ -252,3 +252,5 @@ jobs:
         asset_path: build/libs/tigxa-${{ needs.build-linux.outputs.release }}-all.jar
         asset_name: tigxa-${{ needs.build-linux.outputs.release }}-mac-all.jar
         asset_content_type: application/java-archive
+      continue-on-error: true
+      
