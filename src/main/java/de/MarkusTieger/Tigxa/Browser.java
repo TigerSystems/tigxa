@@ -30,6 +30,7 @@ public class Browser {
     public static final String VERSION;
     public static final String BUILD;
     public static final String FULL_VERSION;
+    public static final String COMMIT_HASH;
 
     static {
 
@@ -56,7 +57,13 @@ public class Browser {
 
         BUILD = build;
 
-        FULL_VERSION = VERSION + (BUILD.equalsIgnoreCase("-") ? "" : ("-" + BUILD));
+        String hash = Browser.class.getPackage().getImplementationTitle();
+        if(hash == null){
+            hash = "-";
+        }
+        COMMIT_HASH = hash;
+
+        FULL_VERSION = VERSION + (BUILD.equalsIgnoreCase("-") ? "" : ("-" + BUILD)) + (COMMIT_HASH.equalsIgnoreCase("-") ? "" : ("-" + COMMIT_HASH));
     }
 
     @Getter

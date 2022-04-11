@@ -9,6 +9,7 @@ group 'de.MarkusTieger'
 version '1.0.0'
 
 String env = System.getenv("build_number");
+String commit = System.getenv("commit_hash");
 
 if(env != null){
     while(env.length() < 6){
@@ -18,6 +19,7 @@ if(env != null){
 }
 
 if(env == null) env = "-";
+if(commit == null) commit = "-";
 
 System.out.println("::set-output name=release::" + getVersion())
 
@@ -53,7 +55,7 @@ jar {
         attributes 'Specification-Title': "Tigxa"
         attributes 'Specification-Version': getVersion()
         attributes 'Specification-Vendor': "MarkusTieger"
-        attributes 'Implementation-Title': application.mainModule
+        attributes 'Implementation-Title': commit
         attributes 'Implementation-Version': env
         attributes 'Implementation-Vendor': "MarkusTieger"
     }
