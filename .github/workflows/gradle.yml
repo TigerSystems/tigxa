@@ -202,7 +202,8 @@ jobs:
         distribution: 'temurin'
         
         
-        
+    - name: Make gradlew executable (Mac)
+      run: chmod +x ./gradlew
         
     - name: Build with Gradle (Mac)
       #run: ./gradlew build
