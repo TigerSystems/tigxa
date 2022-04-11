@@ -69,7 +69,6 @@ public class CookieStorage {
                 }
 
                 String str = new String(bytes, StandardCharsets.UTF_8);
-                System.out.println(str);
                 CookieData data = GSON.fromJson(str, CookieData.class);
 
                 buckets.clear();

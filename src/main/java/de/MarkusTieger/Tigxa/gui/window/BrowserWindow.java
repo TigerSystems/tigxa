@@ -311,7 +311,7 @@ public class BrowserWindow {
 
         JFXPanel main = data.jfx();
 
-        screenshotarray[0] = () -> this.takeScreenshot(main);
+        screenshotarray[0] = () -> Platform.runLater(() -> this.takeScreenshot(main));
 
         changearray[0] = buildNav(nav, () -> {
 
