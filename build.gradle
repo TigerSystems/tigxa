@@ -21,6 +21,14 @@ if(env != null){
 if(env == null) env = "-";
 if(commit == null) commit = "-";
 
+String fullVersion = this.getVersion()
+if(!env.equalsIgnoreCase("-")){
+    fullVersion = fullVersion + "-" + env;
+}
+if(!commit.equalsIgnoreCase("-")){
+    fullVersion = fullVersion + "-" + commit;
+}
+
 System.out.println("::set-output name=release::" + getVersion())
 
 repositories {
