@@ -2,8 +2,8 @@ package de.MarkusTieger.Tigxa;
 
 import com.formdev.flatlaf.FlatLightLaf;
 import de.MarkusTieger.Tigxa.extension.ExtensionManager;
-import de.MarkusTieger.Tigxa.extension.api.IAPI;
-import de.MarkusTieger.Tigxa.extension.api.impl.main.MainAPI;
+import de.MarkusTieger.Tigxa.api.IAPI;
+import de.MarkusTieger.Tigxa.api.impl.main.MainAPI;
 import de.MarkusTieger.Tigxa.extension.impl.internal.SettingsExtension;
 import de.MarkusTieger.Tigxa.gui.theme.ThemeManager;
 import de.MarkusTieger.Tigxa.gui.window.BrowserWindow;

@@ -1,10 +1,10 @@
 package de.MarkusTieger.Tigxa.extension;
 
-import de.MarkusTieger.Tigxa.extension.api.IAPI;
-import de.MarkusTieger.Tigxa.extension.api.action.IActionHandler;
-import de.MarkusTieger.Tigxa.extension.api.gui.IGUIWindow;
-import de.MarkusTieger.Tigxa.extension.api.impl.plugin.PluginAPI;
-import de.MarkusTieger.Tigxa.extension.api.permission.Permission;
+import de.MarkusTieger.Tigxa.api.IAPI;
+import de.MarkusTieger.Tigxa.api.action.IActionHandler;
+import de.MarkusTieger.Tigxa.api.gui.IGUIWindow;
+import de.MarkusTieger.Tigxa.api.impl.plugin.PluginAPI;
+import de.MarkusTieger.Tigxa.api.permission.Permission;
 import de.MarkusTieger.Tigxa.extension.impl.external.JavaScriptExtension;
 import javafx.scene.web.WebEngine;
 import netscape.javascript.JSObject;

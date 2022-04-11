@@ -80,6 +80,8 @@ dependencies {
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:${junitVersion}")
 
 
+    implementation('cf.tigersystems:tigxa-api:1.0.0')
+
 
     // My Depends
 

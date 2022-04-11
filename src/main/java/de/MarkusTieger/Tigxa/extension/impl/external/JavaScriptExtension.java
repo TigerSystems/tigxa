@@ -1,7 +1,7 @@
 package de.MarkusTieger.Tigxa.extension.impl.external;
 
-import de.MarkusTieger.Tigxa.extension.api.IAPI;
-import de.MarkusTieger.Tigxa.extension.api.gui.IGUIWindow;
+import de.MarkusTieger.Tigxa.api.IAPI;
+import de.MarkusTieger.Tigxa.api.gui.IGUIWindow;
 import de.MarkusTieger.Tigxa.extension.impl.BasicExtension;
 import javafx.application.Platform;
 import netscape.javascript.JSObject;

@@ -1,6 +1,6 @@
 package de.MarkusTieger.Tigxa.extension;
 
-import de.MarkusTieger.Tigxa.extension.api.gui.IGUIWindow;
+import de.MarkusTieger.Tigxa.api.gui.IGUIWindow;
 
 import java.awt.*;
 

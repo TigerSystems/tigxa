@@ -2,11 +2,11 @@ package de.MarkusTieger.Tigxa.gui.window;
 
 import de.MarkusTieger.Tigxa.Browser;
 import de.MarkusTieger.Tigxa.extension.IExtension;
-import de.MarkusTieger.Tigxa.extension.api.IAPI;
-import de.MarkusTieger.Tigxa.extension.api.gui.IGUIWindow;
-import de.MarkusTieger.Tigxa.extension.api.impl.DefaultGUIWindow;
-import de.MarkusTieger.Tigxa.extension.api.impl.main.gui.window.MainWindowManager;
-import de.MarkusTieger.Tigxa.extension.api.window.IWindowManager;
+import de.MarkusTieger.Tigxa.api.IAPI;
+import de.MarkusTieger.Tigxa.api.gui.IGUIWindow;
+import de.MarkusTieger.Tigxa.api.impl.DefaultGUIWindow;
+import de.MarkusTieger.Tigxa.api.impl.main.gui.window.MainWindowManager;
+import de.MarkusTieger.Tigxa.api.window.IWindowManager;
 import de.MarkusTieger.Tigxa.gui.components.DraggableTabbedPane;
 import de.MarkusTieger.Tigxa.gui.image.ImageLoader;
 import de.MarkusTieger.Tigxa.gui.theme.ThemeManager;

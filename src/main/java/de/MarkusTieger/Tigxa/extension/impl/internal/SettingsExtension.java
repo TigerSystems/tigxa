@@ -1,11 +1,11 @@
 package de.MarkusTieger.Tigxa.extension.impl.internal;
 
 import de.MarkusTieger.Tigxa.Browser;
-import de.MarkusTieger.Tigxa.extension.api.IAPI;
-import de.MarkusTieger.Tigxa.extension.api.gui.IGUIWindow;
-import de.MarkusTieger.Tigxa.extension.api.gui.context.IContextEntry;
-import de.MarkusTieger.Tigxa.extension.api.gui.context.IContextMenu;
-import de.MarkusTieger.Tigxa.extension.api.window.ITab;
+import de.MarkusTieger.Tigxa.api.IAPI;
+import de.MarkusTieger.Tigxa.api.gui.IGUIWindow;
+import de.MarkusTieger.Tigxa.api.gui.context.IContextEntry;
+import de.MarkusTieger.Tigxa.api.gui.context.IContextMenu;
+import de.MarkusTieger.Tigxa.api.window.ITab;
 import de.MarkusTieger.Tigxa.extension.impl.BasicExtension;
 import de.MarkusTieger.Tigxa.gui.window.ConfigWindow;
 
