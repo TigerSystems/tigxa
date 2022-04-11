@@ -19,6 +19,7 @@ permissions:
 
 jobs:
   prepare:
+    permissions: write-all
     outputs:
       build_number: ${{ steps.buildnumber.outputs.buildnumber }}
       # jobs.<jobs_id>.outputs
@@ -83,6 +84,7 @@ jobs:
         path: build/libs
     
   post:
+    permissions: write-all
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
