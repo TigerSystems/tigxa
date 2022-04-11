@@ -49,7 +49,7 @@ public class Browser {
 
         VERSION = version;
 
-        String build = Browser.class.getPackage().getSpecificationVersion();
+        String build = Browser.class.getPackage().getImplementationVersion();
         if(build == null){
             build = "-";
         }
