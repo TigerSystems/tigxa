@@ -24,7 +24,7 @@ public class ConfigWindow {
 
     public void init() {
         BufferedImage image = ImageLoader.loadInternalImage("/res/gui/logo.png");
-
+        
         JFrame frame = new JFrame();
         frame.setSize(800, 600);
         frame.setDefaultCloseOperation(WindowConstants.HIDE_ON_CLOSE);
