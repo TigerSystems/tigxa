@@ -58,6 +58,8 @@ jobs:
       uses: gradle/gradle-build-action@0d13054264b0bb894ded474f08ebb30921341cee
       with:
         arguments: build
+      env:
+        build_number: ${{ github.run_number }}
         
         
         
@@ -76,8 +78,8 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
       with:
-        tag_name: ${{ steps.build.outputs.release }}-${{ github.run_number }}
-        release_name: ${{ steps.build.outputs.release }}-${{ github.run_number }}
+        tag_name: ${{ steps.build.outputs.release }}-${{ steps.build.outputs.build_number }}
+        release_name: ${{ steps.build.outputs.release }}-${{ steps.build.outputs.build_number }}
         #body: |
         #  Changes in this Release
         #  - First Change
