@@ -1,4 +1,6 @@
 # Project exclude paths
+/.idea/
 /.gradle/
 /build/
-/build/classes/java/main/
+/out/
+/gradle/wrapper/gradle-wrapper.jar
