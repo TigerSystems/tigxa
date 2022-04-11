@@ -4,6 +4,7 @@ import com.yubico.client.v2.ResponseStatus;
 import com.yubico.client.v2.VerificationResponse;
 import com.yubico.client.v2.YubicoClient;
 import de.MarkusTieger.Tigxa.Browser;
+import de.MarkusTieger.Tigxa.gui.image.ImageLoader;
 
 import javax.swing.*;
 import java.awt.*;
@@ -11,6 +12,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
+import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -21,12 +23,16 @@ public class PasswordWindow {
 
     public static <T> T requestPWD(String s, Function<char[], T> verify){
 
+        BufferedImage image = ImageLoader.loadInternalImage("/res/gui/logo.png");
+
         JFrame frame = new JFrame(s);
         frame.setSize(300, 200);
         frame.setLayout(null);
         frame.setResizable(false);
         frame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
         frame.setLocationRelativeTo(null);
+
+        if(image != null) frame.setIconImage(image);
 
         frame.addWindowListener(new WindowListener() {
             @Override
