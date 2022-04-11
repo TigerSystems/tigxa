@@ -38,7 +38,7 @@ jobs:
         
         
         
-    - name: Set up JDK 17
+    - name: Set up JDK 17 (Linux)
       uses: actions/setup-java@v3
       with:
         java-version: '17'
@@ -46,12 +46,12 @@ jobs:
         
         
         
-    - name: Make gradlew executable
+    - name: Make gradlew executable (Linux)
       run: chmod +x ./gradlew
       
       
       
-    - name: Build with Gradle
+    - name: Build with Gradle (Linux)
       #run: ./gradlew build
       #working-directory: .
       id: build
@@ -61,7 +61,7 @@ jobs:
         
         
         
-    - name: Upload Artifact
+    - name: Upload Artifact (Linux)
       uses: actions/upload-artifact@v2.2.4
       with:
         name: tigxa-1.0.0-linux
@@ -87,8 +87,8 @@ jobs:
         
         
         
-    - name: Upload Build Jar
-      id: upload-build-jar
+    - name: Upload Build Jar (Linux)
+      id: upload-build-jar-linux
       uses: actions/upload-release-asset@v1
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -100,8 +100,8 @@ jobs:
         
         
         
-    - name: Upload Shadow Jar
-      id: upload-shadow-jar
+    - name: Upload Shadow Jar (Linux)
+      id: upload-shadow-jar-linux
       uses: actions/upload-release-asset@v1
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -120,7 +120,7 @@ jobs:
     runs-on: windows-latest
     steps:
     - uses: actions/checkout@v2
-    - name: Set up JDK 17
+    - name: Set up JDK 17 (Windows)
       uses: actions/setup-java@v3
       with:
         java-version: '17'
@@ -129,7 +129,7 @@ jobs:
         
         
         
-    - name: Build with Gradle
+    - name: Build with Gradle (Windows)
       #run: ./gradlew build
       #working-directory: .
       id: build-win
@@ -141,7 +141,7 @@ jobs:
         
         
         
-    - name: Upload Artifact
+    - name: Upload Artifact (Windows)
       uses: actions/upload-artifact@v2.2.4
       with:
         name: tigxa-1.0.0-win
@@ -150,8 +150,8 @@ jobs:
         
         
         
-    - name: Upload Build Jar
-      id: upload-build-jar
+    - name: Upload Build Jar (Windows)
+      id: upload-build-jar-win
       uses: actions/upload-release-asset@v1
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -165,8 +165,8 @@ jobs:
         
         
         
-    - name: Upload Shadow Jar
-      id: upload-shadow-jar
+    - name: Upload Shadow Jar (Windows)
+      id: upload-shadow-jar-win
       uses: actions/upload-release-asset@v1
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
