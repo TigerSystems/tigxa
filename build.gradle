@@ -17,6 +17,8 @@ if(env != null){
     System.out.println("::set-output name=build_number::" + env)
 }
 
+if(env == null) env = "-";
+
 System.out.println("::set-output name=release::" + getVersion())
 
 repositories {
@@ -36,8 +38,8 @@ tasks.withType(JavaCompile) {
 }
 
 application {
-    mainModule = 'de.markustieger.tigxa'
-    mainClass = 'de.markustieger.tigxa.Bootstrap'
+    mainModule = 'de.MarkusTieger.Tigxa'
+    mainClass = 'de.MarkusTieger.Tigxa.Bootstrap'
 }
 
 javafx {
@@ -52,7 +54,7 @@ jar {
         attributes 'Specification-Version': getVersion()
         attributes 'Specification-Vendor': "MarkusTieger"
         attributes 'Implementation-Title': application.mainModule
-        attributes 'Implementation-Version': getVersion()
+        attributes 'Implementation-Version': env
         attributes 'Implementation-Vendor': "MarkusTieger"
     }
 }

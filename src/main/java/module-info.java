@@ -20,5 +20,5 @@ open module de.markustieger.tigxa {
 
     requires yubico.validation.client2;
 
-    exports de.markustieger.tigxa;
+    exports de.MarkusTieger.Tigxa;
 }
