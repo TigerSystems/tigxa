@@ -195,7 +195,7 @@ jobs:
     runs-on: macos-latest
     steps:
     - uses: actions/checkout@v2
-    - name: Set up JDK 17 (Windows)
+    - name: Set up JDK 17 (Mac)
       uses: actions/setup-java@v3
       with:
         java-version: '17'
