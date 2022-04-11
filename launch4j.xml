@@ -1,8 +1,0 @@
-<launch4jConfig>
-    <jre>
-        <!-- Specify path or minVersion or both. -->
-        <path>./res/jre</path>
-        <bundledJre64Bit>true</bundledJre64Bit>
-        <bundledJreAsFallback>false</bundledJreAsFallback>
-    </jre>
-</launch4jConfig>
