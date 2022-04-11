@@ -1,0 +1,143 @@
+# This workflow uses actions that are not certified by GitHub.
+# They are provided by a third-party and are governed by
+# separate terms of service, privacy policy, and support
+# documentation.
+# This workflow will build a Java project with Gradle and cache/restore any dependencies to improve the workflow execution time
+# For more information see: https://help.github.com/actions/language-and-framework-guides/building-and-testing-java-with-gradle
+# Easter-Egg found ... (by MarkusTieger)
+
+name: Build
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  prepare:
+    outputs:
+      commit: ${{ steps.commithash.outputs.sha_short }}
+    permissions: write-all
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    
+    
+    - name: Set outputs
+      id: commithash
+      run: echo "::set-output name=sha_short::$(git rev-parse --short HEAD)" 
+
+    
+  build-linux:
+    needs: [prepare]
+    permissions: write-all
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Set up JDK 17 (Mac)
+      uses: actions/setup-java@v3
+      with:
+        java-version: '17'
+        distribution: 'zulu'
+        
+        
+    - name: Make gradlew executable (Linux)
+      run: chmod +x ./gradlew
+        
+    - name: Build with Gradle (Linux)
+      #run: ./gradlew build
+      #working-directory: .
+      id: build-mac
+      uses: gradle/gradle-build-action@0d13054264b0bb894ded474f08ebb30921341cee
+      with:
+        arguments: build
+      env:
+        build_number: ${{ github.run_number }}
+        commit_hash: ${{ needs.prepare.outputs.commit }}
+        
+        
+        
+    - name: Upload Artifact (Linux)
+      uses: actions/upload-artifact@v2.2.4
+      with:
+        name: tigxa-1.0.0-linux
+        path: build/libs
+      continue-on-error: true
+        
+        
+        
+  build-win:
+    needs: [prepare]
+    permissions: write-all
+    runs-on: windows-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Set up JDK 17 (Windows)
+      uses: actions/setup-java@v3
+      with:
+        java-version: '17'
+        distribution: 'zulu'
+        
+        
+        
+        
+    - name: Build with Gradle (Windows)
+      #run: ./gradlew build
+      #working-directory: .
+      id: build-win
+      uses: gradle/gradle-build-action@0d13054264b0bb894ded474f08ebb30921341cee
+      with:
+        arguments: build
+      env:
+        build_number: ${{ github.run_number }}
+        commit_hash: ${{ needs.prepare.outputs.commit }}
+        
+        
+        
+    - name: Upload Artifact (Windows)
+      uses: actions/upload-artifact@v2.2.4
+      with:
+        name: tigxa-1.0.0-win
+        path: build/libs
+        
+        
+        
+    
+    
+    
+  build-mac:
+    needs: [prepare]
+    permissions: write-all
+    runs-on: macos-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Set up JDK 17 (Mac)
+      uses: actions/setup-java@v3
+      with:
+        java-version: '17'
+        distribution: 'zulu'
+        
+        
+    - name: Make gradlew executable (Mac)
+      run: chmod +x ./gradlew
+        
+    - name: Build with Gradle (Mac)
+      #run: ./gradlew build
+      #working-directory: .
+      id: build-mac
+      uses: gradle/gradle-build-action@0d13054264b0bb894ded474f08ebb30921341cee
+      with:
+        arguments: build
+      env:
+        build_number: ${{ github.run_number }}
+        commit_hash: ${{ needs.prepare.outputs.commit }}
+        
+        
+        
+    - name: Upload Artifact (Mac)
+      uses: actions/upload-artifact@v2.2.4
+      with:
+        name: tigxa-1.0.0-mac
+        path: build/libs
+      continue-on-error: true

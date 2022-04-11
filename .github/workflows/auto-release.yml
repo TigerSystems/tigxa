@@ -6,9 +6,10 @@
 # For more information see: https://help.github.com/actions/language-and-framework-guides/building-and-testing-java-with-gradle
 # Easter-Egg found ... (by MarkusTieger)
 
-name: Gradle Build
+name: Auto Release
 
 on:
+  workflow_dispatch:
   push:
     branches: [ master ]
   pull_request:
@@ -66,12 +67,12 @@ jobs:
         commit_hash: ${{ steps.commithash.outputs.sha_short }}
         
         
-    - name: Upload Artifact (Linux)
-      uses: actions/upload-artifact@v2.2.4
-      with:
-        name: tigxa-1.0.0-linux
-        path: build/libs    
-    
+    #- name: Upload Artifact (Linux)
+    #  uses: actions/upload-artifact@v2.2.4
+    #  with:
+    #    name: tigxa-1.0.0-linux
+    #    path: build/libs    
+    #  continue-on-error: true
     
     
     
@@ -102,7 +103,7 @@ jobs:
         asset_path: build/libs/tigxa-${{ steps.build.outputs.release }}.jar
         asset_name: tigxa-${{ steps.build.outputs.release }}-linux.jar
         asset_content_type: application/java-archive
-        
+      continue-on-error: true
         
         
     - name: Upload Shadow Jar (Linux)
@@ -115,7 +116,7 @@ jobs:
         asset_path: build/libs/tigxa-${{ steps.build.outputs.release }}-all.jar
         asset_name: tigxa-${{ steps.build.outputs.release }}-linux-all.jar
         asset_content_type: application/java-archive
-        
+      continue-on-error: true
         
         
         
@@ -147,12 +148,12 @@ jobs:
         
         
         
-    - name: Upload Artifact (Windows)
-      uses: actions/upload-artifact@v2.2.4
-      with:
-        name: tigxa-1.0.0-win
-        path: build/libs
-        
+    #- name: Upload Artifact (Windows)
+    #  uses: actions/upload-artifact@v2.2.4
+    #  with:
+    #    name: tigxa-1.0.0-win
+    #    path: build/libs
+    #  continue-on-error: true
         
         
         
@@ -166,7 +167,7 @@ jobs:
         asset_path: build/libs/tigxa-${{ needs.build-linux.outputs.release }}.jar
         asset_name: tigxa-${{ needs.build-linux.outputs.release }}-win.jar
         asset_content_type: application/java-archive
-        
+      continue-on-error: true
         
         
         
@@ -181,7 +182,7 @@ jobs:
         asset_path: build/libs/tigxa-${{ needs.build-linux.outputs.release }}-all.jar
         asset_name: tigxa-${{ needs.build-linux.outputs.release }}-win-all.jar
         asset_content_type: application/java-archive
-        
+      continue-on-error: true
         
         
         
@@ -218,12 +219,12 @@ jobs:
         
         
         
-    - name: Upload Artifact (Mac)
-      uses: actions/upload-artifact@v2.2.4
-      with:
-        name: tigxa-1.0.0-mac
-        path: build/libs
-        
+    #- name: Upload Artifact (Mac)
+    #  uses: actions/upload-artifact@v2.2.4
+    #  with:
+    #    name: tigxa-1.0.0-mac
+    #    path: build/libs
+    #  continue-on-error: true
         
         
         
@@ -237,7 +238,7 @@ jobs:
         asset_path: build/libs/tigxa-${{ needs.build-linux.outputs.release }}.jar
         asset_name: tigxa-${{ needs.build-linux.outputs.release }}-mac.jar
         asset_content_type: application/java-archive
-        
+      continue-on-error: true
         
         
         
@@ -252,3 +253,5 @@ jobs:
         asset_path: build/libs/tigxa-${{ needs.build-linux.outputs.release }}-all.jar
         asset_name: tigxa-${{ needs.build-linux.outputs.release }}-mac-all.jar
         asset_content_type: application/java-archive
+      continue-on-error: true
+      
