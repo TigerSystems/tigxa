@@ -8,6 +8,15 @@ plugins {
 group 'de.MarkusTieger'
 version '1.0.0'
 
+String env = System.getenv("build_number");
+
+if(env != null){
+    while(env.length() < 6){
+        env = "0" + env
+    }
+    System.out.println("::set-output name=build_number::" + env)
+}
+
 System.out.println("::set-output name=release::" + getVersion())
 
 repositories {
