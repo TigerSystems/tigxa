@@ -22,13 +22,16 @@ jobs:
     outputs:
       upload_url: ${{ steps.create_release.outputs.upload_url }}
       release: ${{ steps.build.outputs.release }}
+      commit: ${{ steps.commithash.outputs.sha_short }}
     permissions: write-all
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
     
     
-    
+    - name: Set outputs
+      id: commithash
+      run: echo "::set-output name=sha_short::$(git rev-parse --short HEAD)"
     
     #- name: Generate build number
     #  id: buildnumber
@@ -60,7 +63,7 @@ jobs:
         arguments: build
       env:
         build_number: ${{ github.run_number }}
-        
+        commit_hash: ${{ steps.commithash.outputs.sha_short }}
         
         
     - name: Upload Artifact (Linux)
@@ -140,7 +143,7 @@ jobs:
         arguments: build
       env:
         build_number: ${{ github.run_number }}
-        
+        commit_hash: ${{ needs.build-linux.outputs.commit }}
         
         
         
