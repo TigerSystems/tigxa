@@ -92,8 +92,8 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
       with:
-        tag_name: ${{ jobs.build_linux.outputs.release }}-${{ jobs.prepare.outputs.build_number }}
-        release_name: ${{ jobs.build_linux.outputs.release }}-${{ jobs.prepare.outputs.build_number }}
+        tag_name: ${{ needs.build_linux.outputs.release }}-${{ needs.prepare.outputs.build_number }}
+        release_name: ${{ needs.build_linux.outputs.release }}-${{ needs.prepare.outputs.build_number }}
         #body: |
         #  Changes in this Release
         #  - First Change
@@ -107,8 +107,8 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         upload_url: ${{ steps.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps 
-        asset_path: build/libs/tigxa-${{ jobs.build_linux.outputs.release }}.jar
-        asset_name: tigxa-${{ steps.build.outputs.release }}.jar
+        asset_path: build/libs/tigxa-${{ needs.build_linux.outputs.release }}.jar
+        asset_name: tigxa-${{ needs.build.outputs.release }}.jar
         asset_content_type: application/java-archive
     - name: Upload Shadow Jar
       id: upload-shadow-jar
@@ -117,6 +117,6 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         upload_url: ${{ steps.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps 
-        asset_path: build/libs/tigxa-${{ jobs.build_linux.outputs.release }}-all.jar
-        asset_name: tigxa-${{ jobs.build_linux.outputs.release }}-all.jar
+        asset_path: build/libs/tigxa-${{ needs.build_linux.outputs.release }}-all.jar
+        asset_name: tigxa-${{ needs.build_linux.outputs.release }}-all.jar
         asset_content_type: application/java-archive
