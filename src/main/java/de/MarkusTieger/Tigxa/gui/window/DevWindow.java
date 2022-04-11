@@ -1,8 +1,8 @@
 package de.MarkusTieger.Tigxa.gui.window;
 
+import de.MarkusTieger.Tigxa.Browser;
 import de.MarkusTieger.Tigxa.gui.image.ImageLoader;
 import de.MarkusTieger.Tigxa.gui.node.DevElementNode;
-import de.MarkusTieger.Tigxa.Browser;
 import de.MarkusTieger.Tigxa.web.MainContent;
 import org.w3c.dom.Document;
 

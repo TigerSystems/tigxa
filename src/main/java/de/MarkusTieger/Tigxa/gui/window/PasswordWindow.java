@@ -21,7 +21,7 @@ import java.util.function.Function;
 
 public class PasswordWindow {
 
-    public static <T> T requestPWD(String s, Function<char[], T> verify){
+    public static <T> T requestPWD(String s, Function<char[], T> verify) {
 
         BufferedImage image = ImageLoader.loadInternalImage("/res/gui/logo.png");
 
@@ -32,7 +32,7 @@ public class PasswordWindow {
         frame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
         frame.setLocationRelativeTo(null);
 
-        if(image != null) frame.setIconImage(image);
+        if (image != null) frame.setIconImage(image);
 
         frame.addWindowListener(new WindowListener() {
             @Override
@@ -80,9 +80,9 @@ public class PasswordWindow {
         JPasswordField pwd = new JPasswordField();
         List<JButton> btns = new ArrayList<>();
 
-        T[] result = (T[]) new Object[] {null};
+        T[] result = (T[]) new Object[]{null};
 
-        boolean[] b = new boolean[] {false};
+        boolean[] b = new boolean[]{false};
         ActionListener action = new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -91,7 +91,7 @@ public class PasswordWindow {
 
                 result[0] = verify.apply(pwd.getPassword());
 
-                if(result[0] == null){
+                if (result[0] == null) {
                     btns.forEach((btn) -> btn.setEnabled(true));
                     pwd.setBackground(Color.RED);
                 } else {
@@ -119,7 +119,7 @@ public class PasswordWindow {
 
         frame.setVisible(true);
 
-        while(frame.isVisible()){
+        while (frame.isVisible()) {
 
             try {
                 Thread.sleep(1000L);
@@ -127,7 +127,7 @@ public class PasswordWindow {
                 e.printStackTrace();
             }
 
-            if(b[0]){
+            if (b[0]) {
                 frame.setVisible(false);
                 return result[0];
             }
@@ -146,7 +146,7 @@ public class PasswordWindow {
         frame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
         frame.setLocationRelativeTo(null);
 
-        T[] result = (T[]) new Object[] {null};
+        T[] result = (T[]) new Object[]{null};
 
         frame.addWindowListener(new WindowListener() {
             @Override
@@ -194,8 +194,8 @@ public class PasswordWindow {
         JTextField pwd = new JTextField();
         List<JButton> btns = new ArrayList<>();
 
-        boolean[] b_tmp = new boolean[] {false},
-                b = new boolean[] {false};
+        boolean[] b_tmp = new boolean[]{false},
+                b = new boolean[]{false};
         ActionListener action = new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -222,7 +222,7 @@ public class PasswordWindow {
 
         frame.setVisible(true);
 
-        while(frame.isVisible()){
+        while (frame.isVisible()) {
 
             try {
                 Thread.sleep(1000L);
@@ -230,7 +230,7 @@ public class PasswordWindow {
                 e.printStackTrace();
             }
 
-            if(b[0]){
+            if (b[0]) {
                 frame.setVisible(false);
                 return result[0];
             }
@@ -249,8 +249,8 @@ public class PasswordWindow {
 
         String otp = pwd.getText();
 
-        if(otp.isEmpty()){
-            T object =  verify.apply(new VerificationResponse() {
+        if (otp.isEmpty()) {
+            T object = verify.apply(new VerificationResponse() {
                 @Override
                 public boolean isOk() {
                     return false;
@@ -311,7 +311,7 @@ public class PasswordWindow {
                     return null;
                 }
             });
-            if(object == null){
+            if (object == null) {
                 btns.forEach((btn) -> btn.setEnabled(true));
                 pwd.setBackground(Color.RED);
                 return null;
@@ -326,11 +326,11 @@ public class PasswordWindow {
         try {
             VerificationResponse response = client.verify(otp);
 
-            if(response.isOk()){
+            if (response.isOk()) {
 
                 T result = verify.apply(response);
 
-                if(result == null){
+                if (result == null) {
                     throw new IOException("Verifier failed!");
                 } else {
                     b[0] = true;

@@ -1,12 +1,12 @@
 package de.MarkusTieger.Tigxa.extension.api.impl.plugin;
 
+import de.MarkusTieger.Tigxa.extension.api.IAPI;
 import de.MarkusTieger.Tigxa.extension.api.action.IActionHandler;
 import de.MarkusTieger.Tigxa.extension.api.event.IEventManager;
+import de.MarkusTieger.Tigxa.extension.api.gui.IGUIManager;
 import de.MarkusTieger.Tigxa.extension.api.permission.IPermissionManager;
 import de.MarkusTieger.Tigxa.extension.api.permission.Permission;
 import de.MarkusTieger.Tigxa.extension.api.window.IWindowManager;
-import de.MarkusTieger.Tigxa.extension.api.IAPI;
-import de.MarkusTieger.Tigxa.extension.api.gui.IGUIManager;
 
 public class PluginAPI implements IAPI {
 

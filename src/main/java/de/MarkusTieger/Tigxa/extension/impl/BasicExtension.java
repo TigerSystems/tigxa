@@ -34,7 +34,7 @@ public abstract class BasicExtension implements IExtension {
         icon = img;
 
         BufferedImage i = null;
-        if(img != null){
+        if (img != null) {
             i = new BufferedImage(img.getWidth(), img.getHeight(), BufferedImage.TYPE_INT_ARGB);
             i.getGraphics().drawImage(img, 0, 0, null);
 
@@ -73,7 +73,7 @@ public abstract class BasicExtension implements IExtension {
         icon = img;
 
         BufferedImage i = null;
-        if(img != null){
+        if (img != null) {
             i = new BufferedImage(img.getWidth(), img.getHeight(), BufferedImage.TYPE_INT_ARGB);
             i.getGraphics().drawImage(img, 0, 0, null);
 

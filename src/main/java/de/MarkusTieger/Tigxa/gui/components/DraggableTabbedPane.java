@@ -19,11 +19,11 @@ public class DraggableTabbedPane extends JTabbedPane {
         addMouseMotionListener(new MouseMotionAdapter() {
             public void mouseDragged(MouseEvent e) {
 
-                if(!dragging) {
+                if (!dragging) {
                     // Gets the tab index based on the mouse position
                     int tabNumber = getUI().tabForCoordinate(DraggableTabbedPane.this, e.getX(), e.getY());
 
-                    if(tabNumber >= 0) {
+                    if (tabNumber >= 0) {
                         draggedTabIndex = tabNumber;
                         Rectangle bounds = getUI().getTabBounds(DraggableTabbedPane.this, tabNumber);
 
@@ -39,7 +39,7 @@ public class DraggableTabbedPane extends JTabbedPane {
                         // Paint just the dragged tab to the buffer
                         tabImage = new BufferedImage(bounds.width, bounds.height, BufferedImage.TYPE_INT_ARGB);
                         Graphics graphics = tabImage.getGraphics();
-                        graphics.drawImage(totalImage, 0, 0, bounds.width, bounds.height, bounds.x, bounds.y, bounds.x + bounds.width, bounds.y+bounds.height, DraggableTabbedPane.this);
+                        graphics.drawImage(totalImage, 0, 0, bounds.width, bounds.height, bounds.x, bounds.y, bounds.x + bounds.width, bounds.y + bounds.height, DraggableTabbedPane.this);
 
                         dragging = true;
                         repaint();
@@ -58,10 +58,10 @@ public class DraggableTabbedPane extends JTabbedPane {
         addMouseListener(new MouseAdapter() {
             public void mouseReleased(MouseEvent e) {
 
-                if(dragging) {
+                if (dragging) {
                     int tabNumber = getUI().tabForCoordinate(DraggableTabbedPane.this, e.getX(), 10);
 
-                    if(tabNumber >= 0) {
+                    if (tabNumber >= 0) {
                         Component comp = getComponentAt(draggedTabIndex);
                         String title = getTitleAt(draggedTabIndex);
                         Icon icon = getIconAt(draggedTabIndex);
@@ -82,7 +82,7 @@ public class DraggableTabbedPane extends JTabbedPane {
         super.paintComponent(g);
 
         // Are we dragging?
-        if(dragging && currentMouseLocation != null && tabImage != null) {
+        if (dragging && currentMouseLocation != null && tabImage != null) {
             // Draw the dragged tab
             g.drawImage(tabImage, currentMouseLocation.x, currentMouseLocation.y, this);
         }

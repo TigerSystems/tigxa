@@ -13,7 +13,10 @@ import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.PBEKeySpec;
 import javax.crypto.spec.SecretKeySpec;
-import java.io.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.security.spec.KeySpec;
 import java.util.*;
@@ -46,23 +49,23 @@ public class CookieStorage {
             try {
                 FileInputStream reader = new FileInputStream(cookieFile);
 
-                char c = new String(new byte[] {(byte)reader.read()}, StandardCharsets.UTF_8).charAt(0);
-                char c2 = new String(new byte[] {(byte)reader.read()}, StandardCharsets.UTF_8).charAt(0);
+                char c = new String(new byte[]{(byte) reader.read()}, StandardCharsets.UTF_8).charAt(0);
+                char c2 = new String(new byte[]{(byte) reader.read()}, StandardCharsets.UTF_8).charAt(0);
 
                 byte[] bytes = reader.readAllBytes();
 
                 reader.close();
 
-                if(c2 == '1'){
+                if (c2 == '1') {
                     bytes = decryptPWD(bytes);
-                    if(bytes == null){
+                    if (bytes == null) {
                         buckets.clear();
                         return;
                     }
                 }
-                if(c == '1'){
+                if (c == '1') {
                     bytes = decryptYUBI(bytes);
-                    if(bytes == null){
+                    if (bytes == null) {
                         buckets.clear();
                         return;
                     }
@@ -72,7 +75,7 @@ public class CookieStorage {
                 CookieData data = GSON.fromJson(str, CookieData.class);
 
                 buckets.clear();
-                if(data != null) buckets.putAll(data.buckets);
+                if (data != null) buckets.putAll(data.buckets);
 
             } catch (Throwable e) {
                 e.printStackTrace();
@@ -86,27 +89,27 @@ public class CookieStorage {
 
         Function<VerificationResponse, byte[]> verify = (yubi) -> {
 
-        try {
+            try {
 
-            if(!yubi.isOk()) throw new IOException("Valid Response required!");
+                if (!yubi.isOk()) throw new IOException("Valid Response required!");
 
-            byte[] iv = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
-            IvParameterSpec ivspec = new IvParameterSpec(iv);
+                byte[] iv = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+                IvParameterSpec ivspec = new IvParameterSpec(iv);
 
-            SecretKeyFactory factory = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA256");
-            KeySpec spec = new PBEKeySpec(new String(yubi.getPublicId()).substring(0, 12).toCharArray(), Browser.FULL_NAME.getBytes(), 65536, 256);
-            SecretKey tmp = factory.generateSecret(spec);
-            SecretKeySpec secretKey = new SecretKeySpec(tmp.getEncoded(), "AES");
+                SecretKeyFactory factory = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA256");
+                KeySpec spec = new PBEKeySpec(yubi.getPublicId().substring(0, 12).toCharArray(), Browser.FULL_NAME.getBytes(), 65536, 256);
+                SecretKey tmp = factory.generateSecret(spec);
+                SecretKeySpec secretKey = new SecretKeySpec(tmp.getEncoded(), "AES");
 
-            Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5Padding");
-            cipher.init(Cipher.DECRYPT_MODE, secretKey, ivspec);
+                Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5Padding");
+                cipher.init(Cipher.DECRYPT_MODE, secretKey, ivspec);
 
-            CookieStorage.this.yubi = yubi;
+                CookieStorage.this.yubi = yubi;
 
-            return cipher.doFinal(bytes);
-        } catch (Throwable e){
-            return null;
-        }
+                return cipher.doFinal(bytes);
+            } catch (Throwable e) {
+                return null;
+            }
         };
 
         return PasswordWindow.requestYUBI("Cookie-Storage Unlock - [ Yubi-Key Auth ]", verify);
@@ -131,7 +134,7 @@ public class CookieStorage {
                 CookieStorage.this.pwd = pwd;
 
                 return cipher.doFinal(bytes);
-            } catch (Throwable e){
+            } catch (Throwable e) {
                 return null;
             }
         };
@@ -160,7 +163,7 @@ public class CookieStorage {
 
             byte[] bytes = str.getBytes(StandardCharsets.UTF_8);
 
-            if(yubi == null || !yubi.isOk()) {
+            if (yubi == null || !yubi.isOk()) {
                 writer.write("0".getBytes(StandardCharsets.UTF_8));
             } else {
                 writer.write("1".getBytes(StandardCharsets.UTF_8));
@@ -179,7 +182,7 @@ public class CookieStorage {
                 bytes = cipher.doFinal(bytes);
             }
 
-            if(pwd == null || pwd.length == 0){
+            if (pwd == null || pwd.length == 0) {
                 writer.write("0".getBytes(StandardCharsets.UTF_8));
             } else {
                 writer.write("1".getBytes(StandardCharsets.UTF_8));

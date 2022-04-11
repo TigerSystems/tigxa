@@ -2,12 +2,12 @@ package de.MarkusTieger.Tigxa.gui.window;
 
 import com.formdev.flatlaf.FlatLightLaf;
 import com.yubico.client.v2.VerificationResponse;
+import de.MarkusTieger.Tigxa.Browser;
 import de.MarkusTieger.Tigxa.gui.image.ImageLoader;
 import de.MarkusTieger.Tigxa.gui.theme.Theme;
-import de.MarkusTieger.Tigxa.Browser;
-import de.MarkusTieger.Tigxa.http.cookie.CookieManager;
 import de.MarkusTieger.Tigxa.gui.theme.ThemeCategory;
 import de.MarkusTieger.Tigxa.gui.theme.ThemeManager;
+import de.MarkusTieger.Tigxa.http.cookie.CookieManager;
 
 import javax.swing.*;
 import java.awt.event.*;
@@ -29,6 +29,7 @@ public class ConfigWindow {
         frame.setSize(800, 600);
         frame.setDefaultCloseOperation(WindowConstants.HIDE_ON_CLOSE);
         frame.setLocationRelativeTo(null);
+
         if (image != null) frame.setIconImage(image);
         frame.addWindowListener(new WindowListener() {
             @Override
@@ -143,8 +144,8 @@ public class ConfigWindow {
                         return value;
                     });
 
-                    if(pwd != null){
-                        if(pwd.length == 0){
+                    if (pwd != null) {
+                        if (pwd.length == 0) {
                             CookieManager.getDef().getStore().setPwd(null);
                         } else {
                             CookieManager.getDef().getStore().setPwd(pwd);
@@ -155,8 +156,8 @@ public class ConfigWindow {
                         return value;
                     });
 
-                    if(yubi != null) {
-                        if(yubi.isOk()){
+                    if (yubi != null) {
+                        if (yubi.isOk()) {
                             CookieManager.getDef().getStore().setYubi(yubi);
                         } else {
                             CookieManager.getDef().getStore().setYubi(null);

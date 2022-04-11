@@ -1,9 +1,9 @@
 package de.MarkusTieger.Tigxa.extension.api.impl.main;
 
+import de.MarkusTieger.Tigxa.extension.api.impl.DefaultPermResult;
 import de.MarkusTieger.Tigxa.extension.api.permission.IPermissionManager;
 import de.MarkusTieger.Tigxa.extension.api.permission.IPermissionResult;
 import de.MarkusTieger.Tigxa.extension.api.permission.Permission;
-import de.MarkusTieger.Tigxa.extension.api.impl.DefaultPermResult;
 
 import java.util.Collections;
 import java.util.List;

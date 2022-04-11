@@ -13,6 +13,7 @@ public interface IExtension {
     String[] getAuthors();
 
     Image getIcon();
+
     Image getDarkIcon();
 
     void onLoad();

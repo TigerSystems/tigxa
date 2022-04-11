@@ -35,7 +35,7 @@ public class Browser {
     static {
 
         String name = Browser.class.getPackage().getSpecificationTitle();
-        if(name == null){
+        if (name == null) {
             String[] args = Browser.class.getPackageName().split("\\.");
             name = args[args.length - 1];
         }
@@ -44,21 +44,21 @@ public class Browser {
         FULL_NAME = NAME + " Browser";
 
         String version = Browser.class.getPackage().getSpecificationVersion();
-        if(version == null){
+        if (version == null) {
             version = "0.0.0";
         }
 
         VERSION = version;
 
         String build = Browser.class.getPackage().getImplementationVersion();
-        if(build == null){
+        if (build == null) {
             build = "-";
         }
 
         BUILD = build;
 
         String hash = Browser.class.getPackage().getImplementationTitle();
-        if(hash == null){
+        if (hash == null) {
             hash = "-";
         }
         COMMIT_HASH = hash;

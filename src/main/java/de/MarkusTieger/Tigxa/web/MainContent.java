@@ -1,8 +1,8 @@
 package de.MarkusTieger.Tigxa.web;
 
 import de.MarkusTieger.Tigxa.gui.image.ImageLoader;
-import de.MarkusTieger.Tigxa.http.HttpUtils;
 import de.MarkusTieger.Tigxa.gui.window.BrowserWindow;
+import de.MarkusTieger.Tigxa.http.HttpUtils;
 import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -151,7 +151,7 @@ public class MainContent {
                 Object result = obj.call("get_click", (int) event.getSceneX(), (int) event.getSceneY());
 
                 if (result == null || (result + "").isBlank()) {
-                    m.show(jfx, (int)event.getX(), (int)event.getY());
+                    m.show(jfx, (int) event.getX(), (int) event.getY());
                 } else {
 
                     JMenuItem new_tab = new JMenuItem("Open in new Tab");

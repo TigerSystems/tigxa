@@ -1,7 +1,7 @@
 package de.MarkusTieger.Tigxa.extension.api.impl;
 
-import de.MarkusTieger.Tigxa.extension.api.window.IWindow;
 import de.MarkusTieger.Tigxa.extension.api.gui.IGUIWindow;
+import de.MarkusTieger.Tigxa.extension.api.window.IWindow;
 
 public class DefaultGUIWindow implements IGUIWindow {
 

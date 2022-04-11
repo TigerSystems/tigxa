@@ -1,11 +1,11 @@
 package de.MarkusTieger.Tigxa.extension.api.impl.main.gui.context;
 
 import de.MarkusTieger.Tigxa.extension.api.action.IActionHandler;
-import de.MarkusTieger.Tigxa.extension.api.window.IWindow;
 import de.MarkusTieger.Tigxa.extension.api.gui.IGUIWindow;
 import de.MarkusTieger.Tigxa.extension.api.gui.context.IContextEntry;
 import de.MarkusTieger.Tigxa.extension.api.gui.context.IContextMenu;
 import de.MarkusTieger.Tigxa.extension.api.impl.main.gui.window.MainWindow;
+import de.MarkusTieger.Tigxa.extension.api.window.IWindow;
 import javafx.application.Platform;
 import lombok.Getter;
 

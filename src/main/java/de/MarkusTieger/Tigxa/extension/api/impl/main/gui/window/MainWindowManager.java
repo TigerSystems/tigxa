@@ -1,9 +1,9 @@
 package de.MarkusTieger.Tigxa.extension.api.impl.main.gui.window;
 
-import de.MarkusTieger.Tigxa.extension.api.window.IWindow;
-import de.MarkusTieger.Tigxa.extension.api.window.IWindowManager;
 import de.MarkusTieger.Tigxa.Browser;
 import de.MarkusTieger.Tigxa.extension.api.IAPI;
+import de.MarkusTieger.Tigxa.extension.api.window.IWindow;
+import de.MarkusTieger.Tigxa.extension.api.window.IWindowManager;
 import de.MarkusTieger.Tigxa.gui.window.BrowserWindow;
 
 import java.io.File;

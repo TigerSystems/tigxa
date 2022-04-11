@@ -1,8 +1,6 @@
 package de.MarkusTieger.Tigxa.gui.window;
 
 import de.MarkusTieger.Tigxa.Browser;
-import de.MarkusTieger.Tigxa.gui.window.DevWindow;
-import de.MarkusTieger.Tigxa.Browser;
 import de.MarkusTieger.Tigxa.extension.IExtension;
 import de.MarkusTieger.Tigxa.extension.api.IAPI;
 import de.MarkusTieger.Tigxa.extension.api.gui.IGUIWindow;
@@ -11,8 +9,8 @@ import de.MarkusTieger.Tigxa.extension.api.impl.main.gui.window.MainWindowManage
 import de.MarkusTieger.Tigxa.extension.api.window.IWindowManager;
 import de.MarkusTieger.Tigxa.gui.components.DraggableTabbedPane;
 import de.MarkusTieger.Tigxa.gui.image.ImageLoader;
-import de.MarkusTieger.Tigxa.web.MainContent;
 import de.MarkusTieger.Tigxa.gui.theme.ThemeManager;
+import de.MarkusTieger.Tigxa.web.MainContent;
 import javafx.application.Platform;
 import javafx.embed.swing.JFXPanel;
 import javafx.scene.web.WebHistory;
@@ -276,7 +274,8 @@ public class BrowserWindow {
         Consumer<String> change = (c) -> changearray[0].accept(c);
 
 
-        Runnable[] screenshotarray = new Runnable[] {() -> {}};
+        Runnable[] screenshotarray = new Runnable[]{() -> {
+        }};
         Runnable screenshot = () -> screenshotarray[0].run();
 
         Runnable[] devtoolsarray = new Runnable[]{() -> {
@@ -452,7 +451,8 @@ public class BrowserWindow {
         }};
         Runnable devtools = () -> devtoolsarray[0].run();
 
-        Runnable[] screenshotarray = new Runnable[] {() -> {}};
+        Runnable[] screenshotarray = new Runnable[]{() -> {
+        }};
         Runnable screenshot = () -> screenshotarray[0].run();
 
         MainContent.MainContentData data = MainContent.createContent(this, (title) -> {
@@ -699,7 +699,7 @@ public class BrowserWindow {
                     ui();
                 }
 
-                private void ui(){
+                private void ui() {
                     Image icon = ThemeManager.isDark() ? ext.getDarkIcon() : ext.getIcon();
                     if (icon != null) setIcon(new ImageIcon(icon));
                 }
