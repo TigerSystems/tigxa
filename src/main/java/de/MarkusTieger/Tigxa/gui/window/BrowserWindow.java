@@ -1,10 +1,9 @@
 package de.MarkusTieger.Tigxa.gui.window;
 
 import de.MarkusTieger.Tigxa.Browser;
+import de.MarkusTieger.Tigxa.api.window.IWindow;
 import de.MarkusTieger.Tigxa.extension.IExtension;
 import de.MarkusTieger.Tigxa.api.IAPI;
-import de.MarkusTieger.Tigxa.api.gui.IGUIWindow;
-import de.MarkusTieger.Tigxa.api.impl.DefaultGUIWindow;
 import de.MarkusTieger.Tigxa.api.impl.main.gui.window.MainWindowManager;
 import de.MarkusTieger.Tigxa.api.window.IWindowManager;
 import de.MarkusTieger.Tigxa.gui.components.DraggableTabbedPane;
@@ -49,7 +48,7 @@ public class BrowserWindow {
     private final JLabel addpanel = new JLabel("Nice to see you");
 
 
-    private IGUIWindow api;
+    private IWindow api;
 
     public void updateUI() {
         SwingUtilities.updateComponentTreeUI(frame);
@@ -135,7 +134,7 @@ public class BrowserWindow {
             @Override
             public void stateChanged(ChangeEvent e) {
                 if (tabs.getSelectedComponent() == addpanel) {
-                    Platform.runLater(() -> newTab(null, true));
+                    Platform.runLater(() -> newTab((String) null, true));
                 }
             }
         });
@@ -153,7 +152,7 @@ public class BrowserWindow {
 
 
                 if (e.getKeyCode() == KeyEvent.VK_T && e.isControlDown()) {
-                    Platform.runLater(() -> newTab(null, true));
+                    Platform.runLater(() -> newTab((String) null, true));
                 }
                 if (e.getKeyCode() == KeyEvent.VK_W && e.isControlDown()) {
 
@@ -212,7 +211,7 @@ public class BrowserWindow {
 
         IWindowManager wm = mapi.getWindowManager();
         if (wm instanceof MainWindowManager mwm) {
-            api = new DefaultGUIWindow(mwm.fromBW(this));
+            api = mwm.fromBW(this);
         }
 
         List<BrowserWindow> windows = Browser.getWindows();
@@ -558,6 +557,122 @@ public class BrowserWindow {
 
         return data;
     }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    public Component newTab(Component main, boolean autoselect) {
+
+        if (tabs == null) throw new RuntimeException("GUI is not initialized!");
+
+        JPanel panel = new JPanel();
+
+        JPanel nav = new JPanel() {
+
+            @Override
+            public Dimension getPreferredSize() {
+                Dimension dim = panel.getSize();
+                dim.height = 30;
+                return dim;
+            }
+
+            @Override
+            public Dimension getMaximumSize() {
+                return getPreferredSize();
+            }
+
+            @Override
+            public Dimension getMinimumSize() {
+                return getPreferredSize();
+            }
+        };
+        nav.setLayout(null);
+
+        Consumer<String> change = buildNav(nav, () -> {
+
+
+        }, () -> {
+
+
+        }, () -> {}, (loc) -> Platform.runLater(() -> {
+            try {
+                URI uri = new URI(loc);
+                if(uri.getScheme().equalsIgnoreCase("https") || uri.getScheme().equalsIgnoreCase("http") || uri.getScheme().equalsIgnoreCase("file")){
+                    newTab(loc, true);
+                }
+            } catch (Throwable e) {
+            }
+        }), null);
+
+
+        JPanel content = new JPanel();
+        content.add(nav);
+
+        JPanel mainContent = new JPanel() {
+
+            @Override
+            public Dimension getPreferredSize() {
+                Dimension dim = panel.getSize();
+                dim.height -= 30;
+                return dim;
+            }
+
+            @Override
+            public Dimension getMaximumSize() {
+                return getPreferredSize();
+            }
+
+            @Override
+            public Dimension getMinimumSize() {
+                return getPreferredSize();
+            }
+        };
+        mainContent.setLayout(new GridLayout(1, 1));
+        mainContent.add(main);
+        content.add(mainContent);
+
+        panel.setLayout(new GridLayout(1, 1));
+        panel.add(content);
+
+        addKeyListener(panel);
+
+        tabs.addTab("Tab", panel);
+
+        update();
+
+        if (autoselect) tabs.setSelectedComponent(panel);
+
+        return panel;
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     private void addKeyListener(Container c) {
         for (Component c_ : c.getComponents()) {

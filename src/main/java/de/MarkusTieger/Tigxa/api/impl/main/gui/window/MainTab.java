@@ -1,10 +1,13 @@
 package de.MarkusTieger.Tigxa.api.impl.main.gui.window;
 
 import de.MarkusTieger.Tigxa.api.window.ITab;
+import de.MarkusTieger.Tigxa.api.window.IWindow;
+import de.MarkusTieger.Tigxa.api.window.TabType;
 import de.MarkusTieger.Tigxa.web.MainContent;
 import javafx.application.Platform;
 import javafx.print.PrinterJob;
 import javafx.scene.web.WebEngine;
+import lombok.Getter;
 
 import javax.swing.*;
 import java.awt.*;
@@ -13,11 +16,15 @@ import java.util.Map;
 public class MainTab implements ITab {
 
     private final MainWindow window;
+    private final TabType type;
+
+    @Getter
     private final Component comp;
 
-    public MainTab(MainWindow window, Component comp) {
+    public MainTab(MainWindow window, TabType type, Component comp) {
         this.comp = comp;
         this.window = window;
+        this.type = type;
     }
 
     @Override
@@ -41,28 +48,13 @@ public class MainTab implements ITab {
     }
 
     @Override
-    public void setZoom(double factor) {
-        Map<Component, MainContent.MainContentData> tabLinks = window.window.getTabLinks();
-        synchronized (tabLinks) {
-            MainContent.MainContentData data = tabLinks.get(comp);
-            if (data != null) data.webView().setZoom(factor);
-        }
+    public TabType getType() {
+        return type;
     }
 
     @Override
-    public void print() {
-        Map<Component, MainContent.MainContentData> tabLinks = window.window.getTabLinks();
-        synchronized (tabLinks) {
-            MainContent.MainContentData data = tabLinks.get(comp);
-            if (data != null) {
-                WebEngine engine = data.webEngine();
-                Platform.runLater(() -> {
-                    PrinterJob job = PrinterJob.createPrinterJob();
-                    if (!job.showPrintDialog(null)) return;
-                    data.webEngine().print(job);
-                });
-            }
-        }
+    public IWindow getWindow() {
+        return window;
     }
 
     @Override

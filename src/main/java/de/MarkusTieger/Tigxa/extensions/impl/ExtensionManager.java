@@ -2,9 +2,9 @@ package de.MarkusTieger.Tigxa.extensions.impl;
 
 import de.MarkusTieger.Tigxa.api.IAPI;
 import de.MarkusTieger.Tigxa.api.action.IActionHandler;
-import de.MarkusTieger.Tigxa.api.gui.IGUIWindow;
 import de.MarkusTieger.Tigxa.api.impl.extension.ExtensionAPI;
 import de.MarkusTieger.Tigxa.api.permission.Permission;
+import de.MarkusTieger.Tigxa.api.window.IWindow;
 import de.MarkusTieger.Tigxa.extension.IExtension;
 import de.MarkusTieger.Tigxa.extensions.impl.external.JavaScriptExtension;
 import javafx.scene.web.WebEngine;
@@ -111,7 +111,7 @@ public class ExtensionManager {
 
         IActionHandler[] action = new IActionHandler[]{new IActionHandler() {
             @Override
-            public void onAction(IGUIWindow window, String id) {
+            public void onAction(IWindow window, String id) {
             }
         }};
 
@@ -119,7 +119,7 @@ public class ExtensionManager {
         Supplier<IExtension> sup = () -> suparray[0].get();
         ExtensionAPI api = new ExtensionAPI(sup, parent, new Permission[]{Permission.WINDOW, Permission.GUI}, new IActionHandler() {
             @Override
-            public void onAction(IGUIWindow window, String id) {
+            public void onAction(IWindow window, String id) {
                 action[0].onAction(window, id);
             }
         });
@@ -147,7 +147,7 @@ public class ExtensionManager {
 
         IActionHandler[] action = new IActionHandler[]{new IActionHandler() {
             @Override
-            public void onAction(IGUIWindow window, String id) {
+            public void onAction(IWindow window, String id) {
             }
         }};
 
@@ -155,7 +155,7 @@ public class ExtensionManager {
         Supplier<IExtension> sup = () -> suparray[0].get();
         ExtensionAPI api = new ExtensionAPI(sup, parent, new Permission[]{Permission.WINDOW, Permission.GUI}, new IActionHandler() {
             @Override
-            public void onAction(IGUIWindow window, String id) {
+            public void onAction(IWindow window, String id) {
                 action[0].onAction(window, id);
             }
         });

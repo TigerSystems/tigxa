@@ -6,7 +6,9 @@ import de.MarkusTieger.Tigxa.api.event.IEventManager;
 import de.MarkusTieger.Tigxa.api.gui.IGUIManager;
 import de.MarkusTieger.Tigxa.api.impl.main.gui.MainGuiManager;
 import de.MarkusTieger.Tigxa.api.impl.main.gui.window.MainWindowManager;
+import de.MarkusTieger.Tigxa.api.impl.main.web.MainWebManager;
 import de.MarkusTieger.Tigxa.api.permission.IPermissionManager;
+import de.MarkusTieger.Tigxa.api.web.IWebManager;
 import de.MarkusTieger.Tigxa.api.window.IWindowManager;
 import de.MarkusTieger.Tigxa.extension.IExtension;
 
@@ -17,11 +19,13 @@ public class MainAPI implements IAPI {
     private final IWindowManager window;
     private final IEventManager event;
     private final IGUIManager gui;
+    private final IWebManager web;
 
     public MainAPI(File configRoot) {
         window = new MainWindowManager(this, configRoot);
         gui = new MainGuiManager();
         event = new MainEventManager();
+        web = new MainWebManager(this);
     }
 
     @Override
@@ -32,6 +36,11 @@ public class MainAPI implements IAPI {
     @Override
     public IEventManager getEventManager() {
         return event;
+    }
+
+    @Override
+    public IWebManager getWebManager() {
+        return web;
     }
 
     @Override

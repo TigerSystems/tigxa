@@ -167,7 +167,7 @@ public class Browser {
     private static void createWindowWithDefaultHomePage(IAPI api) {
         BrowserWindow window = new BrowserWindow();
         window.initWindow(api, configRoot);
-        window.newTab(null, true);
+        window.newTab((String) null, true);
     }
 
     private static File initializeConfigRoot() {

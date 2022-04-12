@@ -1,7 +1,6 @@
 package de.MarkusTieger.Tigxa.api.impl.main.gui.context;
 
 import de.MarkusTieger.Tigxa.api.action.IActionHandler;
-import de.MarkusTieger.Tigxa.api.gui.IGUIWindow;
 import de.MarkusTieger.Tigxa.api.gui.context.IContextEntry;
 import de.MarkusTieger.Tigxa.api.gui.context.IContextMenu;
 import de.MarkusTieger.Tigxa.api.impl.main.gui.window.MainWindow;
@@ -18,7 +17,7 @@ public class MainContextMenu implements IContextMenu {
     private final JPopupMenu ctx;
 
     @Getter
-    private IGUIWindow lastWindow = null;
+    private IWindow lastWindow = null;
 
     @Getter
     private boolean fxthread = false;
@@ -53,16 +52,11 @@ public class MainContextMenu implements IContextMenu {
     }
 
     @Override
-    public void show(IGUIWindow window, int x, int y) {
+    public void show(IWindow window, int x, int y) {
         lastWindow = window;
         Component invoker = null;
-        if (window != null) {
-
-            IWindow w = window.asWindow();
-            if (w != null && w instanceof MainWindow mw) {
-                invoker = mw.getHandler().getFrame();
-            }
-
+        if (window != null && window instanceof MainWindow mw) {
+            invoker = mw.getHandler().getFrame();
         }
         ctx.show(invoker, x, y);
     }

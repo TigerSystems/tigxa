@@ -1,7 +1,9 @@
 package de.MarkusTieger.Tigxa.api.impl.main.gui.window;
 
+import de.MarkusTieger.Tigxa.api.gui.IScreen;
 import de.MarkusTieger.Tigxa.api.window.ITab;
 import de.MarkusTieger.Tigxa.api.window.IWindow;
+import de.MarkusTieger.Tigxa.api.window.TabType;
 import de.MarkusTieger.Tigxa.gui.window.BrowserWindow;
 import de.MarkusTieger.Tigxa.web.MainContent;
 
@@ -12,7 +14,7 @@ import java.util.*;
 public class MainWindow implements IWindow {
 
     private final MainWindowManager windowManager;
-    final BrowserWindow window;
+    public final BrowserWindow window;
 
     final Map<Component, ITab> map = Collections.synchronizedMap(new HashMap<>());
 
@@ -24,7 +26,17 @@ public class MainWindow implements IWindow {
     @Override
     public ITab add(String url, boolean autoselect) {
         Component comp = window.newTab(url, autoselect);
-        ITab tab = genTab(comp);
+        ITab tab = genTab(TabType.WEB, comp);
+        synchronized (map) {
+            map.put(comp, tab);
+        }
+        return tab;
+    }
+
+    @Override
+    public ITab add(IScreen iScreen) {
+        Component comp = window.newTab(iScreen.getContentPane(), true);
+        ITab tab = genTab(TabType.SCREEN, comp);
         synchronized (map) {
             map.put(comp, tab);
         }
@@ -39,7 +51,7 @@ public class MainWindow implements IWindow {
                 Component comp = window.tabs.getComponent(i);
                 ITab tab = map.get(comp);
                 if (tab == null) {
-                    tab = genTab(comp);
+                    tab = genTab(window.getTabLinks().get(comp) == null ? TabType.SCREEN : TabType.WEB, comp);
                     map.put(comp, tab);
                 }
                 tabs.add(tab);
@@ -48,8 +60,8 @@ public class MainWindow implements IWindow {
         return tabs;
     }
 
-    private ITab genTab(Component comp) {
-        return new MainTab(this, comp);
+    private ITab genTab(TabType type, Component comp) {
+        return new MainTab(this, type, comp);
     }
 
     @Override
@@ -71,7 +83,7 @@ public class MainWindow implements IWindow {
             Component comp = window.tabs.getSelectedComponent();
             ITab tab = map.get(comp);
             if (tab != null) return tab;
-            tab = genTab(comp);
+            tab = genTab(window.getTabLinks().get(comp) == null ? TabType.SCREEN : TabType.WEB, comp);
             map.put(comp, tab);
             return tab;
         }
@@ -109,7 +121,7 @@ public class MainWindow implements IWindow {
         synchronized (map){
             ITab tab = map.get(c);
             if(tab == null){
-                tab = genTab(c);
+                tab = genTab(window.getTabLinks().get(c) == null ? TabType.SCREEN : TabType.WEB, c);
                 map.put(c, tab);
             }
             return tab;

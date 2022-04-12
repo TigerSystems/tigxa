@@ -6,6 +6,7 @@ import de.MarkusTieger.Tigxa.api.event.IEventManager;
 import de.MarkusTieger.Tigxa.api.gui.IGUIManager;
 import de.MarkusTieger.Tigxa.api.permission.IPermissionManager;
 import de.MarkusTieger.Tigxa.api.permission.Permission;
+import de.MarkusTieger.Tigxa.api.web.IWebManager;
 import de.MarkusTieger.Tigxa.api.window.IWindowManager;
 import de.MarkusTieger.Tigxa.extension.IExtension;
 
@@ -28,19 +29,28 @@ public class ExtensionAPI implements IAPI {
     @Override
     public IWindowManager getWindowManager() {
         if (!getPermissionManager().hasPermission(Permission.WINDOW))
-            throw new RuntimeException("The Plugin doesn't have the window permission!");
+            throw new RuntimeException("The Plugin doesn't have the Window permission!");
         return parent.getWindowManager();
     }
 
     @Override
     public IEventManager getEventManager() {
+        if (!getPermissionManager().hasPermission(Permission.EVENTS))
+            throw new RuntimeException("The Plugin doesn't have the Event permission!");
         return parent.getEventManager();
+    }
+
+    @Override
+    public IWebManager getWebManager() {
+        if (!getPermissionManager().hasPermission(Permission.WEB))
+            throw new RuntimeException("The Plugin doesn't have the Web permission!");
+        return parent.getWebManager();
     }
 
     @Override
     public IGUIManager getGUIManager() {
         if (!getPermissionManager().hasPermission(Permission.GUI))
-            throw new RuntimeException("The Plugin doesn't have the window permission!");
+            throw new RuntimeException("The Plugin doesn't have the Gui permission!");
         return parent.getGUIManager();
     }
 

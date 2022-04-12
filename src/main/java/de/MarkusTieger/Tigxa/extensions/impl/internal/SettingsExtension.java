@@ -3,10 +3,14 @@ package de.MarkusTieger.Tigxa.extensions.impl.internal;
 import de.MarkusTieger.Tigxa.Browser;
 import de.MarkusTieger.Tigxa.api.IAPI;
 import de.MarkusTieger.Tigxa.api.event.IEvent;
-import de.MarkusTieger.Tigxa.api.gui.IGUIWindow;
 import de.MarkusTieger.Tigxa.api.gui.context.IContextEntry;
 import de.MarkusTieger.Tigxa.api.gui.context.IContextMenu;
+import de.MarkusTieger.Tigxa.api.permission.IPermissionResult;
+import de.MarkusTieger.Tigxa.api.permission.Permission;
+import de.MarkusTieger.Tigxa.api.web.IWebEngine;
 import de.MarkusTieger.Tigxa.api.window.ITab;
+import de.MarkusTieger.Tigxa.api.window.IWindow;
+import de.MarkusTieger.Tigxa.api.window.TabType;
 import de.MarkusTieger.Tigxa.extension.impl.BasicExtension;
 import de.MarkusTieger.Tigxa.gui.window.ConfigWindow;
 
@@ -35,7 +39,7 @@ public class SettingsExtension extends BasicExtension {
     }
 
     @Override
-    public void onAction(IGUIWindow window, int relativeX, int relativeY, int absoluteX, int absoluteY) {
+    public void onAction(IWindow window, int relativeX, int relativeY, int absoluteX, int absoluteY) {
 
         IContextMenu menu = api.getGUIManager().createContextMenu(true, api.getActionHandler());
 
@@ -83,11 +87,11 @@ public class SettingsExtension extends BasicExtension {
     }
 
     @Override
-    public void onAction(IGUIWindow window, String id) {
+    public void onAction(IWindow window, String id) {
 
         if (id.equalsIgnoreCase("new_tab")) {
             if (window == null) return;
-            window.asWindow().add(null, true);
+            window.add(null, true);
         }
 
         if (id.equalsIgnoreCase("new_window")) {
@@ -95,7 +99,19 @@ public class SettingsExtension extends BasicExtension {
         }
 
         if (id.equalsIgnoreCase("print")) {
-            window.asWindow().getSelectedTab().print();
+            if(window == null) return;
+
+            ITab tab = window.getSelectedTab();
+            if(tab == null) return;
+            if(tab.getType() != TabType.WEB) return;
+
+            IPermissionResult result = api.getPermissionManager().requestPermissions(new Permission[] {Permission.WEB});
+            if(result.getDisallowed().size() > 0) return;
+
+            IWebEngine engine = api.getWebManager().getEngineByTab(tab);
+            if(engine == null) return;
+
+            engine.print();
         }
 
         if (id.toLowerCase().startsWith("zoom_".toLowerCase())) {
@@ -104,15 +120,25 @@ public class SettingsExtension extends BasicExtension {
                 int value = Integer.parseInt(data);
                 double factor = (((double) value) / 100D);
 
-                ITab tab = window.asWindow().getSelectedTab();
-                if (tab == null) return;
-                tab.setZoom(factor);
+                if(window == null) return;
+
+                ITab tab = window.getSelectedTab();
+                if(tab == null) return;
+                if(tab.getType() != TabType.WEB) return;
+
+                IPermissionResult result = api.getPermissionManager().requestPermissions(new Permission[] {Permission.WEB});
+                if(result.getDisallowed().size() > 0) return;
+
+                IWebEngine engine = api.getWebManager().getEngineByTab(tab);
+                if(engine == null) return;
+
+                engine.setZoom(factor);
             } catch (NumberFormatException e) {
             }
         }
 
         if (id.equalsIgnoreCase("settings")) {
-            ConfigWindow.create();
+            ConfigWindow.create(); // TODO: Settings-Screen
         }
 
         if (id.equalsIgnoreCase("exit")) {

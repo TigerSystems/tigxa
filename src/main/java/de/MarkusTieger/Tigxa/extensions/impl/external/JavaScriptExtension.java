@@ -2,7 +2,7 @@ package de.MarkusTieger.Tigxa.extensions.impl.external;
 
 import de.MarkusTieger.Tigxa.api.IAPI;
 import de.MarkusTieger.Tigxa.api.event.IEvent;
-import de.MarkusTieger.Tigxa.api.gui.IGUIWindow;
+import de.MarkusTieger.Tigxa.api.window.IWindow;
 import de.MarkusTieger.Tigxa.extension.impl.BasicExtension;
 import javafx.application.Platform;
 import netscape.javascript.JSObject;
@@ -54,7 +54,7 @@ public class JavaScriptExtension extends BasicExtension {
     }
 
     @Override
-    public void onAction(IGUIWindow window, int relativeX, int relativeY, int absoluteX, int absoluteY) {
+    public void onAction(IWindow window, int relativeX, int relativeY, int absoluteX, int absoluteY) {
         Platform.runLater(() -> {
 
             try {
@@ -67,7 +67,7 @@ public class JavaScriptExtension extends BasicExtension {
     }
 
     @Override
-    public void onAction(IGUIWindow window, String id) {
+    public void onAction(IWindow window, String id) {
         Platform.runLater(() -> {
             try {
                 obj.call("onAction", api, window, id);
