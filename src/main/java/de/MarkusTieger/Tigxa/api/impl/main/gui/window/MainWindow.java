@@ -3,6 +3,7 @@ package de.MarkusTieger.Tigxa.api.impl.main.gui.window;
 import de.MarkusTieger.Tigxa.api.window.ITab;
 import de.MarkusTieger.Tigxa.api.window.IWindow;
 import de.MarkusTieger.Tigxa.gui.window.BrowserWindow;
+import de.MarkusTieger.Tigxa.web.MainContent;
 
 import java.awt.*;
 import java.util.List;
@@ -90,5 +91,28 @@ public class MainWindow implements IWindow {
 
     public BrowserWindow getHandler() {
         return window;
+    }
+
+    public ITab fromHandler(MainContent.MainContentData data) {
+        Map<Component, MainContent.MainContentData> tabLinks = window.getTabLinks();
+        Component c = null;
+        synchronized (tabLinks){
+            for(Map.Entry<Component, MainContent.MainContentData> e : tabLinks.entrySet()){
+                if(e.getValue().equals(data)){
+                    c = e.getKey();
+                    break;
+                }
+            }
+        }
+        if(c == null) return null;
+
+        synchronized (map){
+            ITab tab = map.get(c);
+            if(tab == null){
+                tab = genTab(c);
+                map.put(c, tab);
+            }
+            return tab;
+        }
     }
 }

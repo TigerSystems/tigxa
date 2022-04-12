@@ -15,11 +15,13 @@ import java.io.File;
 public class MainAPI implements IAPI {
 
     private final IWindowManager window;
+    private final IEventManager event;
     private final IGUIManager gui;
 
     public MainAPI(File configRoot) {
         window = new MainWindowManager(this, configRoot);
         gui = new MainGuiManager();
+        event = new MainEventManager();
     }
 
     @Override
@@ -29,7 +31,7 @@ public class MainAPI implements IAPI {
 
     @Override
     public IEventManager getEventManager() {
-        return null;
+        return event;
     }
 
     @Override

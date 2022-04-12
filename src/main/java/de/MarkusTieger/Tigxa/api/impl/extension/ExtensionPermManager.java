@@ -1,4 +1,4 @@
-package de.MarkusTieger.Tigxa.api.impl.plugin;
+package de.MarkusTieger.Tigxa.api.impl.extension;
 
 import de.MarkusTieger.Tigxa.api.impl.DefaultPermResult;
 import de.MarkusTieger.Tigxa.api.permission.IPermissionManager;
@@ -9,11 +9,11 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class PluginPermManager implements IPermissionManager {
+public class ExtensionPermManager implements IPermissionManager {
 
     private final List<Permission> perms;
 
-    public PluginPermManager(Permission[] perms) {
+    public ExtensionPermManager(Permission[] perms) {
         this.perms = Arrays.asList(perms);
     }
 

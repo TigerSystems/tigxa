@@ -1,4 +1,4 @@
-package de.MarkusTieger.Tigxa.api.impl.plugin;
+package de.MarkusTieger.Tigxa.api.impl.extension;
 
 import de.MarkusTieger.Tigxa.api.IAPI;
 import de.MarkusTieger.Tigxa.api.action.IActionHandler;
@@ -11,17 +11,17 @@ import de.MarkusTieger.Tigxa.extension.IExtension;
 
 import java.util.function.Supplier;
 
-public class PluginAPI implements IAPI {
+public class ExtensionAPI implements IAPI {
 
     private final Supplier<IExtension> ext;
     private final IAPI parent;
     private final IPermissionManager permManager;
     private final IActionHandler action;
 
-    public PluginAPI(Supplier<IExtension> ext, IAPI parent, Permission[] perms, IActionHandler action) {
+    public ExtensionAPI(Supplier<IExtension> ext, IAPI parent, Permission[] perms, IActionHandler action) {
         this.ext = ext;
         this.parent = parent;
-        this.permManager = new PluginPermManager(perms);
+        this.permManager = new ExtensionPermManager(perms);
         this.action = action;
     }
 

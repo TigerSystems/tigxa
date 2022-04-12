@@ -1,5 +1,11 @@
 package de.MarkusTieger.Tigxa.web;
 
+import de.MarkusTieger.Tigxa.api.IAPI;
+import de.MarkusTieger.Tigxa.api.impl.extension.events.*;
+import de.MarkusTieger.Tigxa.api.impl.main.gui.window.MainWindow;
+import de.MarkusTieger.Tigxa.api.impl.main.gui.window.MainWindowManager;
+import de.MarkusTieger.Tigxa.api.window.ITab;
+import de.MarkusTieger.Tigxa.api.window.IWindow;
 import de.MarkusTieger.Tigxa.gui.image.ImageLoader;
 import de.MarkusTieger.Tigxa.gui.window.BrowserWindow;
 import de.MarkusTieger.Tigxa.http.HttpUtils;
@@ -44,10 +50,11 @@ public class MainContent {
             "  return null;" +
             "}";
 
-    public static void loadFavicon(String location, Consumer<ImageIcon> c) {
+    public static void loadFavicon(IAPI api, String location, Consumer<ImageIcon> c) {
 
+        URI l = null;
         try {
-            URI l = new URI(location);
+            l = new URI(location);
             if (!l.getScheme().equalsIgnoreCase("https") && !l.getScheme().equalsIgnoreCase("http")) {
                 return;
             }
@@ -59,9 +66,14 @@ public class MainContent {
         try {
             URL url = new URL(faviconUrl);
 
+            URI finalL = l;
             new Thread(() -> {
 
-                c.accept(ImageLoader.loadHTTPImageAsIcon(url));
+                ImageIcon i = ImageLoader.loadHTTPImageAsIcon(url);
+                c.accept(i);
+
+                FaviconLoadingFinishedEvent event = new FaviconLoadingFinishedEvent(location, finalL, i != null);
+                api.getEventManager().call(event);
 
             }, "Favicon-Downloader").start();
 
@@ -90,8 +102,12 @@ public class MainContent {
 
         webEngine.setOnAlert(new EventHandler<WebEvent<String>>() {
             @Override
-            public void handle(WebEvent<String> event) {
-                JOptionPane.showMessageDialog(null, event.getData(), "Alert", JOptionPane.INFORMATION_MESSAGE);
+            public void handle(WebEvent<String> e) {
+                AlertHandleEvent event = new AlertHandleEvent(e.getData(), false);
+                window.getMapi().getEventManager().call(event);
+                if(!event.isCanceled()){
+                    JOptionPane.showMessageDialog(null, event.getData(), "Alert", JOptionPane.INFORMATION_MESSAGE);
+                }
             }
         });
 
@@ -99,8 +115,10 @@ public class MainContent {
 
             @Override
             public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
-
                 urlChange.accept(newValue);
+
+                WebLocationChangedEvent event = new WebLocationChangedEvent(oldValue, newValue);
+                window.getMapi().getEventManager().call(event);
             }
         });
 
@@ -117,19 +135,34 @@ public class MainContent {
                             }
                         } else {
                             title.accept(webEngine.getTitle());
-                            loadFavicon(webEngine.getLocation(), icon);
+                            loadFavicon(window.getMapi(), webEngine.getLocation(), icon);
                         }
                     } catch (URISyntaxException e) {
                         e.printStackTrace();
                     }
                 }
+
+                WebStateChangedEvent event = new WebStateChangedEvent(oldState, newState);
+                window.getMapi().getEventManager().call(event);
+
             }
         });
 
         webEngine.setCreatePopupHandler(new Callback<PopupFeatures, WebEngine>() {
             @Override
             public WebEngine call(PopupFeatures param) {
-                return window.newTab(true).webEngine();
+
+                MainContentData data = window.newTab(true);
+
+                try {
+                    MainWindow w = ((MainWindow)((MainWindowManager)window.getMapi().getWindowManager()).fromBW(window));
+                    ITab tab = w.fromHandler(data);
+
+                    PopupCreationEvent event = new PopupCreationEvent(w, tab);
+                    window.getMapi().getEventManager().call(event);
+                } catch(Throwable e){}
+
+                return data.webEngine();
             }
         });
 

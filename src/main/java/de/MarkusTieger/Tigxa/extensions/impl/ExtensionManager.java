@@ -3,7 +3,7 @@ package de.MarkusTieger.Tigxa.extensions.impl;
 import de.MarkusTieger.Tigxa.api.IAPI;
 import de.MarkusTieger.Tigxa.api.action.IActionHandler;
 import de.MarkusTieger.Tigxa.api.gui.IGUIWindow;
-import de.MarkusTieger.Tigxa.api.impl.plugin.PluginAPI;
+import de.MarkusTieger.Tigxa.api.impl.extension.ExtensionAPI;
 import de.MarkusTieger.Tigxa.api.permission.Permission;
 import de.MarkusTieger.Tigxa.extension.IExtension;
 import de.MarkusTieger.Tigxa.extensions.impl.external.JavaScriptExtension;
@@ -117,7 +117,7 @@ public class ExtensionManager {
 
         Supplier<IExtension>[] suparray = new Supplier[] {() -> null};
         Supplier<IExtension> sup = () -> suparray[0].get();
-        PluginAPI api = new PluginAPI(sup, parent, new Permission[]{Permission.WINDOW, Permission.GUI}, new IActionHandler() {
+        ExtensionAPI api = new ExtensionAPI(sup, parent, new Permission[]{Permission.WINDOW, Permission.GUI}, new IActionHandler() {
             @Override
             public void onAction(IGUIWindow window, String id) {
                 action[0].onAction(window, id);
@@ -153,7 +153,7 @@ public class ExtensionManager {
 
         Supplier<IExtension>[] suparray = new Supplier[] {() -> null};
         Supplier<IExtension> sup = () -> suparray[0].get();
-        PluginAPI api = new PluginAPI(sup, parent, new Permission[]{Permission.WINDOW, Permission.GUI}, new IActionHandler() {
+        ExtensionAPI api = new ExtensionAPI(sup, parent, new Permission[]{Permission.WINDOW, Permission.GUI}, new IActionHandler() {
             @Override
             public void onAction(IGUIWindow window, String id) {
                 action[0].onAction(window, id);
