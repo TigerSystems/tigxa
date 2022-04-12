@@ -1,7 +1,7 @@
 package de.MarkusTieger.Tigxa.web;
 
 import de.MarkusTieger.Tigxa.api.IAPI;
-import de.MarkusTieger.Tigxa.api.impl.extension.events.*;
+import de.MarkusTieger.Tigxa.events.*;
 import de.MarkusTieger.Tigxa.api.impl.main.gui.window.MainWindow;
 import de.MarkusTieger.Tigxa.api.impl.main.gui.window.MainWindowManager;
 import de.MarkusTieger.Tigxa.api.window.ITab;

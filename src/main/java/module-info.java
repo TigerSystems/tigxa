@@ -19,7 +19,10 @@ open module de.markustieger.tigxa {
     requires static lombok;
 
     requires yubico.validation.client2;
+
+
     requires tigxa.api;
+    requires tigxa.events;
 
     exports de.MarkusTieger.Tigxa;
 }
