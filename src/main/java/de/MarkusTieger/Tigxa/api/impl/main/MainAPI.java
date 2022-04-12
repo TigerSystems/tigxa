@@ -8,6 +8,7 @@ import de.MarkusTieger.Tigxa.api.impl.main.gui.MainGuiManager;
 import de.MarkusTieger.Tigxa.api.impl.main.gui.window.MainWindowManager;
 import de.MarkusTieger.Tigxa.api.permission.IPermissionManager;
 import de.MarkusTieger.Tigxa.api.window.IWindowManager;
+import de.MarkusTieger.Tigxa.extension.IExtension;
 
 import java.io.File;
 
@@ -43,6 +44,11 @@ public class MainAPI implements IAPI {
 
     @Override
     public IPermissionManager getPermissionManager() {
+        return null;
+    }
+
+    @Override
+    public IExtension getExtension() {
         return null;
     }
 }

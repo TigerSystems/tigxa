@@ -7,14 +7,19 @@ import de.MarkusTieger.Tigxa.api.gui.IGUIManager;
 import de.MarkusTieger.Tigxa.api.permission.IPermissionManager;
 import de.MarkusTieger.Tigxa.api.permission.Permission;
 import de.MarkusTieger.Tigxa.api.window.IWindowManager;
+import de.MarkusTieger.Tigxa.extension.IExtension;
+
+import java.util.function.Supplier;
 
 public class PluginAPI implements IAPI {
 
+    private final Supplier<IExtension> ext;
     private final IAPI parent;
     private final IPermissionManager permManager;
     private final IActionHandler action;
 
-    public PluginAPI(IAPI parent, Permission[] perms, IActionHandler action) {
+    public PluginAPI(Supplier<IExtension> ext, IAPI parent, Permission[] perms, IActionHandler action) {
+        this.ext = ext;
         this.parent = parent;
         this.permManager = new PluginPermManager(perms);
         this.action = action;
@@ -47,6 +52,11 @@ public class PluginAPI implements IAPI {
     @Override
     public IPermissionManager getPermissionManager() {
         return permManager;
+    }
+
+    @Override
+    public IExtension getExtension() {
+        return ext.get();
     }
 
 }

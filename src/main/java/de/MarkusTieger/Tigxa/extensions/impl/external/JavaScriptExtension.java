@@ -1,6 +1,7 @@
 package de.MarkusTieger.Tigxa.extensions.impl.external;
 
 import de.MarkusTieger.Tigxa.api.IAPI;
+import de.MarkusTieger.Tigxa.api.event.IEvent;
 import de.MarkusTieger.Tigxa.api.gui.IGUIWindow;
 import de.MarkusTieger.Tigxa.extension.impl.BasicExtension;
 import javafx.application.Platform;
@@ -70,6 +71,17 @@ public class JavaScriptExtension extends BasicExtension {
         Platform.runLater(() -> {
             try {
                 obj.call("onAction", api, window, id);
+            } catch (Throwable e) {
+
+            }
+        });
+    }
+
+    @Override
+    public void onEvent(IEvent event) {
+        Platform.runLater(() -> {
+            try {
+                obj.call("onEvent", api, event);
             } catch (Throwable e) {
 
             }

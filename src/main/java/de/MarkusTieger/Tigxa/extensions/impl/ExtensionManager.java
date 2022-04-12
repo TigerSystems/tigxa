@@ -18,6 +18,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.function.Function;
+import java.util.function.Supplier;
 
 public class ExtensionManager {
 
@@ -114,7 +115,9 @@ public class ExtensionManager {
             }
         }};
 
-        PluginAPI api = new PluginAPI(parent, new Permission[]{Permission.WINDOW, Permission.GUI}, new IActionHandler() {
+        Supplier<IExtension>[] suparray = new Supplier[] {() -> null};
+        Supplier<IExtension> sup = () -> suparray[0].get();
+        PluginAPI api = new PluginAPI(sup, parent, new Permission[]{Permission.WINDOW, Permission.GUI}, new IActionHandler() {
             @Override
             public void onAction(IGUIWindow window, String id) {
                 action[0].onAction(window, id);
@@ -123,6 +126,7 @@ public class ExtensionManager {
 
         IExtension extension = new JavaScriptExtension(obj, api, (String) name, (String) version, authorarray.toArray(new String[0]), icon + "");
         action[0] = extension::onAction;
+        suparray[0] = () -> extension;
         return extension;
     }
 
@@ -147,7 +151,9 @@ public class ExtensionManager {
             }
         }};
 
-        PluginAPI api = new PluginAPI(parent, new Permission[]{Permission.WINDOW, Permission.GUI}, new IActionHandler() {
+        Supplier<IExtension>[] suparray = new Supplier[] {() -> null};
+        Supplier<IExtension> sup = () -> suparray[0].get();
+        PluginAPI api = new PluginAPI(sup, parent, new Permission[]{Permission.WINDOW, Permission.GUI}, new IActionHandler() {
             @Override
             public void onAction(IGUIWindow window, String id) {
                 action[0].onAction(window, id);
@@ -156,7 +162,7 @@ public class ExtensionManager {
 
         IExtension extension = constructor.apply(api);
         action[0] = extension::onAction;
-
+        suparray[0] = () -> extension;
         extensionarray.add(extension);
 
         extension.onLoad();

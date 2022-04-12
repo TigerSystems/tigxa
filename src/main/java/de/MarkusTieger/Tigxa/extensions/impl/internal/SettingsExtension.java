@@ -2,6 +2,7 @@ package de.MarkusTieger.Tigxa.extensions.impl.internal;
 
 import de.MarkusTieger.Tigxa.Browser;
 import de.MarkusTieger.Tigxa.api.IAPI;
+import de.MarkusTieger.Tigxa.api.event.IEvent;
 import de.MarkusTieger.Tigxa.api.gui.IGUIWindow;
 import de.MarkusTieger.Tigxa.api.gui.context.IContextEntry;
 import de.MarkusTieger.Tigxa.api.gui.context.IContextMenu;
@@ -118,5 +119,9 @@ public class SettingsExtension extends BasicExtension {
             System.exit(0);
         }
 
+    }
+
+    @Override
+    public void onEvent(IEvent iEvent) {
     }
 }
