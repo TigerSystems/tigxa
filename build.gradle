@@ -110,8 +110,8 @@ dependencies {
     implementation('com.yubico:yubico-validation-client2:3.1.0')
 
 
-    implementation('de.MarkusTieger:tigxa-events:1.0.+')
-    implementation('de.MarkusTieger:tigxa-api:1.2.+')
+    implementation('de.MarkusTieger:tigxa-events:1.+')
+    implementation('de.MarkusTieger:tigxa-api:1.+')
 }
 
 test {
