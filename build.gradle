@@ -112,7 +112,6 @@ dependencies {
 
 
     implementation('de.MarkusTieger:tigxa-api:1.+')
-
 }
 
 test {
