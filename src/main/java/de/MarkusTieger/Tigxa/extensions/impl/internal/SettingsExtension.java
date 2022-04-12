@@ -1,4 +1,4 @@
-package de.MarkusTieger.Tigxa.extension.impl.internal;
+package de.MarkusTieger.Tigxa.extensions.impl.internal;
 
 import de.MarkusTieger.Tigxa.Browser;
 import de.MarkusTieger.Tigxa.api.IAPI;

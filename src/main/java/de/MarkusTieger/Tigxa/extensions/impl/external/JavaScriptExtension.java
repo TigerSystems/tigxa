@@ -1,4 +1,4 @@
-package de.MarkusTieger.Tigxa.extension.impl.external;
+package de.MarkusTieger.Tigxa.extensions.impl.external;
 
 import de.MarkusTieger.Tigxa.api.IAPI;
 import de.MarkusTieger.Tigxa.api.gui.IGUIWindow;
