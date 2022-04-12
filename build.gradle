@@ -6,7 +6,7 @@ plugins {
 }
 
 group 'de.MarkusTieger'
-version '1.3.0'
+version '1.4.0'
 
 String env = System.getenv("build_number");
 String commit = System.getenv("commit_hash");
@@ -110,7 +110,7 @@ dependencies {
     implementation('com.yubico:yubico-validation-client2:3.1.0')
 
 
-
+    implementation('de.MarkusTieger:tigxa-events:1.0.+')
     implementation('de.MarkusTieger:tigxa-api:1.2.+')
 }
 
