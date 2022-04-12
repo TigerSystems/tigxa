@@ -3,6 +3,7 @@ plugins {
     id 'application'
     id 'org.openjfx.javafxplugin' version '0.0.10'
     id 'com.github.johnrengelman.shadow' version '7.0.0' // id("com.github.johnrengelman.shadow") version "7.0.0"
+    id 'maven-publish'
 }
 
 group 'de.MarkusTieger'
@@ -33,7 +34,7 @@ System.out.println("::set-output name=release::" + getVersion())
 
 repositories {
     mavenCentral()
-    mavenLocal()
+    // mavenLocal()
 }
 
 ext {
@@ -80,8 +81,6 @@ dependencies {
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:${junitVersion}")
 
 
-    implementation('cf.tigersystems:tigxa-api:1.0.0')
-
 
     // My Depends
 
@@ -97,6 +96,10 @@ dependencies {
     implementation("com.google.code.gson:gson:2.9.0")
 
     implementation('com.yubico:yubico-validation-client2:3.1.0')
+
+
+
+    implementation('de.MarkusTieger:tigxa-api:1.0.0')
 
 }
 
