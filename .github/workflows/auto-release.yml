@@ -61,7 +61,7 @@ jobs:
       id: build
       uses: gradle/gradle-build-action@0d13054264b0bb894ded474f08ebb30921341cee
       with:
-        arguments: build
+        arguments: build --refresh-dependencies
       env:
         build_number: ${{ github.run_number }}
         commit_hash: ${{ steps.commithash.outputs.sha_short }}
@@ -143,7 +143,7 @@ jobs:
       id: build-win
       uses: gradle/gradle-build-action@0d13054264b0bb894ded474f08ebb30921341cee
       with:
-        arguments: build
+        arguments: build --refresh-dependencies
       env:
         build_number: ${{ github.run_number }}
         commit_hash: ${{ needs.build-linux.outputs.commit }}
@@ -216,7 +216,7 @@ jobs:
       id: build-mac
       uses: gradle/gradle-build-action@0d13054264b0bb894ded474f08ebb30921341cee
       with:
-        arguments: build
+        arguments: build --refresh-dependencies
       env:
         build_number: ${{ github.run_number }}
         commit_hash: ${{ needs.build-linux.outputs.commit }}
