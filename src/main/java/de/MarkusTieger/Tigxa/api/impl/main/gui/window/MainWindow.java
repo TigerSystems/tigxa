@@ -35,6 +35,8 @@ public class MainWindow implements IWindow {
 
     @Override
     public ITab add(IScreen iScreen) {
+        if(!windowManager.api.getGUIManager().verify(iScreen)) return null;
+
         Component comp = window.newTab(iScreen.getContentPane(), true);
         ITab tab = genTab(TabType.SCREEN, comp);
         synchronized (map) {

@@ -13,7 +13,7 @@ public class MainWindowManager implements IWindowManager {
 
     final Map<BrowserWindow, IWindow> map = Collections.synchronizedMap(new HashMap<>());
 
-    private final IAPI api;
+    final IAPI api;
     private final File configRoot;
 
     public MainWindowManager(IAPI api, File configRoot) {
