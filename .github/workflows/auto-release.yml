@@ -65,6 +65,8 @@ jobs:
       env:
         build_number: ${{ github.run_number }}
         commit_hash: ${{ steps.commithash.outputs.sha_short }}
+        gituser: ${{ github.actor }}
+        gitpwd: ${{ secrets.GITHUB_TOKEN }}
         
         
     #- name: Upload Artifact (Linux)
@@ -145,6 +147,8 @@ jobs:
       env:
         build_number: ${{ github.run_number }}
         commit_hash: ${{ needs.build-linux.outputs.commit }}
+        gituser: ${{ github.actor }}
+        gitpwd: ${{ secrets.GITHUB_TOKEN }}
         
         
         
@@ -216,7 +220,8 @@ jobs:
       env:
         build_number: ${{ github.run_number }}
         commit_hash: ${{ needs.build-linux.outputs.commit }}
-        
+        gituser: ${{ github.actor }}
+        gitpwd: ${{ secrets.GITHUB_TOKEN }}
         
         
     #- name: Upload Artifact (Mac)
