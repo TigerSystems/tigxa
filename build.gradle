@@ -3,7 +3,6 @@ plugins {
     id 'application'
     id 'org.openjfx.javafxplugin' version '0.0.10'
     id 'com.github.johnrengelman.shadow' version '7.0.0' // id("com.github.johnrengelman.shadow") version "7.0.0"
-    id 'maven-publish'
 }
 
 group 'de.MarkusTieger'
@@ -32,9 +31,22 @@ if(!commit.equalsIgnoreCase("-")){
 
 System.out.println("::set-output name=release::" + getVersion())
 
+String user = findProperty("github.username")
+if(user == null) user = System.getenv("gituser")
+String pwd = findProperty("github.token")
+if(pwd == null) pwd = System.getenv("gitpwd")
+
 repositories {
     mavenCentral()
     // mavenLocal()
+    maven {
+        name = "Github"
+        url = uri("https://maven.pkg.github.com/TigerSystems/tigxa-api")
+        credentials {
+            username = user
+            password = pwd
+        }
+    }
 }
 
 ext {
