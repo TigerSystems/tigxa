@@ -161,6 +161,16 @@ public class SettingsExtension extends BasicExtension {
             if(screen != null) window.add(screen);
         }
 
+        if (id.equalsIgnoreCase("update")) {
+            if(window == null) return;
+            IPermissionResult result = api.getPermissionManager().requestPermissions(new Permission[]{Permission.GUI});
+            if (result.getDisallowed().size() > 0) return;
+
+
+            IScreen screen = api.getGUIManager().getScreenRegistry().getRegistredScreen(Browser.NAME.toLowerCase(), "update");
+            if(screen != null) window.add(screen);
+        }
+
         if (id.equalsIgnoreCase("exit")) {
             System.exit(0);
         }
