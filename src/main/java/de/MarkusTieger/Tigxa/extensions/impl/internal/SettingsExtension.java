@@ -19,7 +19,7 @@ public class SettingsExtension extends BasicExtension {
     private final IAPI api;
 
     public SettingsExtension(IAPI api) {
-        super("Settings", Browser.VERSION, new String[]{"MarkusTieger"}, Browser.class.getResource("/res/gui/extensions/settings.png"));
+        super(api.getPermissionManager(), "Settings", Browser.VERSION, new String[]{"MarkusTieger"}, Browser.class.getResource("/res/gui/extensions/settings.png"));
         this.api = api;
     }
 

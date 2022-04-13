@@ -13,7 +13,7 @@ public class JavaScriptExtension extends BasicExtension {
     private final IAPI api;
 
     public JavaScriptExtension(JSObject obj, IAPI api, String name, String version, String[] authors, String base64) {
-        super(name, version, authors, base64);
+        super(api.getPermissionManager(), name, version, authors, base64);
         this.obj = obj;
         this.api = api;
     }

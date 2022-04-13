@@ -1,6 +1,7 @@
 package de.MarkusTieger.Tigxa.gui.window;
 
 import de.MarkusTieger.Tigxa.Browser;
+import de.MarkusTieger.Tigxa.api.permission.Permission;
 import de.MarkusTieger.Tigxa.api.window.IWindow;
 import de.MarkusTieger.Tigxa.extension.IExtension;
 import de.MarkusTieger.Tigxa.api.IAPI;
@@ -841,6 +842,10 @@ public class BrowserWindow {
                     difference.y = p.y - p_.y;
 
                     Point n = difference;
+
+                    IWindow w = null;
+
+                    if(ext.hasPermission(new Permission[] {Permission.WINDOW})) w = api;
 
                     ext.onAction(api,
                             n.x + (btn.getWidth() / 2), n.y + (btn.getHeight() / 2),
