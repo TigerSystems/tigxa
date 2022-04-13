@@ -1,7 +1,6 @@
 package de.MarkusTieger.Tigxa.api.impl;
 
 import de.MarkusTieger.Tigxa.api.gui.IScreen;
-import lombok.Getter;
 import lombok.Setter;
 
 import javax.swing.*;
@@ -13,7 +12,7 @@ public class DefaultGuiScreen implements IScreen {
     private Supplier<String> titleSupplier, locationSupplier;
     private final JPanel content = new JPanel();
 
-    public DefaultGuiScreen(String title, String location){
+    public DefaultGuiScreen(String title, String location) {
         titleSupplier = () -> title;
         locationSupplier = () -> location;
     }

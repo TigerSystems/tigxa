@@ -24,9 +24,9 @@ public class ExtensionPermManager implements IPermissionManager {
     @Override
     public boolean hasPermission(Permission... permissions) {
         boolean value = true;
-        for(Permission perm : permissions){
+        for (Permission perm : permissions) {
             value = hasPermission0(perm);
-            if(!value) break;
+            if (!value) break;
         }
         return value;
     }

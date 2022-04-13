@@ -19,7 +19,7 @@ public class MainWebManager implements IWebManager {
 
     private final IAPI api;
 
-    public MainWebManager(IAPI api){
+    public MainWebManager(IAPI api) {
         this.api = api;
     }
 
@@ -27,13 +27,13 @@ public class MainWebManager implements IWebManager {
 
     @Override
     public IWebEngine getEngineByTab(ITab iTab) {
-        if(iTab.getType() != TabType.WEB) return null;
+        if (iTab.getType() != TabType.WEB) return null;
         IWindow window = iTab.getWindow();
-        if(!api.getWindowManager().listWindows().contains(window)) return null;
-        if(!window.listTabs().contains(iTab)) return null;
-        synchronized (map){
+        if (!api.getWindowManager().listWindows().contains(window)) return null;
+        if (!window.listTabs().contains(iTab)) return null;
+        synchronized (map) {
             IWebEngine engine = map.get(iTab);
-            if(engine == null){
+            if (engine == null) {
                 engine = genEngine(iTab);
                 map.put(iTab, engine);
             }
@@ -43,11 +43,11 @@ public class MainWebManager implements IWebManager {
 
     private IWebEngine genEngine(ITab iTab) {
         IWindow w = iTab.getWindow();
-        if(!(w instanceof MainWindow mw)) return null;
-        if(!(iTab instanceof MainTab mt)) return null;
+        if (!(w instanceof MainWindow mw)) return null;
+        if (!(iTab instanceof MainTab mt)) return null;
 
         Map<Component, MainContent.MainContentData> map = mw.window.getTabLinks();
-        synchronized (map){
+        synchronized (map) {
             MainContent.MainContentData data = map.get(mt.getComp());
             MainWebEngine engine = new MainWebEngine(this, mw, mt.getComp(), data);
             return engine;

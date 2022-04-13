@@ -35,7 +35,7 @@ public class MainWindow implements IWindow {
 
     @Override
     public ITab add(IScreen iScreen) {
-        if(!windowManager.api.getGUIManager().verify(iScreen)) return null;
+        if (!windowManager.api.getGUIManager().verify(iScreen)) return null;
 
         Component comp = window.newTab(iScreen.getContentPane(), true);
         ITab tab = genTab(TabType.SCREEN, comp);
@@ -110,19 +110,19 @@ public class MainWindow implements IWindow {
     public ITab fromHandler(MainContent.MainContentData data) {
         Map<Component, MainContent.MainContentData> tabLinks = window.getTabLinks();
         Component c = null;
-        synchronized (tabLinks){
-            for(Map.Entry<Component, MainContent.MainContentData> e : tabLinks.entrySet()){
-                if(e.getValue().equals(data)){
+        synchronized (tabLinks) {
+            for (Map.Entry<Component, MainContent.MainContentData> e : tabLinks.entrySet()) {
+                if (e.getValue().equals(data)) {
                     c = e.getKey();
                     break;
                 }
             }
         }
-        if(c == null) return null;
+        if (c == null) return null;
 
-        synchronized (map){
+        synchronized (map) {
             ITab tab = map.get(c);
-            if(tab == null){
+            if (tab == null) {
                 tab = genTab(window.getTabLinks().get(c) == null ? TabType.SCREEN : TabType.WEB, c);
                 map.put(c, tab);
             }

@@ -6,35 +6,35 @@ plugins {
 }
 
 group 'de.MarkusTieger'
-version '1.6.0'
+version '1.7.0'
 
 String env = System.getenv("build_number");
 String commit = System.getenv("commit_hash");
 
-if(env != null){
-    while(env.length() < 6){
+if (env != null) {
+    while (env.length() < 6) {
         env = "0" + env
     }
     System.out.println("::set-output name=build_number::" + env)
 }
 
-if(env == null) env = "-";
-if(commit == null) commit = "-";
+if (env == null) env = "-";
+if (commit == null) commit = "-";
 
 String fullVersion = this.getVersion()
-if(!env.equalsIgnoreCase("-")){
+if (!env.equalsIgnoreCase("-")) {
     fullVersion = fullVersion + "-" + env;
 }
-if(!commit.equalsIgnoreCase("-")){
+if (!commit.equalsIgnoreCase("-")) {
     fullVersion = fullVersion + "-" + commit;
 }
 
 System.out.println("::set-output name=release::" + getVersion())
 
 String user = findProperty("github.username")
-if(user == null) user = System.getenv("gituser")
+if (user == null) user = System.getenv("gituser")
 String pwd = findProperty("github.token")
-if(pwd == null) pwd = System.getenv("gitpwd")
+if (pwd == null) pwd = System.getenv("gitpwd")
 
 repositories {
     mavenCentral()
@@ -91,7 +91,6 @@ dependencies {
 
     testImplementation("org.junit.jupiter:junit-jupiter-api:${junitVersion}")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:${junitVersion}")
-
 
 
     // My Depends

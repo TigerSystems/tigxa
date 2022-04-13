@@ -99,17 +99,17 @@ public class SettingsExtension extends BasicExtension {
         }
 
         if (id.equalsIgnoreCase("print")) {
-            if(window == null) return;
+            if (window == null) return;
 
             ITab tab = window.getSelectedTab();
-            if(tab == null) return;
-            if(tab.getType() != TabType.WEB) return;
+            if (tab == null) return;
+            if (tab.getType() != TabType.WEB) return;
 
-            IPermissionResult result = api.getPermissionManager().requestPermissions(new Permission[] {Permission.WEB});
-            if(result.getDisallowed().size() > 0) return;
+            IPermissionResult result = api.getPermissionManager().requestPermissions(new Permission[]{Permission.WEB});
+            if (result.getDisallowed().size() > 0) return;
 
             IWebEngine engine = api.getWebManager().getEngineByTab(tab);
-            if(engine == null) return;
+            if (engine == null) return;
 
             engine.print();
         }
@@ -120,17 +120,17 @@ public class SettingsExtension extends BasicExtension {
                 int value = Integer.parseInt(data);
                 double factor = (((double) value) / 100D);
 
-                if(window == null) return;
+                if (window == null) return;
 
                 ITab tab = window.getSelectedTab();
-                if(tab == null) return;
-                if(tab.getType() != TabType.WEB) return;
+                if (tab == null) return;
+                if (tab.getType() != TabType.WEB) return;
 
-                IPermissionResult result = api.getPermissionManager().requestPermissions(new Permission[] {Permission.WEB});
-                if(result.getDisallowed().size() > 0) return;
+                IPermissionResult result = api.getPermissionManager().requestPermissions(new Permission[]{Permission.WEB});
+                if (result.getDisallowed().size() > 0) return;
 
                 IWebEngine engine = api.getWebManager().getEngineByTab(tab);
-                if(engine == null) return;
+                if (engine == null) return;
 
                 engine.setZoom(factor);
             } catch (NumberFormatException e) {

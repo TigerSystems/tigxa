@@ -1,12 +1,12 @@
 package de.MarkusTieger.Tigxa.gui.window;
 
 import de.MarkusTieger.Tigxa.Browser;
-import de.MarkusTieger.Tigxa.api.permission.Permission;
-import de.MarkusTieger.Tigxa.api.window.IWindow;
-import de.MarkusTieger.Tigxa.extension.IExtension;
 import de.MarkusTieger.Tigxa.api.IAPI;
 import de.MarkusTieger.Tigxa.api.impl.main.gui.window.MainWindowManager;
+import de.MarkusTieger.Tigxa.api.permission.Permission;
+import de.MarkusTieger.Tigxa.api.window.IWindow;
 import de.MarkusTieger.Tigxa.api.window.IWindowManager;
+import de.MarkusTieger.Tigxa.extension.IExtension;
 import de.MarkusTieger.Tigxa.gui.components.DraggableTabbedPane;
 import de.MarkusTieger.Tigxa.gui.image.ImageLoader;
 import de.MarkusTieger.Tigxa.gui.theme.ThemeManager;
@@ -560,19 +560,6 @@ public class BrowserWindow {
     }
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
     public Component newTab(Component main, boolean autoselect) {
 
         if (tabs == null) throw new RuntimeException("GUI is not initialized!");
@@ -606,10 +593,11 @@ public class BrowserWindow {
         }, () -> {
 
 
-        }, () -> {}, (loc) -> Platform.runLater(() -> {
+        }, () -> {
+        }, (loc) -> Platform.runLater(() -> {
             try {
                 URI uri = new URI(loc);
-                if(uri.getScheme().equalsIgnoreCase("https") || uri.getScheme().equalsIgnoreCase("http") || uri.getScheme().equalsIgnoreCase("file")){
+                if (uri.getScheme().equalsIgnoreCase("https") || uri.getScheme().equalsIgnoreCase("http") || uri.getScheme().equalsIgnoreCase("file")) {
                     newTab(loc, true);
                 }
             } catch (Throwable e) {
@@ -656,23 +644,6 @@ public class BrowserWindow {
 
         return panel;
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
     private void addKeyListener(Container c) {
@@ -845,7 +816,7 @@ public class BrowserWindow {
 
                     IWindow w = null;
 
-                    if(ext.hasPermission(new Permission[] {Permission.WINDOW})) w = api;
+                    if (ext.hasPermission(new Permission[]{Permission.WINDOW})) w = api;
 
                     ext.onAction(api,
                             n.x + (btn.getWidth() / 2), n.y + (btn.getHeight() / 2),
@@ -1064,17 +1035,17 @@ public class BrowserWindow {
     private boolean result = false;
 
     private void cps() {
-        if(start == -1L || (start + 15000L) < System.currentTimeMillis()) {
+        if (start == -1L || (start + 15000L) < System.currentTimeMillis()) {
             start = System.currentTimeMillis();
             result = false;
             click = 0;
         }
-        if((start + 10000L) > System.currentTimeMillis()) {
+        if ((start + 10000L) > System.currentTimeMillis()) {
             click++;
         } else {
-            if(result) return;
+            if (result) return;
             result = true;
-            JOptionPane.showMessageDialog(null, "Easter-EGG found:\nYour CPS are: " + (((double)click) / 10D), "Easter-EGG...", JOptionPane.INFORMATION_MESSAGE);
+            JOptionPane.showMessageDialog(null, "Easter-EGG found:\nYour CPS are: " + (((double) click) / 10D), "Easter-EGG...", JOptionPane.INFORMATION_MESSAGE);
         }
     }
 

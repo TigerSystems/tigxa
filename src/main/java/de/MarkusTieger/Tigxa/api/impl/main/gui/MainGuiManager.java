@@ -11,8 +11,8 @@ import de.MarkusTieger.Tigxa.api.window.ITab;
 import de.MarkusTieger.Tigxa.api.window.TabType;
 
 import java.awt.*;
-import java.util.*;
 import java.util.List;
+import java.util.*;
 
 public class MainGuiManager implements IGUIManager {
 
@@ -27,7 +27,7 @@ public class MainGuiManager implements IGUIManager {
     @Override
     public IScreen createScreen(String title, String location) {
         DefaultGuiScreen screen = new DefaultGuiScreen(title, location);
-        synchronized (screens){
+        synchronized (screens) {
             screens.add(screen);
         }
         return screen;
@@ -35,15 +35,15 @@ public class MainGuiManager implements IGUIManager {
 
     @Override
     public IScreen getScreenByTab(ITab iTab) {
-        synchronized (map){
+        synchronized (map) {
             IScreen screen = map.get(iTab);
-            if(screen != null) return screen;
-            if(iTab.getType() != TabType.SCREEN) return null;
-            if(iTab instanceof MainTab mt){
+            if (screen != null) return screen;
+            if (iTab.getType() != TabType.SCREEN) return null;
+            if (iTab instanceof MainTab mt) {
                 Component c = mt.getComp();
-                synchronized (screens){
-                    for(IScreen sc : screens){
-                        if(c == sc.getContentPane()) {
+                synchronized (screens) {
+                    for (IScreen sc : screens) {
+                        if (c == sc.getContentPane()) {
                             map.put(iTab, sc);
                             return sc;
                         }
@@ -56,7 +56,7 @@ public class MainGuiManager implements IGUIManager {
 
     @Override
     public boolean verify(IScreen iScreen) {
-        synchronized (screens){
+        synchronized (screens) {
             return screens.contains(iScreen);
         }
     }

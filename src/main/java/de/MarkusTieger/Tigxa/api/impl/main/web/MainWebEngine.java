@@ -2,12 +2,10 @@ package de.MarkusTieger.Tigxa.api.impl.main.web;
 
 import de.MarkusTieger.Tigxa.api.impl.main.gui.window.MainWindow;
 import de.MarkusTieger.Tigxa.api.web.IWebEngine;
-import de.MarkusTieger.Tigxa.api.window.IWindow;
 import de.MarkusTieger.Tigxa.events.WebLoadStartEvent;
 import de.MarkusTieger.Tigxa.web.MainContent;
 import javafx.application.Platform;
 import javafx.print.PrinterJob;
-import javafx.scene.web.WebEngine;
 import org.w3c.dom.Document;
 
 import java.awt.*;
@@ -20,7 +18,7 @@ public class MainWebEngine implements IWebEngine {
     private final Component comp;
     private final MainContent.MainContentData data;
 
-    public MainWebEngine(MainWebManager manager, MainWindow window, Component comp, MainContent.MainContentData data){
+    public MainWebEngine(MainWebManager manager, MainWindow window, Component comp, MainContent.MainContentData data) {
         this.manager = manager;
         this.window = window;
         this.comp = comp;
@@ -58,7 +56,7 @@ public class MainWebEngine implements IWebEngine {
             MainContent.MainContentData data = tabLinks.get(comp);
             if (data != null) {
                 WebLoadStartEvent event = new WebLoadStartEvent(s, false);
-                if(!event.isCanceled())
+                if (!event.isCanceled())
                     Platform.runLater(() -> {
                         data.webEngine().load(event.getLocation());
                     });

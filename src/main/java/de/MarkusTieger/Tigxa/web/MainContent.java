@@ -1,11 +1,10 @@
 package de.MarkusTieger.Tigxa.web;
 
 import de.MarkusTieger.Tigxa.api.IAPI;
-import de.MarkusTieger.Tigxa.events.*;
 import de.MarkusTieger.Tigxa.api.impl.main.gui.window.MainWindow;
 import de.MarkusTieger.Tigxa.api.impl.main.gui.window.MainWindowManager;
 import de.MarkusTieger.Tigxa.api.window.ITab;
-import de.MarkusTieger.Tigxa.api.window.IWindow;
+import de.MarkusTieger.Tigxa.events.*;
 import de.MarkusTieger.Tigxa.gui.image.ImageLoader;
 import de.MarkusTieger.Tigxa.gui.window.BrowserWindow;
 import de.MarkusTieger.Tigxa.http.HttpUtils;
@@ -105,7 +104,7 @@ public class MainContent {
             public void handle(WebEvent<String> e) {
                 AlertHandleEvent event = new AlertHandleEvent(e.getData(), false);
                 window.getMapi().getEventManager().call(event);
-                if(!event.isCanceled()){
+                if (!event.isCanceled()) {
                     JOptionPane.showMessageDialog(null, event.getData(), "Alert", JOptionPane.INFORMATION_MESSAGE);
                 }
             }
@@ -155,12 +154,13 @@ public class MainContent {
                 MainContentData data = window.newTab(true);
 
                 try {
-                    MainWindow w = ((MainWindow)((MainWindowManager)window.getMapi().getWindowManager()).fromBW(window));
+                    MainWindow w = ((MainWindow) ((MainWindowManager) window.getMapi().getWindowManager()).fromBW(window));
                     ITab tab = w.fromHandler(data);
 
                     PopupCreationEvent event = new PopupCreationEvent(w, tab);
                     window.getMapi().getEventManager().call(event);
-                } catch(Throwable e){}
+                } catch (Throwable e) {
+                }
 
                 return data.webEngine();
             }

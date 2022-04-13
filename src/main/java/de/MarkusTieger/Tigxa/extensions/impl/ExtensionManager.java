@@ -115,7 +115,7 @@ public class ExtensionManager {
             }
         }};
 
-        Supplier<IExtension>[] suparray = new Supplier[] {() -> null};
+        Supplier<IExtension>[] suparray = new Supplier[]{() -> null};
         Supplier<IExtension> sup = () -> suparray[0].get();
         ExtensionAPI api = new ExtensionAPI(sup, parent, new Permission[]{Permission.WINDOW, Permission.GUI}, new IActionHandler() {
             @Override
@@ -151,7 +151,7 @@ public class ExtensionManager {
             }
         }};
 
-        Supplier<IExtension>[] suparray = new Supplier[] {() -> null};
+        Supplier<IExtension>[] suparray = new Supplier[]{() -> null};
         Supplier<IExtension> sup = () -> suparray[0].get();
         ExtensionAPI api = new ExtensionAPI(sup, parent, new Permission[]{Permission.WINDOW, Permission.GUI}, new IActionHandler() {
             @Override

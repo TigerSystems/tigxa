@@ -3,15 +3,10 @@ package de.MarkusTieger.Tigxa.api.impl.main.gui.window;
 import de.MarkusTieger.Tigxa.api.window.ITab;
 import de.MarkusTieger.Tigxa.api.window.IWindow;
 import de.MarkusTieger.Tigxa.api.window.TabType;
-import de.MarkusTieger.Tigxa.web.MainContent;
-import javafx.application.Platform;
-import javafx.print.PrinterJob;
-import javafx.scene.web.WebEngine;
 import lombok.Getter;
 
 import javax.swing.*;
 import java.awt.*;
-import java.util.Map;
 
 public class MainTab implements ITab {
 
