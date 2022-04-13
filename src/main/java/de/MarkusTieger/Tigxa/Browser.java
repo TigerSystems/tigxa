@@ -4,6 +4,7 @@ import com.formdev.flatlaf.FlatLightLaf;
 import de.MarkusTieger.Tigxa.api.IAPI;
 import de.MarkusTieger.Tigxa.api.impl.main.MainAPI;
 import de.MarkusTieger.Tigxa.extensions.impl.ExtensionManager;
+import de.MarkusTieger.Tigxa.extensions.impl.internal.AdblockerExtension;
 import de.MarkusTieger.Tigxa.extensions.impl.internal.SettingsExtension;
 import de.MarkusTieger.Tigxa.gui.screen.InternalScreenRegistry;
 import de.MarkusTieger.Tigxa.gui.theme.ThemeManager;
@@ -37,12 +38,14 @@ public class Browser {
     public static final String BUILD;
     public static final String FULL_VERSION;
     public static final String COMMIT_HASH;
+    public static final String AUTHOR;
 
     static {
 
+        String[] args = Browser.class.getPackageName().split("\\.");
+
         String name = Browser.class.getPackage().getSpecificationTitle();
         if (name == null) {
-            String[] args = Browser.class.getPackageName().split("\\.");
             name = args[args.length - 1];
         }
 
@@ -70,6 +73,17 @@ public class Browser {
         COMMIT_HASH = hash;
 
         FULL_VERSION = VERSION + (BUILD.equalsIgnoreCase("-") ? "" : ("-" + BUILD)) + (COMMIT_HASH.equalsIgnoreCase("-") ? "" : ("-" + COMMIT_HASH));
+
+
+        String author = Browser.class.getPackage().getImplementationVendor();
+
+        if(author == null){
+            author = args[1];
+        }
+
+        AUTHOR = author;
+
+
     }
 
     @Getter
@@ -124,6 +138,7 @@ public class Browser {
         try {
             extmanager.loadExtensions(mainAPI, configRoot);
 
+            extmanager.loadExtension(mainAPI, AdblockerExtension::new);
             extmanager.loadExtension(mainAPI, SettingsExtension::new);
         } catch (IOException e) {
             e.printStackTrace();

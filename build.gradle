@@ -6,7 +6,7 @@ plugins {
 }
 
 group 'de.MarkusTieger'
-version '1.10.1'
+version '1.11.1'
 
 String env = System.getenv("build_number");
 String commit = System.getenv("commit_hash");
@@ -75,7 +75,7 @@ jar {
         attributes 'Name': 'de/markustieger/tigxa/'
         attributes 'Specification-Title': "Tigxa"
         attributes 'Specification-Version': getVersion()
-        attributes 'Specification-Vendor': "MarkusTieger"
+        attributes 'Specification-Vendor': "TigerSystems"
         attributes 'Implementation-Title': commit
         attributes 'Implementation-Version': env
         attributes 'Implementation-Vendor': "MarkusTieger"

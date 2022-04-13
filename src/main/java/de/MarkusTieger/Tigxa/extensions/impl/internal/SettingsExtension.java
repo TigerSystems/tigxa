@@ -33,7 +33,7 @@ public class SettingsExtension extends BasicExtension {
     private final IAPI api;
 
     public SettingsExtension(IAPI api) {
-        super(api.getPermissionManager(), "Settings", Browser.VERSION, new String[]{"MarkusTieger"}, Browser.class.getResource("/res/gui/extensions/settings.png"));
+        super(api.getPermissionManager(), Browser.NAME + " Settings", Browser.FULL_VERSION, new String[] {Browser.AUTHOR}, Browser.class.getResource("/res/gui/extensions/settings.png"));
         this.api = api;
     }
 

@@ -3,6 +3,8 @@ package de.MarkusTieger.Tigxa.web;
 import de.MarkusTieger.Tigxa.api.IAPI;
 import de.MarkusTieger.Tigxa.api.impl.main.gui.window.MainWindow;
 import de.MarkusTieger.Tigxa.api.impl.main.gui.window.MainWindowManager;
+import de.MarkusTieger.Tigxa.api.impl.main.web.MainWebManager;
+import de.MarkusTieger.Tigxa.api.web.IWebEngine;
 import de.MarkusTieger.Tigxa.api.window.ITab;
 import de.MarkusTieger.Tigxa.events.*;
 import de.MarkusTieger.Tigxa.gui.image.ImageLoader;
@@ -49,7 +51,7 @@ public class MainContent {
             "  return null;" +
             "}";
 
-    public static void loadFavicon(IAPI api, String location, Consumer<ImageIcon> c) {
+    public static void loadFavicon(IWebEngine engine, IAPI api, String location, Consumer<ImageIcon> c) {
 
         URI l = null;
         try {
@@ -71,7 +73,7 @@ public class MainContent {
                 ImageIcon i = ImageLoader.loadHTTPImageAsIcon(url);
                 c.accept(i);
 
-                FaviconLoadingFinishedEvent event = new FaviconLoadingFinishedEvent(location, finalL, i != null);
+                FaviconLoadingFinishedEvent event = new FaviconLoadingFinishedEvent(engine, location, finalL, i != null);
                 api.getEventManager().call(event);
 
             }, "Favicon-Downloader").start();
@@ -91,6 +93,8 @@ public class MainContent {
 
         webEngine.setUserAgent(HttpUtils.AGENT);
 
+        IWebEngine engine = ((MainWebManager)window.getMapi().getWebManager()).fromHandler(webView);
+
         webEngine.setConfirmHandler(new Callback<String, Boolean>() {
             @Override
             public Boolean call(String param) {
@@ -102,7 +106,7 @@ public class MainContent {
         webEngine.setOnAlert(new EventHandler<WebEvent<String>>() {
             @Override
             public void handle(WebEvent<String> e) {
-                AlertHandleEvent event = new AlertHandleEvent(e.getData(), false);
+                AlertHandleEvent event = new AlertHandleEvent(engine, e.getData(), false);
                 window.getMapi().getEventManager().call(event);
                 if (!event.isCanceled()) {
                     JOptionPane.showMessageDialog(null, event.getData(), "Alert", JOptionPane.INFORMATION_MESSAGE);
@@ -116,7 +120,7 @@ public class MainContent {
             public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
                 urlChange.accept(newValue);
 
-                WebLocationChangedEvent event = new WebLocationChangedEvent(oldValue, newValue);
+                WebLocationChangedEvent event = new WebLocationChangedEvent(engine, oldValue, newValue);
                 window.getMapi().getEventManager().call(event);
             }
         });
@@ -134,14 +138,14 @@ public class MainContent {
                             }
                         } else {
                             title.accept(webEngine.getTitle());
-                            loadFavicon(window.getMapi(), webEngine.getLocation(), icon);
+                            loadFavicon(engine, window.getMapi(), webEngine.getLocation(), icon);
                         }
                     } catch (URISyntaxException e) {
                         e.printStackTrace();
                     }
                 }
 
-                WebStateChangedEvent event = new WebStateChangedEvent(oldState, newState);
+                WebStateChangedEvent event = new WebStateChangedEvent(engine, oldState, newState);
                 window.getMapi().getEventManager().call(event);
 
             }
@@ -157,7 +161,7 @@ public class MainContent {
                     MainWindow w = ((MainWindow) ((MainWindowManager) window.getMapi().getWindowManager()).fromBW(window));
                     ITab tab = w.fromHandler(data);
 
-                    PopupCreationEvent event = new PopupCreationEvent(w, tab);
+                    PopupCreationEvent event = new PopupCreationEvent(engine, ((MainWebManager) window.getMapi().getWebManager()).fromHandler(data.webView()), w, tab);
                     window.getMapi().getEventManager().call(event);
                 } catch (Throwable e) {
                 }

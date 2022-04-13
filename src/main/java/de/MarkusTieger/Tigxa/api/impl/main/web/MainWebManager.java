@@ -9,6 +9,8 @@ import de.MarkusTieger.Tigxa.api.window.ITab;
 import de.MarkusTieger.Tigxa.api.window.IWindow;
 import de.MarkusTieger.Tigxa.api.window.TabType;
 import de.MarkusTieger.Tigxa.web.MainContent;
+import javafx.scene.web.WebEngine;
+import javafx.scene.web.WebView;
 
 import java.awt.*;
 import java.util.Collections;
@@ -23,7 +25,7 @@ public class MainWebManager implements IWebManager {
         this.api = api;
     }
 
-    private final Map<ITab, IWebEngine> map = Collections.synchronizedMap(new HashMap<>());
+    private final Map<WebView, IWebEngine> map = Collections.synchronizedMap(new HashMap<>());
 
     @Override
     public IWebEngine getEngineByTab(ITab iTab) {
@@ -31,31 +33,31 @@ public class MainWebManager implements IWebManager {
         IWindow window = iTab.getWindow();
         if (!api.getWindowManager().listWindows().contains(window)) return null;
         if (!window.listTabs().contains(iTab)) return null;
-        synchronized (map) {
-            IWebEngine engine = map.get(iTab);
-            if (engine == null) {
-                engine = genEngine(iTab);
-                map.put(iTab, engine);
-            }
-            return engine;
+
+        Map<Component, MainContent.MainContentData> map = ((MainWindow)window).window.getTabLinks();
+        synchronized (map){
+            return fromHandler(map.get(((MainTab)iTab).getComp()).webView());
         }
     }
 
-    private IWebEngine genEngine(ITab iTab) {
-        IWindow w = iTab.getWindow();
-        if (!(w instanceof MainWindow mw)) return null;
-        if (!(iTab instanceof MainTab mt)) return null;
-
-        Map<Component, MainContent.MainContentData> map = mw.window.getTabLinks();
-        synchronized (map) {
-            MainContent.MainContentData data = map.get(mt.getComp());
-            MainWebEngine engine = new MainWebEngine(this, mw, mt.getComp(), data);
-            return engine;
-        }
+    private IWebEngine genEngine(WebView data) {
+        MainWebEngine engine = new MainWebEngine(this, data);
+        return engine;
     }
 
     @Override
     public IWebEngine getEngineFromCurrentTab(IWindow iWindow) {
-        return null;
+        return getEngineByTab(iWindow.getSelectedTab());
+    }
+
+    public IWebEngine fromHandler(WebView data) {
+        synchronized (map){
+            IWebEngine engine = map.get(data);
+            if(engine == null){
+                engine = genEngine(data);
+                map.put(data, engine);
+            }
+            return engine;
+        }
     }
 }
