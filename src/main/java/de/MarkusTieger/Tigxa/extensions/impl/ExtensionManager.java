@@ -120,7 +120,7 @@ public class ExtensionManager {
 
         String namespace = (name + "").replaceAll(" ", "_").toLowerCase();
 
-        ExtensionAPI api = new ExtensionAPI(() -> namespace, sup, parent, new Permission[]{Permission.WINDOW, Permission.GUI}, new IActionHandler() {
+        ExtensionAPI api = new ExtensionAPI(() -> namespace, sup, parent, new Permission[]{Permission.WINDOW, Permission.GUI, Permission.WEB, Permission.EVENTS}, new IActionHandler() {
             @Override
             public void onAction(IWindow window, String id) {
                 action[0].onAction(window, id);
@@ -160,7 +160,7 @@ public class ExtensionManager {
         Supplier<String>[] namespacearray = new Supplier[]{() -> null};
         Supplier<String> namespace = () -> namespacearray[0].get();
 
-        ExtensionAPI api = new ExtensionAPI(namespace, sup, parent, new Permission[]{Permission.WINDOW, Permission.GUI}, new IActionHandler() {
+        ExtensionAPI api = new ExtensionAPI(namespace, sup, parent, new Permission[]{Permission.WINDOW, Permission.GUI, Permission.WEB, Permission.EVENTS}, new IActionHandler() {
             @Override
             public void onAction(IWindow window, String id) {
                 action[0].onAction(window, id);
