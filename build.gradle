@@ -19,8 +19,8 @@ if (env != null) {
     System.out.println("::set-output name=build_number::" + env)
 }
 
-if (env == null) env = "000000";
-if (commit == null) commit = "aaaaaaaa";
+if (env == null) env = "-";
+if (commit == null) commit = "-";
 
 String fullVersion = this.getVersion()
 if (!env.equalsIgnoreCase("-")) {
