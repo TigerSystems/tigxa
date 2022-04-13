@@ -3,6 +3,7 @@ package de.MarkusTieger.Tigxa;
 import com.formdev.flatlaf.FlatLightLaf;
 import de.MarkusTieger.Tigxa.api.IAPI;
 import de.MarkusTieger.Tigxa.api.impl.main.MainAPI;
+import de.MarkusTieger.Tigxa.extension.IExtension;
 import de.MarkusTieger.Tigxa.extensions.impl.ExtensionManager;
 import de.MarkusTieger.Tigxa.extensions.impl.internal.AdblockerExtension;
 import de.MarkusTieger.Tigxa.extensions.impl.internal.SettingsExtension;
@@ -14,6 +15,7 @@ import de.MarkusTieger.Tigxa.update.Updater;
 import de.MarkusTieger.Tigxa.update.Version;
 import de.MarkusTieger.Tigxa.web.TrustManager;
 import lombok.Getter;
+import lombok.Setter;
 
 import javax.swing.*;
 import java.io.File;
@@ -23,6 +25,7 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.function.Consumer;
+import java.util.function.Function;
 
 
 import javax.speech.Central;
@@ -110,6 +113,9 @@ public class Browser {
     @Getter
     private static Version latest = null;
 
+    @Setter
+    private static Function<IAPI, IExtension> injectedExtension;
+
     public static void start() {
 
         TrustManager.initialize();
@@ -137,6 +143,10 @@ public class Browser {
         extmanager = new ExtensionManager();
         try {
             extmanager.loadExtensions(mainAPI, configRoot);
+
+            if(injectedExtension != null){
+                extmanager.loadExtension(mainAPI, injectedExtension);
+            }
 
             extmanager.loadExtension(mainAPI, AdblockerExtension::new);
             extmanager.loadExtension(mainAPI, SettingsExtension::new);
