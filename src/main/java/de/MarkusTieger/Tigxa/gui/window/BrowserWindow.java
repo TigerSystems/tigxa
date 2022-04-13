@@ -917,6 +917,8 @@ public class BrowserWindow {
 
         // int[] secure = new int[] {-1};
 
+        security.addActionListener((e) -> this.cps());
+
         security.setFocusPainted(false);
         security.setContentAreaFilled(false);
         /*security.addMouseListener(new MouseListener() {
@@ -1055,6 +1057,25 @@ public class BrowserWindow {
         add.accept((mcd, text) -> {
             field.setText(text);
         });
+    }
+
+    private long start = -1L;
+    private int click = 0;
+    private boolean result = false;
+
+    private void cps() {
+        if(start == -1L || (start + 15000L) < System.currentTimeMillis()) {
+            start = System.currentTimeMillis();
+            result = false;
+            click = 0;
+        }
+        if((start + 10000L) > System.currentTimeMillis()) {
+            click++;
+        } else {
+            if(result) return;
+            result = true;
+            JOptionPane.showMessageDialog(null, "Easter-EGG found:\nYour CPS are: " + (((double)click) / 10D), "Easter-EGG...", JOptionPane.INFORMATION_MESSAGE);
+        }
     }
 
     public void close() {
