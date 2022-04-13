@@ -23,6 +23,7 @@ open module de.markustieger.tigxa {
 
     requires tigxa.api;
     requires tigxa.events;
+    requires freetts;
 
     exports de.MarkusTieger.Tigxa;
 }

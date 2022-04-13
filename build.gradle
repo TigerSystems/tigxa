@@ -6,7 +6,7 @@ plugins {
 }
 
 group 'de.MarkusTieger'
-version '1.8.0'
+version '1.9.0'
 
 String env = System.getenv("build_number");
 String commit = System.getenv("commit_hash");
@@ -107,6 +107,8 @@ dependencies {
     implementation("com.google.code.gson:gson:2.9.0")
 
     implementation('com.yubico:yubico-validation-client2:3.1.0')
+
+    implementation("net.sf.sociaal:freetts:1.2.2")
 
 
     implementation('de.MarkusTieger:tigxa-events:1.+')

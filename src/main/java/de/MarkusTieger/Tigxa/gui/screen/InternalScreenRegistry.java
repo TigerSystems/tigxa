@@ -12,12 +12,19 @@ import de.MarkusTieger.Tigxa.gui.theme.ThemeManager;
 import de.MarkusTieger.Tigxa.gui.window.PasswordWindow;
 import de.MarkusTieger.Tigxa.http.cookie.CookieManager;
 
+import javax.speech.Central;
+import javax.speech.synthesis.Synthesizer;
+import javax.speech.synthesis.SynthesizerModeDesc;
 import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 
 public class InternalScreenRegistry {
@@ -25,6 +32,8 @@ public class InternalScreenRegistry {
     private final HashMap<String, IScreen> map = new HashMap<>();
     private final IAPI api;
 
+    private IScreen about_browser;
+    private IScreen about;
     private IScreen settings;
 
     public InternalScreenRegistry(IAPI api){
@@ -33,12 +42,64 @@ public class InternalScreenRegistry {
 
     public void init(){
 
+        initAboutTigxa();
         initSettings();
 
     }
 
     public void apply(){
+        api.getGUIManager().getScreenRegistry().registerScreen(about_browser, "about");
         api.getGUIManager().getScreenRegistry().registerScreen(settings, "settings");
+    }
+
+    private void initAboutTigxa(){
+
+        about_browser = api.getGUIManager().createScreen("About", api.getNamespace() + "://about");
+
+        about_browser.getContentPane().setLayout(null);
+
+        JLabel label = new JLabel() {
+
+            private boolean rendered = false;
+
+            @Override
+            protected void paintComponent(Graphics g) {
+                super.paintComponent(g);
+
+                if(rendered) return;
+                rendered = true;
+                new Thread(this::start, "Starter").start();
+            }
+
+            private void start(){
+                try
+                {
+
+                    InputStream in = Browser.class.getResourceAsStream("/res/gui/about/text");
+                    String text = new String(in.readAllBytes(), StandardCharsets.UTF_8);
+                    in.close();
+
+                    System.setProperty("freetts.voices", "com.sun.speech.freetts.en.us" + ".cmu_us_kal.KevinVoiceDirectory");
+                    Central.registerEngineCentral("com.sun.speech.freetts" + ".jsapi.FreeTTSEngineCentral");
+                    Synthesizer synthesizer = Central.createSynthesizer(new SynthesizerModeDesc(Locale.US));
+                    synthesizer.allocate();
+                    synthesizer.resume();
+
+                    while (true){
+                        synthesizer.speakPlainText(text, null);
+                        synthesizer.waitEngineState(Synthesizer.QUEUE_EMPTY);
+                    }
+
+                    // synthesizer.deallocate();
+                }
+                catch (Exception e)
+                {
+                    e.printStackTrace();
+                }
+            }
+        };
+        label.setBounds(0, 0, 20, 20);
+        about_browser.getContentPane().add(label);
     }
 
     private void initSettings() {
