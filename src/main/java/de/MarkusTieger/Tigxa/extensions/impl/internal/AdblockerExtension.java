@@ -41,6 +41,8 @@ public class AdblockerExtension extends BasicExtension {
             e.printStackTrace();
         }
 
+        api.getEventManager().registerListener(this);
+
     }
 
     @Override
