@@ -144,6 +144,7 @@ jobs:
           commit_hash: ${{ steps.commithash.outputs.sha_short }}
           gituser: ${{ github.actor }}
           gitpwd: ${{ secrets.GITHUB_TOKEN }}
+        continue-on-error: true
 
 
   build-win:
