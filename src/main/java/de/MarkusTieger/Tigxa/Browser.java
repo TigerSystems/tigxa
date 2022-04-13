@@ -9,6 +9,8 @@ import de.MarkusTieger.Tigxa.gui.screen.InternalScreenRegistry;
 import de.MarkusTieger.Tigxa.gui.theme.ThemeManager;
 import de.MarkusTieger.Tigxa.gui.window.BrowserWindow;
 import de.MarkusTieger.Tigxa.http.cookie.CookieManager;
+import de.MarkusTieger.Tigxa.update.Updater;
+import de.MarkusTieger.Tigxa.update.Version;
 import de.MarkusTieger.Tigxa.web.TrustManager;
 import lombok.Getter;
 
@@ -19,9 +21,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
-
-
-
+import java.util.function.Consumer;
 
 
 import javax.speech.Central;
@@ -87,6 +87,15 @@ public class Browser {
     @Getter
     private static IAPI mainAPI;
 
+    @Getter
+    private static Updater updater = new Updater();
+
+    @Getter
+    private static List<Consumer<Version>> updateListener = new ArrayList<>();
+
+    @Getter
+    private static Version latest = null;
+
     public static void start() {
 
         TrustManager.initialize();
@@ -107,6 +116,10 @@ public class Browser {
         registry.init();
         registry.apply();
 
+        updateListener.add((ver) -> latest = ver);
+
+        checkUpdates();
+
         extmanager = new ExtensionManager();
         try {
             extmanager.loadExtensions(mainAPI, configRoot);
@@ -122,6 +135,21 @@ public class Browser {
 
         storeConfig(config);
 
+    }
+
+    private static void checkUpdates() {
+        if(!updater.checkJar()) return;
+        if(updater.isUpdated()) return;
+
+        Version latest = updater.getLatestVersion();
+        boolean update = false;
+        if(!latest.version().equalsIgnoreCase(Browser.VERSION)) update = true;
+        if(!latest.build().equalsIgnoreCase(Browser.BUILD)) update = true;
+        if(!latest.commit().equalsIgnoreCase(Browser.COMMIT_HASH)) update = true;
+
+        if(update) {
+            updateListener.forEach((listener) -> listener.accept(latest));
+        }
     }
 
     public static void updateUI() {
@@ -178,6 +206,9 @@ public class Browser {
         BrowserWindow window = new BrowserWindow();
         window.initWindow(api, configRoot);
         window.newTab((String) null, true);
+        if(latest != null) {
+            window.newTab(api.getGUIManager().getScreenRegistry().getRegistredScreen(api.getNamespace(), "update"), true);
+        }
     }
 
     private static File initializeConfigRoot() {

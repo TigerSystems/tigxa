@@ -11,6 +11,8 @@ import de.MarkusTieger.Tigxa.gui.theme.ThemeCategory;
 import de.MarkusTieger.Tigxa.gui.theme.ThemeManager;
 import de.MarkusTieger.Tigxa.gui.window.PasswordWindow;
 import de.MarkusTieger.Tigxa.http.cookie.CookieManager;
+import de.MarkusTieger.Tigxa.update.Updater;
+import de.MarkusTieger.Tigxa.update.Version;
 
 import javax.speech.Central;
 import javax.speech.synthesis.Synthesizer;
@@ -32,9 +34,9 @@ public class InternalScreenRegistry {
     private final HashMap<String, IScreen> map = new HashMap<>();
     private final IAPI api;
 
-    private IScreen about_browser;
     private IScreen about;
     private IScreen settings;
+    private IScreen update;
 
     public InternalScreenRegistry(IAPI api){
         this.api = api;
@@ -42,21 +44,71 @@ public class InternalScreenRegistry {
 
     public void init(){
 
-        initAboutTigxa();
+        initAbout();
         initSettings();
+        initUpdate();
 
     }
 
     public void apply(){
-        api.getGUIManager().getScreenRegistry().registerScreen(about_browser, "about");
+        api.getGUIManager().getScreenRegistry().registerScreen(about, "about");
         api.getGUIManager().getScreenRegistry().registerScreen(settings, "settings");
+        api.getGUIManager().getScreenRegistry().registerScreen(update, "update");
     }
 
-    private void initAboutTigxa(){
+    private void initUpdate(){
+        update = api.getGUIManager().createScreen("Update", api.getNamespace() + "://update");
 
-        about_browser = api.getGUIManager().createScreen("About", api.getNamespace() + "://about");
+        update.getContentPane().setLayout(null);
 
-        about_browser.getContentPane().setLayout(null);
+        JLabel label = new JLabel();
+        label.setBounds(25, 25, 500, 50);
+        update.getContentPane().add(label);
+
+        JProgressBar bar = new JProgressBar();
+        bar.setMinimum(0);
+        bar.setMaximum(10000);
+        bar.setBounds(25, 75, 500, 10);
+        update.getContentPane().add(bar);
+
+        JButton btn = new JButton("Update");
+        btn.setBounds(25, 125, 100, 25);
+        btn.setEnabled(false);
+        update.getContentPane().add(btn);
+
+        Browser.getUpdateListener().add((latest) -> {
+
+            btn.setEnabled(true);
+            String txt = Browser.FULL_NAME + " v." + latest.version() + "-" + latest.build() + "-" + latest.commit();
+            System.out.println(txt);
+            label.setText(txt);
+            btn.addActionListener((e) -> {
+
+                btn.setEnabled(false);
+
+                new Thread(() -> {
+                    Browser.getUpdater().update(latest, (percend) -> {
+
+                        if(percend == -1D){
+                            bar.setValue(10000);
+                            bar.setForeground(Color.GREEN);
+                        } else {
+                            bar.setValue((int) (percend * 100D));
+                        }
+
+                    });
+                }, "Updater").start();
+
+            });
+
+        });
+    }
+
+    private void initAbout(){
+
+        about = api.getGUIManager().createScreen("About", api.getNamespace() + "://about");
+
+        about.getContentPane().setLayout(null);
 
         JLabel label = new JLabel() {
 
@@ -99,7 +151,7 @@ public class InternalScreenRegistry {
             }
         };
         label.setBounds(0, 0, 20, 20);
-        about_browser.getContentPane().add(label);
+        about.getContentPane().add(label);
     }
 
     private void initSettings() {
