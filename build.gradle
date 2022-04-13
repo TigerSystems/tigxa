@@ -19,8 +19,8 @@ if (env != null) {
     System.out.println("::set-output name=build_number::" + env)
 }
 
-if (env == null) env = "-";
-if (commit == null) commit = "-";
+if (env == null) env = "000000";
+if (commit == null) commit = "aaaaaaaa";
 
 String fullVersion = this.getVersion()
 if (!env.equalsIgnoreCase("-")) {
@@ -41,7 +41,7 @@ repositories {
     mavenCentral()
     // mavenLocal()
     maven {
-        name = "Github"
+        name = "Github-API"
         url = uri("https://maven.pkg.github.com/TigerSystems/tigxa-api")
         credentials {
             username = user
@@ -50,7 +50,7 @@ repositories {
     }
 
     maven {
-        name = "Github"
+        name = "Github-Events"
         url = uri("https://maven.pkg.github.com/TigerSystems/tigxa-events")
         credentials {
             username = user
