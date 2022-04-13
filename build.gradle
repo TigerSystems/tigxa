@@ -7,7 +7,7 @@ plugins {
 }
 
 group 'de.MarkusTieger'
-version '1.13.0'
+version '1.13.1'
 
 String env = System.getenv("build_number");
 String commit = System.getenv("commit_hash");
