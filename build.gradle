@@ -124,7 +124,7 @@ publishing {
     repositories {
         maven {
             name = "Github"
-            url = uri("https://maven.pkg.github.com/TigerSystems/tigxa-dev")
+            url = uri("https://maven.pkg.github.com/TigerSystems/tigxa")
             credentials {
                 username = user
                 password = pwd
@@ -135,7 +135,7 @@ publishing {
         register("jar", MavenPublication) {
             from(components["java"])
             pom {
-                url.set("https://github.com/TigerSystems/tigxa-dev.git")
+                url.set("https://github.com/TigerSystems/tigxa.git")
                 version = this.getVersion() + (env == null ? "" : ("-" + env))
             }
         }
