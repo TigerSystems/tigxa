@@ -11,7 +11,7 @@ import java.util.List;
 public class MainPermManager implements IPermissionManager {
 
     @Override
-    public boolean hasPermission(Permission perm) {
+    public boolean hasPermission(Permission... permissions) {
         return true;
     }
 

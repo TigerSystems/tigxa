@@ -17,9 +17,18 @@ public class ExtensionPermManager implements IPermissionManager {
         this.perms = Arrays.asList(perms);
     }
 
-    @Override
-    public boolean hasPermission(Permission perm) {
+    public boolean hasPermission0(Permission perm) {
         return perms.contains(perm);
+    }
+
+    @Override
+    public boolean hasPermission(Permission... permissions) {
+        boolean value = true;
+        for(Permission perm : permissions){
+            value = hasPermission0(perm);
+            if(!value) break;
+        }
+        return value;
     }
 
     @Override

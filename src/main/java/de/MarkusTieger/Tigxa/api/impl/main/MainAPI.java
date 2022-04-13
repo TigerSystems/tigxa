@@ -17,14 +17,16 @@ import java.io.File;
 public class MainAPI implements IAPI {
 
     private final IWindowManager window;
+    private final IPermissionManager perm;
     private final IEventManager event;
     private final IGUIManager gui;
     private final IWebManager web;
 
     public MainAPI(File configRoot) {
+        perm = new MainPermManager();
         window = new MainWindowManager(this, configRoot);
         gui = new MainGuiManager();
-        event = new MainEventManager();
+        event = new MainEventManager(perm);
         web = new MainWebManager(this);
     }
 
@@ -55,7 +57,7 @@ public class MainAPI implements IAPI {
 
     @Override
     public IPermissionManager getPermissionManager() {
-        return null;
+        return perm;
     }
 
     @Override
