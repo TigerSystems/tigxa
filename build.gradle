@@ -112,8 +112,8 @@ dependencies {
     implementation("net.sf.sociaal:freetts:1.2.2")
 
 
-    implementation('de.MarkusTieger:tigxa-events:1.+')
-    implementation('de.MarkusTieger:tigxa-api:1.+')
+    implementation('de.MarkusTieger:tigxa-events:[1.0.0,)')
+    implementation('de.MarkusTieger:tigxa-api:[1.0.0,)')
 }
 
 test {
