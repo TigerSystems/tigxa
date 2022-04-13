@@ -2,6 +2,7 @@ package de.MarkusTieger.Tigxa.gui.window;
 
 import de.MarkusTieger.Tigxa.Browser;
 import de.MarkusTieger.Tigxa.api.IAPI;
+import de.MarkusTieger.Tigxa.api.gui.IScreen;
 import de.MarkusTieger.Tigxa.api.impl.main.gui.window.MainWindowManager;
 import de.MarkusTieger.Tigxa.api.permission.Permission;
 import de.MarkusTieger.Tigxa.api.window.IWindow;
@@ -337,7 +338,24 @@ public class BrowserWindow {
             }
 
 
-        }, () -> Platform.runLater(data.webEngine()::reload), (loc) -> Platform.runLater(() -> data.webEngine().load(loc)), data);
+        }, () -> Platform.runLater(data.webEngine()::reload), (loc) -> {
+
+            try {
+                URI uri = new URI(loc);
+                IScreen sc = mapi.getGUIManager().getScreenRegistry().getRegistredScreen(uri.getScheme(), uri.getHost());
+                if(sc == null){
+                    Platform.runLater(() -> data.webEngine().load(loc));
+                } else {
+                    newTab(sc, true);
+                    try {
+                        changearray[0].accept(data.webEngine().getLocation());
+                    } catch(Throwable e) {}
+                }
+            } catch(Throwable e){
+                Platform.runLater(() -> data.webEngine().load(loc));
+            }
+
+        }, data);
         if (d[0] != null) {
             changearray[0].accept(d[0]);
         }
@@ -508,7 +526,24 @@ public class BrowserWindow {
             }
 
 
-        }, () -> Platform.runLater(data.webEngine()::reload), (loc) -> Platform.runLater(() -> data.webEngine().load(loc)), data);
+        }, () -> Platform.runLater(data.webEngine()::reload), (loc) -> {
+
+            try {
+                URI uri = new URI(loc);
+                IScreen sc = mapi.getGUIManager().getScreenRegistry().getRegistredScreen(uri.getScheme(), uri.getHost());
+                if(sc == null){
+                    Platform.runLater(() -> data.webEngine().load(loc));
+                } else {
+                    newTab(sc, true);
+                    try {
+                        changearray[0].accept(data.webEngine().getLocation());
+                    } catch(Throwable e) {}
+                }
+            } catch(Throwable e){
+                Platform.runLater(() -> data.webEngine().load(loc));
+            }
+
+        }, data);
         if (d[0] != null) {
             changearray[0].accept(d[0]);
         }
@@ -560,9 +595,11 @@ public class BrowserWindow {
     }
 
 
-    public Component newTab(Component main, boolean autoselect) {
+    public Component newTab(IScreen screen, boolean autoselect) {
 
         if (tabs == null) throw new RuntimeException("GUI is not initialized!");
+
+        JPanel main = screen.getContentPane();
 
         JPanel panel = new JPanel();
 
@@ -587,6 +624,9 @@ public class BrowserWindow {
         };
         nav.setLayout(null);
 
+        Component[] c = new Component[] {screen.getContentPane()};
+
+        Consumer<String>[] changearray = new Consumer[] {(str) -> {}};
         Consumer<String> change = buildNav(nav, () -> {
 
 
@@ -597,13 +637,25 @@ public class BrowserWindow {
         }, (loc) -> Platform.runLater(() -> {
             try {
                 URI uri = new URI(loc);
-                if (uri.getScheme().equalsIgnoreCase("https") || uri.getScheme().equalsIgnoreCase("http") || uri.getScheme().equalsIgnoreCase("file")) {
+                IScreen sc = mapi.getGUIManager().getScreenRegistry().getRegistredScreen(uri.getScheme(), uri.getHost());
+                if(sc == null){
                     newTab(loc, true);
+                    changearray[0].accept(screen.getLocation());
+                } else {
+                    int index = tabs.indexOfComponent(c[0]);
+                    c[0] = sc.getContentPane();
+                    tabs.setComponentAt(index, c[0]);
+                    tabs.setTitleAt(index, sc.getTitle());
                 }
             } catch (Throwable e) {
+                newTab(loc, true);
+                changearray[0].accept(screen.getLocation());
             }
         }), null);
 
+        changearray[0] = change;
+
+        change.accept(screen.getLocation());
 
         JPanel content = new JPanel();
         content.add(nav);
@@ -636,7 +688,7 @@ public class BrowserWindow {
 
         addKeyListener(panel);
 
-        tabs.addTab("Tab", panel);
+        tabs.addTab(screen.getTitle(), panel);
 
         update();
 
@@ -657,7 +709,7 @@ public class BrowserWindow {
 
         ArrayList<BiConsumer<MainContent.MainContentData, String>> handlers = new ArrayList<>();
 
-        final int webFunctionCalls = buildFunctionCalls(nav, backwards, forwards, reload, mcd.history(), handlers::add);
+        final int webFunctionCalls = buildFunctionCalls(nav, backwards, forwards, reload, mcd == null ? null : mcd.history(), handlers::add);
         final int extensionSymbols = buildExtensionBar(nav, webFunctionCalls);
 
         buildLocationBar(nav, location, webFunctionCalls, extensionSymbols, handlers::add);
@@ -671,6 +723,10 @@ public class BrowserWindow {
 
             @Override
             public boolean isEnabled() {
+                if(history == null){
+                    model.setEnabled(false);
+                    return false;
+                }
                 boolean enabled = history.getCurrentIndex() > 0;
                 if (!enabled && model.isRollover()) {
                     model.setRollover(false);
@@ -683,6 +739,12 @@ public class BrowserWindow {
 
             @Override
             public boolean isEnabled() {
+
+                if(history == null){
+                    model.setEnabled(false);
+                    return false;
+                }
+
                 boolean enabled = (history.getCurrentIndex() + 1) < history.getEntries().size();
 
                 if (!enabled && model.isRollover()) {
@@ -693,7 +755,17 @@ public class BrowserWindow {
                 return enabled;
             }
         };
-        JButton reloadBtn = new JButton("F5");
+        JButton reloadBtn = new JButton("F5") {
+
+            @Override
+            public boolean isEnabled() {
+                if(history == null){
+                    model.setEnabled(false);
+                    return false;
+                }
+                return true;
+            }
+        };
 
         backwardsBtn.setBounds(5, 2, 45, 26);
         forwardsBtn.setBounds((5 + 45) + 5 + 2, 2, 45, 26);

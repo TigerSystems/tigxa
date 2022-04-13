@@ -14,16 +14,20 @@ import java.util.function.Supplier;
 
 public class ExtensionAPI implements IAPI {
 
+    private final Supplier<String> namespace;
     private final Supplier<IExtension> ext;
     private final IAPI parent;
     private final IPermissionManager permManager;
     private final IActionHandler action;
+    private final IGUIManager gui;
 
-    public ExtensionAPI(Supplier<IExtension> ext, IAPI parent, Permission[] perms, IActionHandler action) {
+    public ExtensionAPI(Supplier<String> namespace, Supplier<IExtension> ext, IAPI parent, Permission[] perms, IActionHandler action) {
+        this.namespace = namespace;
         this.ext = ext;
         this.parent = parent;
         this.permManager = new ExtensionPermManager(perms);
         this.action = action;
+        this.gui = new ExtensionGuiManager(this, parent);
     }
 
     @Override
@@ -51,7 +55,7 @@ public class ExtensionAPI implements IAPI {
     public IGUIManager getGUIManager() {
         if (!getPermissionManager().hasPermission(Permission.GUI))
             throw new RuntimeException("The Plugin doesn't have the Gui permission!");
-        return parent.getGUIManager();
+        return gui;
     }
 
     @Override
@@ -67,6 +71,11 @@ public class ExtensionAPI implements IAPI {
     @Override
     public IExtension getExtension() {
         return ext.get();
+    }
+
+    @Override
+    public String getNamespace() {
+        return namespace.get();
     }
 
 }

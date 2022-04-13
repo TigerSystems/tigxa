@@ -117,7 +117,10 @@ public class ExtensionManager {
 
         Supplier<IExtension>[] suparray = new Supplier[]{() -> null};
         Supplier<IExtension> sup = () -> suparray[0].get();
-        ExtensionAPI api = new ExtensionAPI(sup, parent, new Permission[]{Permission.WINDOW, Permission.GUI}, new IActionHandler() {
+
+        String namespace = (name + "").replaceAll(" ", "_").toLowerCase();
+
+        ExtensionAPI api = new ExtensionAPI(() -> namespace, sup, parent, new Permission[]{Permission.WINDOW, Permission.GUI}, new IActionHandler() {
             @Override
             public void onAction(IWindow window, String id) {
                 action[0].onAction(window, id);
@@ -153,7 +156,11 @@ public class ExtensionManager {
 
         Supplier<IExtension>[] suparray = new Supplier[]{() -> null};
         Supplier<IExtension> sup = () -> suparray[0].get();
-        ExtensionAPI api = new ExtensionAPI(sup, parent, new Permission[]{Permission.WINDOW, Permission.GUI}, new IActionHandler() {
+
+        Supplier<String>[] namespacearray = new Supplier[]{() -> null};
+        Supplier<String> namespace = () -> namespacearray[0].get();
+
+        ExtensionAPI api = new ExtensionAPI(namespace, sup, parent, new Permission[]{Permission.WINDOW, Permission.GUI}, new IActionHandler() {
             @Override
             public void onAction(IWindow window, String id) {
                 action[0].onAction(window, id);
@@ -163,6 +170,7 @@ public class ExtensionManager {
         IExtension extension = constructor.apply(api);
         action[0] = extension::onAction;
         suparray[0] = () -> extension;
+        namespacearray[0] = () -> extension.getClass().getName().toLowerCase();
         extensionarray.add(extension);
 
         extension.onLoad();

@@ -1,9 +1,11 @@
-package de.MarkusTieger.Tigxa.api.impl.main.gui;
+package de.MarkusTieger.Tigxa.api.impl.main.gui.screen;
 
+import de.MarkusTieger.Tigxa.api.IAPI;
 import de.MarkusTieger.Tigxa.api.action.IActionHandler;
 import de.MarkusTieger.Tigxa.api.gui.IGUIManager;
 import de.MarkusTieger.Tigxa.api.gui.IScreen;
 import de.MarkusTieger.Tigxa.api.gui.context.IContextMenu;
+import de.MarkusTieger.Tigxa.api.gui.registry.IScreenRegistry;
 import de.MarkusTieger.Tigxa.api.impl.DefaultGuiScreen;
 import de.MarkusTieger.Tigxa.api.impl.main.gui.context.MainContextMenu;
 import de.MarkusTieger.Tigxa.api.impl.main.gui.window.MainTab;
@@ -18,6 +20,11 @@ public class MainGuiManager implements IGUIManager {
 
     private final List<IScreen> screens = Collections.synchronizedList(new ArrayList<>());
     private final Map<ITab, IScreen> map = Collections.synchronizedMap(new HashMap<>());
+    private final MainScreenRegistry registry;
+
+    public MainGuiManager(IAPI api){
+        this.registry = new MainScreenRegistry(api);
+    }
 
     @Override
     public IContextMenu createContextMenu(boolean fxthread, IActionHandler action) {
@@ -59,6 +66,11 @@ public class MainGuiManager implements IGUIManager {
         synchronized (screens) {
             return screens.contains(iScreen);
         }
+    }
+
+    @Override
+    public IScreenRegistry getScreenRegistry() {
+        return registry;
     }
 
 }

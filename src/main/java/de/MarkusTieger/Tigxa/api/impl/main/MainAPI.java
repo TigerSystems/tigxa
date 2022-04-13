@@ -1,10 +1,11 @@
 package de.MarkusTieger.Tigxa.api.impl.main;
 
+import de.MarkusTieger.Tigxa.Browser;
 import de.MarkusTieger.Tigxa.api.IAPI;
 import de.MarkusTieger.Tigxa.api.action.IActionHandler;
 import de.MarkusTieger.Tigxa.api.event.IEventManager;
 import de.MarkusTieger.Tigxa.api.gui.IGUIManager;
-import de.MarkusTieger.Tigxa.api.impl.main.gui.MainGuiManager;
+import de.MarkusTieger.Tigxa.api.impl.main.gui.screen.MainGuiManager;
 import de.MarkusTieger.Tigxa.api.impl.main.gui.window.MainWindowManager;
 import de.MarkusTieger.Tigxa.api.impl.main.web.MainWebManager;
 import de.MarkusTieger.Tigxa.api.permission.IPermissionManager;
@@ -25,7 +26,7 @@ public class MainAPI implements IAPI {
     public MainAPI(File configRoot) {
         perm = new MainPermManager();
         window = new MainWindowManager(this, configRoot);
-        gui = new MainGuiManager();
+        gui = new MainGuiManager(this);
         event = new MainEventManager(perm);
         web = new MainWebManager(this);
     }
@@ -63,5 +64,10 @@ public class MainAPI implements IAPI {
     @Override
     public IExtension getExtension() {
         return null;
+    }
+
+    @Override
+    public String getNamespace() {
+        return Browser.NAME.toLowerCase();
     }
 }

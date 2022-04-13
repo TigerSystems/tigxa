@@ -1,81 +1,53 @@
-package de.MarkusTieger.Tigxa.gui.window;
+package de.MarkusTieger.Tigxa.gui.screen;
 
 import com.formdev.flatlaf.FlatLightLaf;
 import com.yubico.client.v2.VerificationResponse;
 import de.MarkusTieger.Tigxa.Browser;
-import de.MarkusTieger.Tigxa.gui.image.ImageLoader;
+import de.MarkusTieger.Tigxa.api.IAPI;
+import de.MarkusTieger.Tigxa.api.gui.IScreen;
+import de.MarkusTieger.Tigxa.api.gui.registry.IScreenRegistry;
 import de.MarkusTieger.Tigxa.gui.theme.Theme;
 import de.MarkusTieger.Tigxa.gui.theme.ThemeCategory;
 import de.MarkusTieger.Tigxa.gui.theme.ThemeManager;
+import de.MarkusTieger.Tigxa.gui.window.PasswordWindow;
 import de.MarkusTieger.Tigxa.http.cookie.CookieManager;
 
 import javax.swing.*;
-import java.awt.event.*;
-import java.awt.image.BufferedImage;
-import java.util.List;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
+import java.util.HashMap;
 import java.util.Map;
 
-public class ConfigWindow {
+public class InternalScreenRegistry {
 
-    public static void create() {
-        ConfigWindow window = new ConfigWindow();
-        window.init();
+    private final HashMap<String, IScreen> map = new HashMap<>();
+    private final IAPI api;
+
+    private IScreen settings;
+
+    public InternalScreenRegistry(IAPI api){
+        this.api = api;
     }
 
-    public void init() {
-        BufferedImage image = ImageLoader.loadInternalImage("/res/gui/logo.png");
+    public void init(){
 
-        JFrame frame = new JFrame();
-        frame.setSize(800, 600);
-        frame.setDefaultCloseOperation(WindowConstants.HIDE_ON_CLOSE);
-        frame.setLocationRelativeTo(null);
+        initSettings();
 
-        if (image != null) frame.setIconImage(image);
-        frame.addWindowListener(new WindowListener() {
-            @Override
-            public void windowOpened(WindowEvent e) {
-                List<JFrame> frames = Browser.getFrames();
-                synchronized (frames) {
-                    frames.add(frame);
-                }
-            }
+    }
 
-            @Override
-            public void windowClosing(WindowEvent e) {
-                List<JFrame> frames = Browser.getFrames();
-                synchronized (frames) {
-                    frames.remove(frame);
-                }
-            }
+    public void apply(){
+        api.getGUIManager().getScreenRegistry().registerScreen(settings, "settings");
+    }
 
-            @Override
-            public void windowClosed(WindowEvent e) {
+    private void initSettings() {
+        settings = api.getGUIManager().createScreen("Settings", api.getNamespace() + "://settings");
 
-            }
-
-            @Override
-            public void windowIconified(WindowEvent e) {
-
-            }
-
-            @Override
-            public void windowDeiconified(WindowEvent e) {
-
-            }
-
-            @Override
-            public void windowActivated(WindowEvent e) {
-
-            }
-
-            @Override
-            public void windowDeactivated(WindowEvent e) {
-
-            }
-        });
-
-        frame.setResizable(false);
+        JPanel frame = settings.getContentPane();
         frame.setLayout(null);
+
+
 
         Class<?> current = ThemeManager.getTheme();
         ThemeCategory current_category = ThemeManager.getCategory(current);
@@ -169,9 +141,6 @@ public class ConfigWindow {
             }
         });
         frame.add(pwd);
-
-        frame.setVisible(true);
-
     }
 
 }

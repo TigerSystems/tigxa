@@ -1,8 +1,11 @@
 package de.MarkusTieger.Tigxa.extensions.impl.internal;
 
+import com.formdev.flatlaf.FlatLightLaf;
+import com.yubico.client.v2.VerificationResponse;
 import de.MarkusTieger.Tigxa.Browser;
 import de.MarkusTieger.Tigxa.api.IAPI;
 import de.MarkusTieger.Tigxa.api.event.IEvent;
+import de.MarkusTieger.Tigxa.api.gui.IScreen;
 import de.MarkusTieger.Tigxa.api.gui.context.IContextEntry;
 import de.MarkusTieger.Tigxa.api.gui.context.IContextMenu;
 import de.MarkusTieger.Tigxa.api.permission.IPermissionResult;
@@ -12,7 +15,18 @@ import de.MarkusTieger.Tigxa.api.window.ITab;
 import de.MarkusTieger.Tigxa.api.window.IWindow;
 import de.MarkusTieger.Tigxa.api.window.TabType;
 import de.MarkusTieger.Tigxa.extension.impl.BasicExtension;
-import de.MarkusTieger.Tigxa.gui.window.ConfigWindow;
+import de.MarkusTieger.Tigxa.gui.theme.Theme;
+import de.MarkusTieger.Tigxa.gui.theme.ThemeCategory;
+import de.MarkusTieger.Tigxa.gui.theme.ThemeManager;
+import de.MarkusTieger.Tigxa.gui.window.PasswordWindow;
+import de.MarkusTieger.Tigxa.http.cookie.CookieManager;
+
+import javax.swing.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
+import java.util.Map;
 
 public class SettingsExtension extends BasicExtension {
 
@@ -138,7 +152,13 @@ public class SettingsExtension extends BasicExtension {
         }
 
         if (id.equalsIgnoreCase("settings")) {
-            ConfigWindow.create(); // TODO: Settings-Screen
+            if(window == null) return;
+            IPermissionResult result = api.getPermissionManager().requestPermissions(new Permission[]{Permission.GUI});
+            if (result.getDisallowed().size() > 0) return;
+
+
+            IScreen screen = api.getGUIManager().getScreenRegistry().getRegistredScreen(Browser.NAME.toLowerCase(), "settings");
+            if(screen != null) window.add(screen);
         }
 
         if (id.equalsIgnoreCase("exit")) {
