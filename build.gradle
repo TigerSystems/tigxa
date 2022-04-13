@@ -48,6 +48,15 @@ repositories {
             password = pwd
         }
     }
+
+    maven {
+        name = "Github"
+        url = uri("https://maven.pkg.github.com/TigerSystems/tigxa-events")
+        credentials {
+            username = user
+            password = pwd
+        }
+    }
 }
 
 ext {
