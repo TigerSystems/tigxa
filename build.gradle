@@ -3,10 +3,11 @@ plugins {
     id 'application'
     id 'org.openjfx.javafxplugin' version '0.0.10'
     id 'com.github.johnrengelman.shadow' version '7.0.0' // id("com.github.johnrengelman.shadow") version "7.0.0"
+    id 'maven-publish'
 }
 
 group 'de.MarkusTieger'
-version '1.12.0'
+version '1.13.0'
 
 String env = System.getenv("build_number");
 String commit = System.getenv("commit_hash");
@@ -117,4 +118,26 @@ dependencies {
 
 test {
     useJUnitPlatform()
+}
+
+publishing {
+    repositories {
+        maven {
+            name = "Github"
+            url = uri("https://maven.pkg.github.com/TigerSystems/tigxa-dev")
+            credentials {
+                username = user
+                password = pwd
+            }
+        }
+    }
+    publications {
+        register("jar", MavenPublication) {
+            from(components["java"])
+            pom {
+                url.set("https://github.com/TigerSystems/tigxa-dev.git")
+                version = this.getVersion() + (env == null ? "" : ("-" + env))
+            }
+        }
+    }
 }
