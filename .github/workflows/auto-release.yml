@@ -61,7 +61,7 @@ jobs:
         id: build
         uses: gradle/gradle-build-action@0d13054264b0bb894ded474f08ebb30921341cee
         with:
-          arguments: build --refresh-dependencies
+          arguments: build "-Dos.name=linux" --refresh-dependencies
         env:
           build_number: ${{ github.run_number }}
           commit_hash: ${{ steps.commithash.outputs.sha_short }}
@@ -145,95 +145,52 @@ jobs:
           gituser: ${{ github.actor }}
           gitpwd: ${{ secrets.GITHUB_TOKEN }}
         continue-on-error: true
-
-
-  build-win:
-    needs: [ build-linux ]
-    permissions: write-all
-    runs-on: windows-latest
-    steps:
-      - uses: actions/checkout@v2
-      - name: Set up JDK 17 (Windows)
-        uses: actions/setup-java@v3
-        with:
-          java-version: '17'
-          distribution: 'zulu'
-
-
-
-
+        
+        
+        
+        
+        
+        
+        
       - name: Build with Gradle (Windows)
         #run: ./gradlew build
         #working-directory: .
         id: build-win
         uses: gradle/gradle-build-action@0d13054264b0bb894ded474f08ebb30921341cee
         with:
-          arguments: build --refresh-dependencies
+          arguments: build "-Dos.name=windows" --refresh-dependencies
         env:
           build_number: ${{ github.run_number }}
-          commit_hash: ${{ needs.build-linux.outputs.commit }}
+          commit_hash: ${{ steps.commithash.outputs.sha_short }}
           gituser: ${{ github.actor }}
           gitpwd: ${{ secrets.GITHUB_TOKEN }}
-
-
-
-          #- name: Upload Artifact (Windows)
-          #  uses: actions/upload-artifact@v2.2.4
-          #  with:
-          #    name: tigxa-1.0.0-win
-          #    path: build/libs
-          #  continue-on-error: true
-
-
-
+        
+        
       - name: Upload Build Jar (Windows)
-        id: upload-build-jar-win
+        id: upload-build-jar-windows
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          upload_url: ${{ needs.build-linux.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps
-          asset_path: build/libs/tigxa-${{ needs.build-linux.outputs.release }}.jar
-          asset_name: tigxa-${{ needs.build-linux.outputs.release }}-win.jar
+          upload_url: ${{ steps.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps
+          asset_path: build/libs/tigxa-${{ steps.build.outputs.release }}.jar
+          asset_name: tigxa-${{ steps.build.outputs.release }}-win.jar
           asset_content_type: application/java-archive
         continue-on-error: true
-
-
 
 
       - name: Upload Shadow Jar (Windows)
-        id: upload-shadow-jar-win
+        id: upload-shadow-jar-windows
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          upload_url: ${{ needs.build-linux.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps
-          asset_path: build/libs/tigxa-${{ needs.build-linux.outputs.release }}-all.jar
-          asset_name: tigxa-${{ needs.build-linux.outputs.release }}-win-all.jar
+          upload_url: ${{ steps.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps
+          asset_path: build/libs/tigxa-${{ steps.build.outputs.release }}-all.jar
+          asset_name: tigxa-${{ steps.build.outputs.release }}-win-all.jar
           asset_content_type: application/java-archive
         continue-on-error: true
 
-
-
-
-
-
-
-  build-mac:
-    needs: [ build-linux ]
-    permissions: write-all
-    runs-on: macos-latest
-    steps:
-      - uses: actions/checkout@v2
-      - name: Set up JDK 17 (Mac)
-        uses: actions/setup-java@v3
-        with:
-          java-version: '17'
-          distribution: 'zulu'
-
-
-      - name: Make gradlew executable (Mac)
-        run: chmod +x ./gradlew
 
       - name: Build with Gradle (Mac)
         #run: ./gradlew build
@@ -241,36 +198,25 @@ jobs:
         id: build-mac
         uses: gradle/gradle-build-action@0d13054264b0bb894ded474f08ebb30921341cee
         with:
-          arguments: build --refresh-dependencies
+          arguments: build "-Dos.name=osx" --refresh-dependencies
         env:
           build_number: ${{ github.run_number }}
-          commit_hash: ${{ needs.build-linux.outputs.commit }}
+          commit_hash: ${{ steps.commithash.outputs.sha_short }}
           gituser: ${{ github.actor }}
           gitpwd: ${{ secrets.GITHUB_TOKEN }}
-
-
-          #- name: Upload Artifact (Mac)
-          #  uses: actions/upload-artifact@v2.2.4
-          #  with:
-          #    name: tigxa-1.0.0-mac
-          #    path: build/libs
-          #  continue-on-error: true
-
-
-
+        
+        
       - name: Upload Build Jar (Mac)
         id: upload-build-jar-mac
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          upload_url: ${{ needs.build-linux.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps
-          asset_path: build/libs/tigxa-${{ needs.build-linux.outputs.release }}.jar
-          asset_name: tigxa-${{ needs.build-linux.outputs.release }}-mac.jar
+          upload_url: ${{ steps.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps
+          asset_path: build/libs/tigxa-${{ steps.build.outputs.release }}.jar
+          asset_name: tigxa-${{ steps.build.outputs.release }}-mac.jar
           asset_content_type: application/java-archive
         continue-on-error: true
-
-
 
 
       - name: Upload Shadow Jar (Mac)
@@ -279,9 +225,8 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          upload_url: ${{ needs.build-linux.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps
-          asset_path: build/libs/tigxa-${{ needs.build-linux.outputs.release }}-all.jar
-          asset_name: tigxa-${{ needs.build-linux.outputs.release }}-mac-all.jar
+          upload_url: ${{ steps.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps
+          asset_path: build/libs/tigxa-${{ steps.build.outputs.release }}-all.jar
+          asset_name: tigxa-${{ steps.build.outputs.release }}-mac-all.jar
           asset_content_type: application/java-archive
         continue-on-error: true
-      
