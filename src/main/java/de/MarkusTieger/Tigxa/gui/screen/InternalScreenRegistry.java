@@ -272,9 +272,18 @@ public class InternalScreenRegistry {
         });
         frame.add(saveCookies);
 
+        JButton erease = new JButton("Erease Cookies");
+        erease.setBounds(25, 275, 150, 25);
+        erease.addActionListener((e) -> {
+
+            CookieManager.getDef().getStore().erease();
+
+        });
+        frame.add(erease);
+
         JTextField homepage = new JTextField();
         homepage.setText(Browser.HOMEPAGE);
-        homepage.setBounds(25, 275, 200, 25);
+        homepage.setBounds(25, 325, 200, 25);
         homepage.getDocument().addDocumentListener(new DocumentListener() {
             @Override
             public void insertUpdate(DocumentEvent e) {
@@ -301,7 +310,7 @@ public class InternalScreenRegistry {
 
         JTextField search = new JTextField();
         search.setText(Browser.SEARCH);
-        search.setBounds(25, 325, 200, 25);
+        search.setBounds(25, 375, 200, 25);
         search.getDocument().addDocumentListener(new DocumentListener() {
             @Override
             public void insertUpdate(DocumentEvent e) {

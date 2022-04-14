@@ -13,6 +13,7 @@ import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.PBEKeySpec;
 import javax.crypto.spec.SecretKeySpec;
+import javax.swing.*;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -40,6 +41,19 @@ public class CookieStorage {
     @Setter
     private VerificationResponse yubi = null;
 
+    public void erease() {
+        int option = JOptionPane.showConfirmDialog(null, "Are you sure, that you want to delete the Cookie-Store?");
+        while(option == JOptionPane.CLOSED_OPTION){
+            option = JOptionPane.showConfirmDialog(null, "Are you sure, that you want to delete the Cookie-Store?");
+        }
+        if(option == JOptionPane.YES_OPTION){
+            pwd = null;
+            yubi = null;
+            buckets.clear();
+            save();
+        }
+    }
+
     public void load() {
 
         File cookieFile = new File(configRoot, "tigxa-cookies.json");
@@ -57,17 +71,39 @@ public class CookieStorage {
                 reader.close();
 
                 if (c2 == '1') {
-                    bytes = decryptPWD(bytes);
-                    if (bytes == null) {
-                        buckets.clear();
-                        return;
+                    while(true){
+                        byte[] byt = decryptPWD(bytes);
+                        if(byt == null){
+                            int option = JOptionPane.showConfirmDialog(null, "Are you sure, that you want to delete the Cookie-Store?");
+                            while(option == JOptionPane.CLOSED_OPTION){
+                                option = JOptionPane.showConfirmDialog(null, "Are you sure, that you want to delete the Cookie-Store?");
+                            }
+                            if(option == JOptionPane.YES_OPTION){
+                                buckets.clear();
+                                return;
+                            }
+                        } else {
+                            bytes = byt;
+                            break;
+                        }
                     }
                 }
                 if (c == '1') {
-                    bytes = decryptYUBI(bytes);
-                    if (bytes == null) {
-                        buckets.clear();
-                        return;
+                    while(true){
+                        byte[] byt = decryptYUBI(bytes);
+                        if(byt == null){
+                            int option = JOptionPane.showConfirmDialog(null, "Are you sure, that you want to delete the Cookie-Store?");
+                            while(option == JOptionPane.CLOSED_OPTION){
+                                option = JOptionPane.showConfirmDialog(null, "Are you sure, that you want to delete the Cookie-Store?");
+                            }
+                            if(option == JOptionPane.YES_OPTION){
+                                buckets.clear();
+                                return;
+                            }
+                        } else {
+                            bytes = byt;
+                            break;
+                        }
                     }
                 }
 
