@@ -18,6 +18,8 @@ import javax.speech.Central;
 import javax.speech.synthesis.Synthesizer;
 import javax.speech.synthesis.SynthesizerModeDesc;
 import javax.swing.*;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import java.awt.*;
@@ -221,6 +223,7 @@ public class InternalScreenRegistry {
         frame.add(btn);
 
         JButton pwd = new JButton("Cookie-PWD");
+        pwd.setEnabled(Browser.SAVE_COOKIES);
         pwd.setBounds(25, 175, 150, 25);
         pwd.addActionListener(new ActionListener() {
             @Override
@@ -257,9 +260,21 @@ public class InternalScreenRegistry {
         });
         frame.add(pwd);
 
+        JCheckBox saveCookies = new JCheckBox("Save Cookies");
+        saveCookies.setBounds(25, 225, 150, 25);
+        saveCookies.setSelected(Browser.SAVE_COOKIES);
+        saveCookies.addChangeListener(new ChangeListener() {
+            @Override
+            public void stateChanged(ChangeEvent e) {
+                Browser.SAVE_COOKIES = saveCookies.isSelected();
+                Browser.saveConfig();
+            }
+        });
+        frame.add(saveCookies);
+
         JTextField homepage = new JTextField();
         homepage.setText(Browser.HOMEPAGE);
-        homepage.setBounds(25, 225, 200, 25);
+        homepage.setBounds(25, 275, 200, 25);
         homepage.getDocument().addDocumentListener(new DocumentListener() {
             @Override
             public void insertUpdate(DocumentEvent e) {
@@ -286,7 +301,7 @@ public class InternalScreenRegistry {
 
         JTextField search = new JTextField();
         search.setText(Browser.SEARCH);
-        search.setBounds(25, 275, 200, 25);
+        search.setBounds(25, 325, 200, 25);
         search.getDocument().addDocumentListener(new DocumentListener() {
             @Override
             public void insertUpdate(DocumentEvent e) {

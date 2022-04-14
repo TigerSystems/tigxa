@@ -47,6 +47,7 @@ public class Browser {
 
     public static String HOMEPAGE;
     public static String SEARCH;
+    public static boolean SAVE_COOKIES;
 
     static {
 
@@ -131,6 +132,7 @@ public class Browser {
 
         HOMEPAGE = config.getProperty("homepage", DEFAULT_HOMEPAGE);
         SEARCH = config.getProperty("search", DEFAULT_SEARCH);
+        SAVE_COOKIES = !config.getProperty("save_cookies", "true").equalsIgnoreCase("false");
 
         // ThemeManager.applyFont();
 
@@ -138,7 +140,7 @@ public class Browser {
             ThemeManager.setTheme(FlatLightLaf.class);
         }
 
-        CookieManager.initialize(configRoot);
+        if(SAVE_COOKIES) CookieManager.initialize(configRoot);
 
         mainAPI = new MainAPI(configRoot);
 
@@ -258,6 +260,7 @@ public class Browser {
 
         config.setProperty("homepage", HOMEPAGE);
         config.setProperty("search", SEARCH);
+        config.setProperty("save_cookies", SAVE_COOKIES ? "true" : "false");
 
         storeConfig(config);
     }
