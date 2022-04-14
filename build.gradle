@@ -7,7 +7,7 @@ plugins {
 }
 
 group 'de.MarkusTieger'
-version '1.15.0'
+version '1.15.1'
 
 if(System.getProperty("os.linux") != null){
     System.setProperty("os.name", "Linux")
@@ -141,7 +141,8 @@ publishing {
     repositories {
         maven {
             name = "Github"
-            url = uri("https://maven.pkg.github.com/TigerSystems/tigxa")
+            url = uri("https://maven.pkg.github.com/TigerSystems/tigxa-main")
+            // url = uri("https://maven.pkg.github.com/TigerSystems/test-repo")
             credentials {
                 username = user
                 password = pwd
@@ -152,7 +153,8 @@ publishing {
         register("jar", MavenPublication) {
             from(components["java"])
             pom {
-                url.set("https://github.com/TigerSystems/tigxa.git")
+                url.set("https://github.com/TigerSystems/tigxa-main.git")
+                // url.set("https://github.com/TigerSystems/test-repo.git")
                 version = this.getVersion() + (env == null ? "" : ("-" + env))
             }
         }
