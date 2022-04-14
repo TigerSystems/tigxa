@@ -66,7 +66,12 @@ public class Updater {
         } else return "aarch64";
     }
 
+    public boolean isDebugBuild(){
+        return Browser.VERSION.equalsIgnoreCase("0.0.0") && Browser.BUILD.equalsIgnoreCase("-") && Browser.COMMIT_HASH.equalsIgnoreCase("-");
+    }
+
     public void update(Version version, Consumer<Double> percend){
+        if(isDebugBuild()) throw new RuntimeException("You can't update a Debug-Build!");
         if(!checkJar()) throw new RuntimeException("This Build of the " + Browser.FULL_NAME + " can't update.");
 
         URL resource = Bootstrap.class.getProtectionDomain().getCodeSource().getLocation();
@@ -77,7 +82,6 @@ public class Updater {
         String arch = getARCH();
 
         String path = "https://github.com/TigerSystems/tigxa/releases/download/" + version.version() + "-" + version.build() + "/" + Browser.NAME.toLowerCase() + "-" + version.version() + "-" + os + "-" + arch + "-all.jar";
-        System.out.println("PATH: " + path);
         try {
 
             File target = new File(resource.toURI());

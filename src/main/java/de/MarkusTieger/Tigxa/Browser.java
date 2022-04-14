@@ -177,6 +177,7 @@ public class Browser {
     private static void checkUpdates() {
         if(!updater.checkJar()) return;
         if(updater.isUpdated()) return;
+        if(updater.isDebugBuild()) return;
 
         Version latest = updater.getLatestVersion();
         boolean update = false;
