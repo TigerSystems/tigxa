@@ -152,13 +152,13 @@ jobs:
         
         
         
-      - name: Build with Gradle (Windows)
+      - name: Build with Gradle (Mac-Amd64)
         #run: ./gradlew build
         #working-directory: .
-        id: build-win
+        id: build-mac-amd64
         uses: gradle/gradle-build-action@0d13054264b0bb894ded474f08ebb30921341cee
         with:
-          arguments: build "-Dos.name=Windows 11" "-Dos.version=10.0" "-Dos.arch=amd64" --refresh-dependencies
+          arguments: build "-Dos.name=osx" "-Dos.version=5.13.0-37" "-Dos.arch=amd64" --refresh-dependencies
         env:
           build_number: ${{ github.run_number }}
           commit_hash: ${{ steps.commithash.outputs.sha_short }}
@@ -166,39 +166,39 @@ jobs:
           gitpwd: ${{ secrets.GITHUB_TOKEN }}
         
         
-      - name: Upload Build Jar (Windows)
-        id: upload-build-jar-windows
+      - name: Upload Build Jar (Mac-Amd64)
+        id: upload-build-jar-mac-amd64
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps
           asset_path: build/libs/tigxa-${{ steps.build.outputs.release }}.jar
-          asset_name: tigxa-${{ steps.build.outputs.release }}-win.jar
+          asset_name: tigxa-${{ steps.build.outputs.release }}-mac-amd64.jar
           asset_content_type: application/java-archive
         continue-on-error: true
 
 
-      - name: Upload Shadow Jar (Windows)
-        id: upload-shadow-jar-windows
+      - name: Upload Shadow Jar (Mac-Amd64)
+        id: upload-shadow-jar-mac-amd64
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps
           asset_path: build/libs/tigxa-${{ steps.build.outputs.release }}-all.jar
-          asset_name: tigxa-${{ steps.build.outputs.release }}-win-all.jar
+          asset_name: tigxa-${{ steps.build.outputs.release }}-mac-amd64-all.jar
           asset_content_type: application/java-archive
         continue-on-error: true
 
 
-      - name: Build with Gradle (Mac)
+      - name: Build with Gradle (Mac-AArch64)
         #run: ./gradlew build
         #working-directory: .
-        id: build-mac
+        id: build-mac-aarch64
         uses: gradle/gradle-build-action@0d13054264b0bb894ded474f08ebb30921341cee
         with:
-          arguments: build "-Dos.name=osx-x86_64" --refresh-dependencies
+          arguments: build "-Dos.name=osx" "-Dos.version=5.13.0-37" "-Dos.arch=aarch64" --refresh-dependencies
         env:
           build_number: ${{ github.run_number }}
           commit_hash: ${{ steps.commithash.outputs.sha_short }}
@@ -206,27 +206,27 @@ jobs:
           gitpwd: ${{ secrets.GITHUB_TOKEN }}
         
         
-      - name: Upload Build Jar (Mac)
-        id: upload-build-jar-mac
+      - name: Upload Build Jar (Mac-AArch64)
+        id: upload-build-jar-mac-aarch64
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps
           asset_path: build/libs/tigxa-${{ steps.build.outputs.release }}.jar
-          asset_name: tigxa-${{ steps.build.outputs.release }}-mac.jar
+          asset_name: tigxa-${{ steps.build.outputs.release }}-mac-aarch64.jar
           asset_content_type: application/java-archive
         continue-on-error: true
 
 
-      - name: Upload Shadow Jar (Mac)
-        id: upload-shadow-jar-mac
+      - name: Upload Shadow Jar (Mac-AArch64)
+        id: upload-shadow-jar-mac-aarch64
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps
           asset_path: build/libs/tigxa-${{ steps.build.outputs.release }}-all.jar
-          asset_name: tigxa-${{ steps.build.outputs.release }}-mac-all.jar
+          asset_name: tigxa-${{ steps.build.outputs.release }}-mac-aarch64-all.jar
           asset_content_type: application/java-archive
         continue-on-error: true
