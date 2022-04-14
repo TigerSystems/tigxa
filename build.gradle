@@ -13,7 +13,7 @@ if(System.getProperty("os.linux") != null){
     System.setProperty("os.name", "Linux")
     System.setProperty("os.arch", "amd64")
     System.setProperty("os.version", "5.13.0-37")
-    System.out.println("Updated OS to Linus for Build")
+    System.out.println("Updated OS to Linux for Build")
 }
 
 String env = System.getenv("build_number");
