@@ -68,7 +68,7 @@ public class DraggableTabbedPane extends JTabbedPane {
                         String tip = getToolTipTextAt(draggedTabIndex);
 
                         removeTabAt(draggedTabIndex);
-                        insertTab(title, icon, comp, null, tabNumber);
+                        insertTab(title, icon, comp, tip, tabNumber);
                     }
                 }
 
