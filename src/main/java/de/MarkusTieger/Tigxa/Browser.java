@@ -35,6 +35,8 @@ import javax.speech.synthesis.SynthesizerModeDesc;
 public class Browser {
 
     public static final String DEFAULT_HOMEPAGE = "https://google.com";
+    public static final String DEFAULT_SEARCH = "https://google.com/search?q=%s";
+
     public static final String NAME;
     public static final String FULL_NAME;
     public static final String VERSION;
@@ -42,6 +44,9 @@ public class Browser {
     public static final String FULL_VERSION;
     public static final String COMMIT_HASH;
     public static final String AUTHOR;
+
+    public static String HOMEPAGE;
+    public static String SEARCH;
 
     static {
 
@@ -123,6 +128,11 @@ public class Browser {
         configRoot = initializeConfigRoot();
 
         config = loadConfig();
+
+        HOMEPAGE = config.getProperty("homepage", DEFAULT_HOMEPAGE);
+        SEARCH = config.getProperty("search", DEFAULT_SEARCH);
+
+        // ThemeManager.applyFont();
 
         if (!ThemeManager.setTheme(config)) {
             ThemeManager.setTheme(FlatLightLaf.class);
@@ -245,6 +255,9 @@ public class Browser {
     public static void saveConfig() {
 
         ThemeManager.saveConfig(config);
+
+        config.setProperty("homepage", HOMEPAGE);
+        config.setProperty("search", SEARCH);
 
         storeConfig(config);
     }

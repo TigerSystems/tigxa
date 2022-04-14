@@ -18,6 +18,8 @@ import javax.speech.Central;
 import javax.speech.synthesis.Synthesizer;
 import javax.speech.synthesis.SynthesizerModeDesc;
 import javax.swing.*;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -254,6 +256,59 @@ public class InternalScreenRegistry {
             }
         });
         frame.add(pwd);
+
+        JTextField homepage = new JTextField();
+        homepage.setText(Browser.HOMEPAGE);
+        homepage.setBounds(25, 225, 200, 25);
+        homepage.getDocument().addDocumentListener(new DocumentListener() {
+            @Override
+            public void insertUpdate(DocumentEvent e) {
+                update();
+            }
+
+            @Override
+            public void removeUpdate(DocumentEvent e) {
+                update();
+            }
+
+            @Override
+            public void changedUpdate(DocumentEvent e) {
+                update();
+            }
+
+            private void update(){
+                Browser.HOMEPAGE = homepage.getText();
+                Browser.saveConfig();
+            }
+        });
+        frame.add(homepage);
+
+
+        JTextField search = new JTextField();
+        search.setText(Browser.SEARCH);
+        search.setBounds(25, 275, 200, 25);
+        search.getDocument().addDocumentListener(new DocumentListener() {
+            @Override
+            public void insertUpdate(DocumentEvent e) {
+                update();
+            }
+
+            @Override
+            public void removeUpdate(DocumentEvent e) {
+                update();
+            }
+
+            @Override
+            public void changedUpdate(DocumentEvent e) {
+                update();
+            }
+
+            private void update(){
+                Browser.SEARCH = search.getText();
+                Browser.saveConfig();
+            }
+        });
+        frame.add(search);
     }
 
 }

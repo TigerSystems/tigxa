@@ -2,9 +2,14 @@ package de.MarkusTieger.Tigxa.gui.theme;
 
 import com.formdev.flatlaf.*;
 import com.formdev.flatlaf.intellijthemes.FlatAllIJThemes;
+import de.MarkusTieger.Tigxa.Browser;
 import de.MarkusTieger.Tigxa.gui.theme.java.CrossPlatformTheme;
 import de.MarkusTieger.Tigxa.gui.theme.java.SystemTheme;
 
+import javax.swing.*;
+import javax.swing.plaf.FontUIResource;
+import java.awt.*;
+import java.io.InputStream;
 import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
@@ -56,6 +61,31 @@ public class ThemeManager {
         } catch (Exception e) {
             e.printStackTrace();
             return false;
+        }
+    }
+
+    public static void setUIFont (Font f){
+        java.util.Enumeration keys = UIManager.getDefaults().keys();
+        while (keys.hasMoreElements()) {
+            Object key = keys.nextElement();
+            Object value = UIManager.get (key);
+            if (value instanceof javax.swing.plaf.FontUIResource v)
+            {
+
+                UIManager.put (key, new FontUIResource(f.deriveFont((float) v.getSize())));
+            }
+        }
+    }
+
+    public static void applyFont(){
+        try {
+            InputStream in = Browser.class.getResourceAsStream("/res/gui/fonts/calibri.ttf");
+            Font font = Font.createFont(Font.TRUETYPE_FONT, in);
+            in.close();
+
+            setUIFont(font);
+        } catch (Throwable e){
+            e.printStackTrace();
         }
     }
 

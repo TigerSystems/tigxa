@@ -221,6 +221,8 @@ public class BrowserWindow {
             windows.add(this);
         }
 
+
+
         frame.setVisible(true);
     }
 
@@ -241,7 +243,7 @@ public class BrowserWindow {
 
         if (tabs == null) throw new RuntimeException("GUI is not initialized!");
 
-        if (url == null) url = Browser.DEFAULT_HOMEPAGE;
+        if (url == null) url = Browser.HOMEPAGE;
 
         JPanel panel = new JPanel();
 
@@ -1073,7 +1075,8 @@ public class BrowserWindow {
                     } catch (URISyntaxException exc) {
                         String query = field.getText();
                         try {
-                            URI uri = new URI("https://google.com/search?q=" + URLEncoder.encode(query, StandardCharsets.UTF_8));
+
+                            URI uri = new URI(String.format(Browser.SEARCH, URLEncoder.encode(query, StandardCharsets.UTF_8)));
                             location.accept(uri.toString());
                         } catch (URISyntaxException uriSyntaxException) {
                             uriSyntaxException.printStackTrace();
