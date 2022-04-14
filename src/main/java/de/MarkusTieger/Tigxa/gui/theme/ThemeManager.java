@@ -3,6 +3,7 @@ package de.MarkusTieger.Tigxa.gui.theme;
 import com.formdev.flatlaf.*;
 import com.formdev.flatlaf.intellijthemes.FlatAllIJThemes;
 import de.MarkusTieger.Tigxa.Browser;
+import de.MarkusTieger.Tigxa.gui.screen.InternalScreenRegistry;
 import de.MarkusTieger.Tigxa.gui.theme.java.CrossPlatformTheme;
 import de.MarkusTieger.Tigxa.gui.theme.java.SystemTheme;
 
@@ -71,21 +72,27 @@ public class ThemeManager {
             Object value = UIManager.get (key);
             if (value instanceof javax.swing.plaf.FontUIResource v)
             {
-
                 UIManager.put (key, new FontUIResource(f.deriveFont((float) v.getSize())));
             }
         }
     }
 
-    public static void applyFont(){
-        try {
-            InputStream in = Browser.class.getResourceAsStream("/res/gui/fonts/calibri.ttf");
-            Font font = Font.createFont(Font.TRUETYPE_FONT, in);
-            in.close();
+    public static void applyFontByConfig(Properties prop){
 
-            setUIFont(font);
-        } catch (Throwable e){
-            e.printStackTrace();
+        GraphicsEnvironment env = GraphicsEnvironment.getLocalGraphicsEnvironment();
+
+        Map<String, InternalScreenRegistry.FontItem> map = new HashMap<>();
+
+        for(Font f : env.getAllFonts()){
+            InternalScreenRegistry.FontItem fi = new InternalScreenRegistry.FontItem(f);
+            map.put(f.getName(), fi);
+        }
+
+        if(Browser.FONT != null){
+            InternalScreenRegistry.FontItem i = map.get(Browser.FONT);
+            if(i != null) {
+                if(i.getFont() != null) setUIFont(i.getFont());
+            }
         }
     }
 

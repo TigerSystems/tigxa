@@ -48,6 +48,7 @@ public class Browser {
     public static String HOMEPAGE;
     public static String SEARCH;
     public static boolean SAVE_COOKIES;
+    public static String FONT;
 
     static {
 
@@ -133,12 +134,14 @@ public class Browser {
         HOMEPAGE = config.getProperty("homepage", DEFAULT_HOMEPAGE);
         SEARCH = config.getProperty("search", DEFAULT_SEARCH);
         SAVE_COOKIES = !config.getProperty("save_cookies", "true").equalsIgnoreCase("false");
-
-        // ThemeManager.applyFont();
+        FONT = config.getProperty("font", "-");
+        if(FONT.equalsIgnoreCase("-")) FONT = null;
 
         if (!ThemeManager.setTheme(config)) {
             ThemeManager.setTheme(FlatLightLaf.class);
         }
+
+        ThemeManager.applyFontByConfig(config);
 
         if(SAVE_COOKIES) CookieManager.initialize(configRoot);
 
@@ -262,6 +265,7 @@ public class Browser {
         config.setProperty("homepage", HOMEPAGE);
         config.setProperty("search", SEARCH);
         config.setProperty("save_cookies", SAVE_COOKIES ? "true" : "false");
+        config.setProperty("font", FONT == null ? "-" : FONT);
 
         storeConfig(config);
     }

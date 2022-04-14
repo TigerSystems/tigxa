@@ -13,6 +13,7 @@ import de.MarkusTieger.Tigxa.gui.window.PasswordWindow;
 import de.MarkusTieger.Tigxa.http.cookie.CookieManager;
 import de.MarkusTieger.Tigxa.update.Updater;
 import de.MarkusTieger.Tigxa.update.Version;
+import lombok.Getter;
 
 import javax.speech.Central;
 import javax.speech.synthesis.Synthesizer;
@@ -333,6 +334,65 @@ public class InternalScreenRegistry {
             }
         });
         frame.add(search);
+
+        FontItem default_font = new FontItem(null);
+
+        JComboBox<FontItem> item = new JComboBox<FontItem>();
+        item.setBounds(25, 425, 150, 25);
+        item.addItem(default_font);
+
+        GraphicsEnvironment env = GraphicsEnvironment.getLocalGraphicsEnvironment();
+
+        Map<String, FontItem> map = new HashMap<>();
+
+        for(Font f : env.getAllFonts()){
+            FontItem fi = new FontItem(f);
+            item.addItem(fi);
+            map.put(f.getName(), fi);
+        }
+
+        item.addItemListener(new ItemListener() {
+            @Override
+            public void itemStateChanged(ItemEvent e) {
+                if(((FontItem)item.getSelectedItem()).font == null) {
+                    Browser.FONT = null;
+                    Browser.saveConfig();
+                    return;
+                }
+                for(Map.Entry<String, FontItem> i : map.entrySet()){
+                    if(i.getValue() == item.getSelectedItem()){
+                        Browser.FONT = i.getKey();
+                        Browser.saveConfig();
+                    }
+                }
+            }
+        });
+
+        if(Browser.FONT != null){
+            InternalScreenRegistry.FontItem i = map.get(Browser.FONT);
+            if(i != null) {
+                item.setSelectedItem(i);
+            }
+        }
+
+        frame.add(item);
+
+
+    }
+
+    public static class FontItem {
+
+        @Getter
+        private final Font font;
+
+        public FontItem(Font font){
+            this.font = font;
+        }
+
+        @Override
+        public String toString() {
+            return font == null ? "Default" : font.getName();
+        }
     }
 
 }
