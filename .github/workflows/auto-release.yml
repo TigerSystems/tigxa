@@ -158,7 +158,7 @@ jobs:
         id: build-win
         uses: gradle/gradle-build-action@0d13054264b0bb894ded474f08ebb30921341cee
         with:
-          arguments: build "-Dos.name=Windows" "-Dos.version=10" "-Dos.arch=amd64" --refresh-dependencies
+          arguments: build "-Dos.name=windows" "-Dos.version=10.0" "-Dos.arch=amd64" --refresh-dependencies
         env:
           build_number: ${{ github.run_number }}
           commit_hash: ${{ steps.commithash.outputs.sha_short }}
