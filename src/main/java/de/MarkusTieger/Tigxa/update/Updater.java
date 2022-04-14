@@ -59,6 +59,13 @@ public class Updater {
         return "linux";
     }
 
+    public String getARCH(){
+        String arch = System.getProperty("os.arch", "amd64");
+        if(arch.equalsIgnoreCase("amd64")){
+            return arch;
+        } else return "aarch64";
+    }
+
     public void update(Version version, Consumer<Double> percend){
         if(!checkJar()) throw new RuntimeException("This Build of the " + Browser.FULL_NAME + " can't update.");
 
@@ -67,7 +74,9 @@ public class Updater {
         if(!resource.getProtocol().equalsIgnoreCase("file")) throw new RuntimeException("This Build of the " + Browser.FULL_NAME + " can't update.");
 
         String os = getOS();
-        String path = "https://github.com/TigerSystems/tigxa/releases/download/" + version.version() + "-" + version.build() + "/" + Browser.NAME.toLowerCase() + "-" + version.version() + "-" + os + "-all.jar";
+        String arch = getARCH();
+
+        String path = "https://github.com/TigerSystems/tigxa/releases/download/" + version.version() + "-" + version.build() + "/" + Browser.NAME.toLowerCase() + "-" + version.version() + "-" + os + "-" + arch + "-all.jar";
         System.out.println("PATH: " + path);
         try {
 
