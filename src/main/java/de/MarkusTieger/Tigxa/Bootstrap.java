@@ -11,6 +11,10 @@ public class Bootstrap extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception {
+        System.out.println(System.getProperty("os.name"));
+        System.out.println(System.getProperty("os.version"));
+        System.out.println(System.getProperty("os.arch"));
+
         Browser.start();
     }
 }

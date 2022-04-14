@@ -1,4 +1,4 @@
-open module de.markustieger.tigxa {
+open module de.MarkusTieger.Tigxa {
 
     requires javafx.controls;
     requires javafx.fxml;
