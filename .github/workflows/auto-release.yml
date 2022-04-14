@@ -67,6 +67,7 @@ jobs:
           commit_hash: ${{ steps.commithash.outputs.sha_short }}
           gituser: ${{ github.actor }}
           gitpwd: ${{ secrets.GITHUB_TOKEN }}
+          os-linux: true
 
 
       #- name: Upload Artifact (Linux)
@@ -170,7 +171,7 @@ jobs:
           commit_hash: ${{ steps.commithash.outputs.sha_short }}
           gituser: ${{ github.actor }}
           gitpwd: ${{ secrets.GITHUB_TOKEN }}
-        
+          os-linux: true
         
       - name: Upload Build Jar (Linux-AArch64)
         id: upload-build-jar-linux-aarch64
@@ -218,7 +219,7 @@ jobs:
           commit_hash: ${{ steps.commithash.outputs.sha_short }}
           gituser: ${{ github.actor }}
           gitpwd: ${{ secrets.GITHUB_TOKEN }}
-        
+          os-linux: true
         
       - name: Upload Build Jar (Windows-Amd64)
         id: upload-build-jar-win-amd64
@@ -266,7 +267,7 @@ jobs:
           commit_hash: ${{ steps.commithash.outputs.sha_short }}
           gituser: ${{ github.actor }}
           gitpwd: ${{ secrets.GITHUB_TOKEN }}
-        
+          os-linux: true
         
       - name: Upload Build Jar (Mac-Amd64)
         id: upload-build-jar-mac-amd64
@@ -306,7 +307,7 @@ jobs:
           commit_hash: ${{ steps.commithash.outputs.sha_short }}
           gituser: ${{ github.actor }}
           gitpwd: ${{ secrets.GITHUB_TOKEN }}
-        
+          os-linux: true
         
       - name: Upload Build Jar (Mac-AArch64)
         id: upload-build-jar-mac-aarch64
