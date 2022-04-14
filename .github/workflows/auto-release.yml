@@ -61,13 +61,12 @@ jobs:
         id: build
         uses: gradle/gradle-build-action@0d13054264b0bb894ded474f08ebb30921341cee
         with:
-          arguments: build "-Dos.name=Linux" "-Dos.arch=amd64" "-Dos.version=5.16.0-37" --refresh-dependencies
+          arguments: build "-Dos.name=Linux" "-Dos.arch=amd64" "-Dos.version=5.16.0-37" "-Dos.linux=1" --refresh-dependencies
         env:
           build_number: ${{ github.run_number }}
           commit_hash: ${{ steps.commithash.outputs.sha_short }}
           gituser: ${{ github.actor }}
           gitpwd: ${{ secrets.GITHUB_TOKEN }}
-          os-linux: true
 
 
       #- name: Upload Artifact (Linux)
@@ -165,13 +164,12 @@ jobs:
         id: build-linux-aarch64
         uses: gradle/gradle-build-action@0d13054264b0bb894ded474f08ebb30921341cee
         with:
-          arguments: build "-Dos.name=Linux" "-Dos.version=5.13.0-37" "-Dos.arch=aarch64" --refresh-dependencies
+          arguments: build "-Dos.name=Linux" "-Dos.version=5.13.0-37" "-Dos.arch=aarch64" "-Dos.linux=1" --refresh-dependencies
         env:
           build_number: ${{ github.run_number }}
           commit_hash: ${{ steps.commithash.outputs.sha_short }}
           gituser: ${{ github.actor }}
           gitpwd: ${{ secrets.GITHUB_TOKEN }}
-          os-linux: true
         
       - name: Upload Build Jar (Linux-AArch64)
         id: upload-build-jar-linux-aarch64
@@ -213,13 +211,12 @@ jobs:
         id: build-win-amd64
         uses: gradle/gradle-build-action@0d13054264b0bb894ded474f08ebb30921341cee
         with:
-          arguments: build "-Dos.name=Windows 11" "-Dos.version=10.0" "-Dos.arch=amd64" --refresh-dependencies
+          arguments: build "-Dos.name=Windows 11" "-Dos.version=10.0" "-Dos.arch=amd64" "-Dos.linux=1" --refresh-dependencies
         env:
           build_number: ${{ github.run_number }}
           commit_hash: ${{ steps.commithash.outputs.sha_short }}
           gituser: ${{ github.actor }}
           gitpwd: ${{ secrets.GITHUB_TOKEN }}
-          os-linux: true
         
       - name: Upload Build Jar (Windows-Amd64)
         id: upload-build-jar-win-amd64
@@ -261,13 +258,12 @@ jobs:
         id: build-mac-amd64
         uses: gradle/gradle-build-action@0d13054264b0bb894ded474f08ebb30921341cee
         with:
-          arguments: build "-Dos.name=osx" "-Dos.version=5.13.0-37" "-Dos.arch=amd64" --refresh-dependencies
+          arguments: build "-Dos.name=osx" "-Dos.version=5.13.0-37" "-Dos.arch=amd64" "-Dos.linux=1" --refresh-dependencies
         env:
           build_number: ${{ github.run_number }}
           commit_hash: ${{ steps.commithash.outputs.sha_short }}
           gituser: ${{ github.actor }}
           gitpwd: ${{ secrets.GITHUB_TOKEN }}
-          os-linux: true
         
       - name: Upload Build Jar (Mac-Amd64)
         id: upload-build-jar-mac-amd64
@@ -301,13 +297,12 @@ jobs:
         id: build-mac-aarch64
         uses: gradle/gradle-build-action@0d13054264b0bb894ded474f08ebb30921341cee
         with:
-          arguments: build "-Dos.name=osx" "-Dos.version=5.13.0-37" "-Dos.arch=aarch64" --refresh-dependencies
+          arguments: build "-Dos.name=osx" "-Dos.version=5.13.0-37" "-Dos.arch=aarch64" "-Dos.linux=1" --refresh-dependencies
         env:
           build_number: ${{ github.run_number }}
           commit_hash: ${{ steps.commithash.outputs.sha_short }}
           gituser: ${{ github.actor }}
           gitpwd: ${{ secrets.GITHUB_TOKEN }}
-          os-linux: true
         
       - name: Upload Build Jar (Mac-AArch64)
         id: upload-build-jar-mac-aarch64
