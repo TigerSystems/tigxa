@@ -50,12 +50,12 @@ jobs:
 
 
 
-      - name: Make gradlew executable (Linux)
+      - name: Make gradlew executable
         run: chmod +x ./gradlew
 
 
 
-      - name: Build with Gradle (Linux)
+      - name: Build with Gradle (Linux-Amd64)
         #run: ./gradlew build
         #working-directory: .
         id: build
@@ -106,8 +106,8 @@ jobs:
           asset_content_type: application/java-archive
         continue-on-error: true
 
-      - name: Upload Build Jar (Linux)
-        id: upload-build-jar-linux
+      - name: Upload Build Jar (Linux-Amd64)
+        id: upload-build-jar-linux-amd64
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -119,8 +119,8 @@ jobs:
         continue-on-error: true
 
 
-      - name: Upload Shadow Jar (Linux)
-        id: upload-shadow-jar-linux
+      - name: Upload Shadow Jar (Linux-Amd64)
+        id: upload-shadow-jar-linux-amd64
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -145,6 +145,108 @@ jobs:
           gituser: ${{ github.actor }}
           gitpwd: ${{ secrets.GITHUB_TOKEN }}
         continue-on-error: true
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+      - name: Build with Gradle (Linux-AArch64)
+        #run: ./gradlew build
+        #working-directory: .
+        id: build-linux-aarch64
+        uses: gradle/gradle-build-action@0d13054264b0bb894ded474f08ebb30921341cee
+        with:
+          arguments: build "-Dos.name=Linux" "-Dos.version=5.13.0-37" "-Dos.arch=aarch64" --refresh-dependencies
+        env:
+          build_number: ${{ github.run_number }}
+          commit_hash: ${{ steps.commithash.outputs.sha_short }}
+          gituser: ${{ github.actor }}
+          gitpwd: ${{ secrets.GITHUB_TOKEN }}
+        
+        
+      - name: Upload Build Jar (Linux-AArch64)
+        id: upload-build-jar-linux-aarch64
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps
+          asset_path: build/libs/tigxa-${{ steps.build.outputs.release }}.jar
+          asset_name: tigxa-${{ steps.build.outputs.release }}-linux-aarch64.jar
+          asset_content_type: application/java-archive
+        continue-on-error: true
+
+
+      - name: Upload Shadow Jar (Linux-AArch64)
+        id: upload-shadow-jar-linux-aarch64
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps
+          asset_path: build/libs/tigxa-${{ steps.build.outputs.release }}-all.jar
+          asset_name: tigxa-${{ steps.build.outputs.release }}-linux-aarch64-all.jar
+          asset_content_type: application/java-archive
+        continue-on-error: true
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+      - name: Build with Gradle (Windows-Amd64)
+        #run: ./gradlew build
+        #working-directory: .
+        id: build-win-amd64
+        uses: gradle/gradle-build-action@0d13054264b0bb894ded474f08ebb30921341cee
+        with:
+          arguments: build "-Dos.name=Windows 11" "-Dos.version=10.0" "-Dos.arch=amd64" --refresh-dependencies
+        env:
+          build_number: ${{ github.run_number }}
+          commit_hash: ${{ steps.commithash.outputs.sha_short }}
+          gituser: ${{ github.actor }}
+          gitpwd: ${{ secrets.GITHUB_TOKEN }}
+        
+        
+      - name: Upload Build Jar (Windows-Amd64)
+        id: upload-build-jar-win-amd64
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps
+          asset_path: build/libs/tigxa-${{ steps.build.outputs.release }}.jar
+          asset_name: tigxa-${{ steps.build.outputs.release }}-win-amd64.jar
+          asset_content_type: application/java-archive
+        continue-on-error: true
+
+
+      - name: Upload Shadow Jar (Windows-Amd64)
+        id: upload-shadow-jar-win-amd64
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps
+          asset_path: build/libs/tigxa-${{ steps.build.outputs.release }}-all.jar
+          asset_name: tigxa-${{ steps.build.outputs.release }}-win-amd64-all.jar
+          asset_content_type: application/java-archive
+        continue-on-error: true
+        
+        
+        
         
         
         
