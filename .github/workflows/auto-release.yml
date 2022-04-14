@@ -19,11 +19,11 @@ permissions:
   contents: read
 
 jobs:
-  build-linux:
-    outputs:
-      upload_url: ${{ steps.create_release.outputs.upload_url }}
-      release: ${{ steps.build.outputs.release }}
-      commit: ${{ steps.commithash.outputs.sha_short }}
+  build:
+    #outputs:
+    #  upload_url: ${{ steps.create_release.outputs.upload_url }}
+    #  release: ${{ steps.build.outputs.release }}
+    #  commit: ${{ steps.commithash.outputs.sha_short }}
     permissions: write-all
     runs-on: ubuntu-latest
     steps:
