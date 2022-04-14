@@ -26,7 +26,7 @@ public class PasswordWindow {
         BufferedImage image = ImageLoader.loadInternalImage("/res/gui/logo.png");
 
         JFrame frame = new JFrame(s);
-        frame.setSize(300, 200);
+        frame.setSize(300, 175);
         frame.setLayout(null);
         frame.setResizable(false);
         frame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
@@ -140,7 +140,7 @@ public class PasswordWindow {
 
     public static <T> T requestYUBI(String s, Function<VerificationResponse, T> verify) {
         JFrame frame = new JFrame(s);
-        frame.setSize(300, 200);
+        frame.setSize(300, 175);
         frame.setLayout(null);
         frame.setResizable(false);
         frame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
