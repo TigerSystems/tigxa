@@ -42,9 +42,9 @@ public class CookieStorage {
     private VerificationResponse yubi = null;
 
     public void erease() {
-        int option = JOptionPane.showConfirmDialog(null, "Are you sure, that you want to delete the Cookie-Store?");
+        int option = JOptionPane.showConfirmDialog(null, "Are you sure, that you want to delete the Cookie-Store?", "Cookie-Store Erease", JOptionPane.YES_NO_OPTION);
         while(option == JOptionPane.CLOSED_OPTION){
-            option = JOptionPane.showConfirmDialog(null, "Are you sure, that you want to delete the Cookie-Store?");
+            option = JOptionPane.showConfirmDialog(null, "Are you sure, that you want to delete the Cookie-Store?", "Cookie-Store Erease", JOptionPane.YES_NO_OPTION);
         }
         if(option == JOptionPane.YES_OPTION){
             pwd = null;
@@ -74,9 +74,9 @@ public class CookieStorage {
                     while(true){
                         byte[] byt = decryptPWD(bytes);
                         if(byt == null){
-                            int option = JOptionPane.showConfirmDialog(null, "Are you sure, that you want to delete the Cookie-Store?");
+                            int option = JOptionPane.showConfirmDialog(null, "Are you sure, that you want to delete the Cookie-Store?", "Cookie-Store Erease", JOptionPane.YES_NO_OPTION);
                             while(option == JOptionPane.CLOSED_OPTION){
-                                option = JOptionPane.showConfirmDialog(null, "Are you sure, that you want to delete the Cookie-Store?");
+                                option = JOptionPane.showConfirmDialog(null, "Are you sure, that you want to delete the Cookie-Store?", "Cookie-Store Erease", JOptionPane.YES_NO_OPTION);
                             }
                             if(option == JOptionPane.YES_OPTION){
                                 buckets.clear();
