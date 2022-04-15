@@ -15,8 +15,8 @@ public class Bootstrap {
                 try {
                     FXLauncher.main(args);
                 } catch (Throwable e){
-                    ErrorLauncher.launch(LaunchError.FX_NOT_LOADED);
                     e.printStackTrace();
+                    ErrorLauncher.launch(LaunchError.FX_NOT_LOADED);
                 }
             } catch (ClassNotFoundException e) {
                 ErrorLauncher.launch(LaunchError.FX_NOT_FOUND);

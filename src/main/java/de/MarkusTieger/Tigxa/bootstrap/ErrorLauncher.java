@@ -9,10 +9,30 @@ import javax.swing.*;
 public class ErrorLauncher {
 
     public static void launch(LaunchError state){
-        if(state == LaunchError.FX_NOT_FOUND || state == LaunchError.FX_NOT_LOADED) launchFXError();
+        if(state == LaunchError.FX_NOT_LOADED) launchFXLoader();
+        if(state == LaunchError.FX_NOT_FOUND) launchFXError();
         if(state == LaunchError.SWT_NOT_LOADED) launchSWTError();
         if(state == LaunchError.SWING_UNKNOWN_ERROR) launchSwingError();
         if(state == LaunchError.ALL_FAILED) launchRecovery();
+    }
+
+    private static void launchFXLoader() {
+        String download = OpenJFXDownloader.getDownload();
+        if(download == null){
+            launch(LaunchError.FX_NOT_FOUND);
+            return;
+        }
+        int option = JOptionPane.showConfirmDialog(null, "OpenJFX is not installed. Would you like to install it?", "OpenJFX not installed!", JOptionPane.YES_NO_OPTION);
+        while (option == JOptionPane.CLOSED_OPTION){
+            option = JOptionPane.showConfirmDialog(null, "OpenJFX is not installed. Would you like to install it?", "OpenJFX not installed!", JOptionPane.YES_NO_OPTION);
+        }
+        if(option == JOptionPane.YES_OPTION){
+            try {
+                OpenJFXDownloader.downloadAndRelaunch(download);
+            } catch (Throwable e) {
+                e.printStackTrace();
+            }
+        } else launch(LaunchError.FX_NOT_FOUND);
     }
 
     private static void launchRecovery() {
