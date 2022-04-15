@@ -59,6 +59,14 @@ public class OpenJFXDownloader {
         if(!libs.exists()) libs.mkdirs();
 
         String jvm = System.getProperty("java.home", "java");
+
+        String suffix = System.setProperty("os.name", "Linux").toLowerCase().contains("win".toLowerCase()) ? ".exe" : "";
+
+        if(!jvm.equalsIgnoreCase("java")){
+            File hf = new File(jvm);
+            jvm = new File(hf, "bin/java" + suffix).getAbsolutePath();
+        }
+
         ProcessBuilder builder = new ProcessBuilder(jvm, "--module-path", libs.getAbsolutePath(), "--add-modules=javafx.base,javafx.controls,javafx.fxml,javafx.graphics,javafx.media,javafx.swing,javafx.web", "-jar", Bootstrap.class.getProtectionDomain().getCodeSource().getLocation().getFile());
         builder.start();
     }
