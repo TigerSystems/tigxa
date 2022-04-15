@@ -98,7 +98,7 @@ public class OpenJFXDownloader {
             } else {
                 if(!tar.exists()) tar.createNewFile();
                 out = new FileOutputStream(tar);
-                while((len = in.read(buffer)) > 0){
+                while((len = zis.read(buffer)) > 0){
                     out.write(buffer, 0, len);
                 }
                 out.flush();
