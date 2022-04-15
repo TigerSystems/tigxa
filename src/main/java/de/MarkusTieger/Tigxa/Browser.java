@@ -129,8 +129,6 @@ public class Browser {
 
     public static void start(Mode mode) {
 
-        mode = Mode.NONE;
-
         Browser.mode = mode;
 
         TrustManager.initialize();
