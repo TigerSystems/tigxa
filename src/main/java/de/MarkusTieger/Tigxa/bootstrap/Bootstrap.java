@@ -15,11 +15,11 @@ public class Bootstrap {
                 try {
                     FXLauncher.main(args);
                 } catch (Throwable e){
-                    ErrorLauncher.launch(FXError.NOT_LOADED);
+                    ErrorLauncher.launch(LaunchError.FX_NOT_LOADED);
                     e.printStackTrace();
                 }
             } catch (ClassNotFoundException e) {
-                ErrorLauncher.launch(FXError.NOT_FOUND);
+                ErrorLauncher.launch(LaunchError.FX_NOT_FOUND);
             }
         } else {
 

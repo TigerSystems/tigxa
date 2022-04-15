@@ -131,9 +131,9 @@ public class Browser {
 
         Browser.mode = mode;
 
-        TrustManager.initialize();
-
         WebUtils.initialize(mode);
+
+        TrustManager.initialize();
 
         configRoot = initializeConfigRoot();
 
