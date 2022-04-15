@@ -1,13 +1,11 @@
 package de.MarkusTieger.Tigxa.update;
 
-import de.MarkusTieger.Tigxa.Bootstrap;
 import de.MarkusTieger.Tigxa.Browser;
 import de.MarkusTieger.Tigxa.http.HttpUtils;
 import lombok.Getter;
 
 import java.io.*;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Scanner;
 import java.util.function.Consumer;
@@ -44,7 +42,7 @@ public class Updater {
     }
 
     public boolean checkJar() {
-        URL url1 = Bootstrap.class.getProtectionDomain().getCodeSource().getLocation();
+        URL url1 = Updater.class.getProtectionDomain().getCodeSource().getLocation();
         URL url2 = Browser.class.getProtectionDomain().getCodeSource().getLocation();
         return url1.sameFile(url2);
     }
@@ -52,9 +50,9 @@ public class Updater {
     public String getOS(){
         String testlib = "jfxmedia";
 
-        if(Bootstrap.class.getResource("/libjfxmedia.so") != null) return "linux";
-        if(Bootstrap.class.getResource("/jfxmedia.dll") != null) return "win";
-        if(Bootstrap.class.getResource("/libjfxmedia.dylib") != null) return "mac";
+        if(Browser.class.getResource("/libjfxmedia.so") != null) return "linux";
+        if(Browser.class.getResource("/jfxmedia.dll") != null) return "win";
+        if(Browser.class.getResource("/libjfxmedia.dylib") != null) return "mac";
 
         return "linux";
     }
@@ -74,7 +72,7 @@ public class Updater {
         if(isDebugBuild()) throw new RuntimeException("You can't update a Debug-Build!");
         if(!checkJar()) throw new RuntimeException("This Build of the " + Browser.FULL_NAME + " can't update.");
 
-        URL resource = Bootstrap.class.getProtectionDomain().getCodeSource().getLocation();
+        URL resource = Browser.class.getProtectionDomain().getCodeSource().getLocation();
         if(resource == null) throw new RuntimeException("This Build of the " + Browser.FULL_NAME + " can't update.");
         if(!resource.getProtocol().equalsIgnoreCase("file")) throw new RuntimeException("This Build of the " + Browser.FULL_NAME + " can't update.");
 

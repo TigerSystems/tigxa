@@ -5,6 +5,8 @@ import de.MarkusTieger.Tigxa.api.IAPI;
 import de.MarkusTieger.Tigxa.api.gui.IScreen;
 import de.MarkusTieger.Tigxa.api.impl.main.gui.window.MainWindowManager;
 import de.MarkusTieger.Tigxa.api.permission.Permission;
+import de.MarkusTieger.Tigxa.api.web.IWebEngine;
+import de.MarkusTieger.Tigxa.api.web.IWebHistory;
 import de.MarkusTieger.Tigxa.api.window.IWindow;
 import de.MarkusTieger.Tigxa.api.window.IWindowManager;
 import de.MarkusTieger.Tigxa.extension.IExtension;
@@ -12,6 +14,7 @@ import de.MarkusTieger.Tigxa.gui.components.DraggableTabbedPane;
 import de.MarkusTieger.Tigxa.gui.image.ImageLoader;
 import de.MarkusTieger.Tigxa.gui.theme.ThemeManager;
 import de.MarkusTieger.Tigxa.web.MainContent;
+import de.MarkusTieger.Tigxa.web.WebUtils;
 import javafx.application.Platform;
 import javafx.embed.swing.JFXPanel;
 import javafx.scene.web.WebHistory;
@@ -42,8 +45,8 @@ public class BrowserWindow {
     @Getter
     private File configRoot = new File(".");
 
-    private File pictures = new File(configRoot, "pictures"),
-            screenshots = new File(pictures, "screenshots");
+    private File pictures = new File(configRoot, "pictures");
+    public File screenshots = new File(pictures, "screenshots");
 
     @Getter
     private final JFrame frame = new JFrame(Browser.FULL_NAME + " v." + Browser.FULL_VERSION);
@@ -64,8 +67,12 @@ public class BrowserWindow {
     @Getter
     private IAPI mapi;
 
-    public void initWindow(IAPI mapi, File configRoot) {
+    @Getter
+    private Browser.Mode mode;
 
+    public void initWindow(Browser.Mode mode, IAPI mapi, File configRoot) {
+
+        this.mode = mode;
         this.mapi = mapi;
 
         this.configRoot = configRoot;
@@ -100,7 +107,7 @@ public class BrowserWindow {
 
                 for (int i = 0; i < tabs.getTabCount(); i++) {
                     Component c = tabs.getComponent(i);
-                    unloadTab(c);
+                    WebUtils.unloadTab(BrowserWindow.this, c);
                 }
             }
 
@@ -171,30 +178,20 @@ public class BrowserWindow {
                             if (windows.size() == 0) System.exit(0);
                         }
                     }
-                    unloadTab(c);
+                    WebUtils.unloadTab(BrowserWindow.this, c);
                     update();
 
                 }
 
                 if (e.getKeyCode() == KeyEvent.VK_F2) {
 
-                    synchronized (tabLinks) {
-                        Component c = tabs.getSelectedComponent();
-                        MainContent.MainContentData data = tabLinks.get(c);
-                        if (data == null) return;
-                        Platform.runLater(data.screenshot());
-                    }
+                    WebUtils.screenshot(BrowserWindow.this);
 
                 }
 
                 if (e.getKeyCode() == KeyEvent.VK_F5) {
 
-                    synchronized (tabLinks) {
-                        Component c = tabs.getSelectedComponent();
-                        MainContent.MainContentData data = tabLinks.get(c);
-                        if (data == null) return;
-                        Platform.runLater(data.webEngine()::reload);
-                    }
+                    WebUtils.reload(BrowserWindow.this);
 
                 }
 
@@ -227,17 +224,7 @@ public class BrowserWindow {
     }
 
     @Getter
-    private final Map<Component, MainContent.MainContentData> tabLinks = Collections.synchronizedMap(new HashMap<>());
-
-    public void unloadTab(Component c) {
-
-        synchronized (tabLinks) {
-            MainContent.MainContentData data = tabLinks.get(c);
-            if (data == null) return;
-            Platform.runLater(() -> data.webEngine().load(null));
-        }
-
-    }
+    private final Map<Component, IWebEngine> tabLinks = Collections.synchronizedMap(new HashMap<>());
 
     public Component newTab(String url, boolean autoselect) {
 
@@ -268,102 +255,10 @@ public class BrowserWindow {
         };
         nav.setLayout(null);
 
-        String[] d = new String[]{null};
-        final Consumer<String>[] changearray = new Consumer[]{
-                (Consumer<String>) (c) -> {
-                    d[0] = c;
-                }
-        };
-        Consumer<String> change = (c) -> changearray[0].accept(c);
 
+        List<Runnable> handlers = new ArrayList<>();
 
-        Runnable[] screenshotarray = new Runnable[]{() -> {
-        }};
-        Runnable screenshot = () -> screenshotarray[0].run();
-
-        Runnable[] devtoolsarray = new Runnable[]{() -> {
-        }};
-        Runnable devtools = () -> devtoolsarray[0].run();
-
-        MainContent.MainContentData data = MainContent.createContent(this, (title) -> {
-
-                    int index = -1;
-
-                    index = tabs.indexOfComponent(panel);
-
-                    if (index == -1) return;
-
-                    tabs.setTitleAt(index, title);
-
-                }, (icon) -> {
-
-                    int index = -1;
-
-                    index = tabs.indexOfComponent(panel);
-
-                    if (index == -1) return;
-
-                    tabs.setIconAt(index, icon);
-
-                }
-                , (loc) -> newTab(loc, false)
-                , (link) -> {
-                }, change, screenshot, devtools);
-
-
-        JFXPanel main = data.jfx();
-
-        screenshotarray[0] = () -> Platform.runLater(() -> this.takeScreenshot(main));
-
-        changearray[0] = buildNav(nav, () -> {
-
-            // Backwards
-            WebHistory history = data.history();
-
-            if (history.getCurrentIndex() > 0) {
-                Platform.runLater(() -> {
-                    data.webEngine().load(history.getEntries().get(history.getCurrentIndex() - 1).getUrl());
-                    history.go(-1);
-                });
-            }
-
-        }, () -> {
-
-            // Forwards
-            WebHistory history = data.history();
-
-            if ((history.getCurrentIndex() + 1) < history.getEntries().size()) {
-                Platform.runLater(() -> {
-                    data.webEngine().load(history.getEntries().get(history.getCurrentIndex() + 1).getUrl());
-                    history.go(1);
-                });
-            }
-
-
-        }, () -> Platform.runLater(data.webEngine()::reload), (loc) -> {
-
-            try {
-                URI uri = new URI(loc);
-                IScreen sc = mapi.getGUIManager().getScreenRegistry().getRegistredScreen(uri.getScheme(), uri.getHost());
-                if(sc == null){
-                    Platform.runLater(() -> data.webEngine().load(loc));
-                } else {
-                    newTab(sc, true);
-                    try {
-                        changearray[0].accept(data.webEngine().getLocation());
-                    } catch(Throwable e) {}
-                }
-            } catch(Throwable e){
-                Platform.runLater(() -> data.webEngine().load(loc));
-            }
-
-        }, data);
-        if (d[0] != null) {
-            changearray[0].accept(d[0]);
-        }
-        devtoolsarray[0] = () -> DevWindow.create(data);
-
-        data.webEngine().load(url);
+        Component main = WebUtils.createPanel(BrowserWindow.this, nav, url, new IWebEngine[1], panel, handlers);
 
         JPanel content = new JPanel();
 
@@ -397,42 +292,18 @@ public class BrowserWindow {
 
         addKeyListener(panel);
 
-        synchronized (tabLinks) {
-            tabLinks.put(panel, data);
-        }
         tabs.addTab("Tab", panel);
 
         update();
+
+        handlers.forEach(Runnable::run);
 
         if (autoselect) tabs.setSelectedComponent(panel);
 
         return panel;
     }
 
-    private void takeScreenshot(JFXPanel main) {
-
-        try {
-            BufferedImage image = new BufferedImage(main.getWidth(), main.getHeight(), BufferedImage.TYPE_INT_RGB);
-            Graphics g = image.getGraphics();
-            main.print(g);
-
-            File screenshot = new File(screenshots, System.currentTimeMillis() + ".png");
-            if (!screenshot.exists()) screenshot.createNewFile();
-
-            ImageIO.write(image, "png", screenshot);
-
-            g.dispose();
-            image.flush();
-
-            newTab(screenshot.toURI().toString(), true);
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-    }
-
-    public MainContent.MainContentData newTab(boolean autoselect) {
+    public IWebEngine newTab(boolean autoselect) {
 
         if (tabs == null) throw new RuntimeException("GUI is not initialized!");
 
@@ -459,99 +330,11 @@ public class BrowserWindow {
         };
         nav.setLayout(null);
 
-        String[] d = new String[]{null};
-        final Consumer<String>[] changearray = new Consumer[]{
-                (Consumer<String>) (c) -> {
-                    d[0] = c;
-                }
-        };
-        Consumer<String> change = (c) -> changearray[0].accept(c);
+        IWebEngine[] enginearray = new IWebEngine[] {null};
 
-        Runnable[] devtoolsarray = new Runnable[]{() -> {
-        }};
-        Runnable devtools = () -> devtoolsarray[0].run();
+        List<Runnable> handlers = new ArrayList<>();
 
-        Runnable[] screenshotarray = new Runnable[]{() -> {
-        }};
-        Runnable screenshot = () -> screenshotarray[0].run();
-
-        MainContent.MainContentData data = MainContent.createContent(this, (title) -> {
-                    int index = -1;
-
-                    index = tabs.indexOfComponent(panel);
-
-                    if (index == -1) return;
-
-                    tabs.setTitleAt(index, title);
-
-                }, (icon) -> {
-
-                    int index = -1;
-
-                    index = tabs.indexOfComponent(panel);
-
-                    if (index == -1) return;
-
-                    tabs.setIconAt(index, icon);
-
-                }
-                , (loc) -> newTab(loc, false)
-                , (link) -> {
-                }, change, screenshot, devtools);
-
-        JFXPanel main = data.jfx();
-
-        screenshotarray[0] = () -> this.takeScreenshot(main);
-
-        changearray[0] = buildNav(nav, () -> {
-
-            // Backwards
-            WebHistory history = data.history();
-
-            if (history.getCurrentIndex() > 0) {
-                Platform.runLater(() -> {
-                    data.webEngine().load(history.getEntries().get(history.getCurrentIndex() - 1).getUrl());
-                    history.go(-1);
-                });
-            }
-
-        }, () -> {
-
-            // Forwards
-            WebHistory history = data.history();
-
-            if ((history.getCurrentIndex() + 1) < history.getEntries().size()) {
-                Platform.runLater(() -> {
-                    data.webEngine().load(history.getEntries().get(history.getCurrentIndex() + 1).getUrl());
-                    history.go(1);
-                });
-            }
-
-
-        }, () -> Platform.runLater(data.webEngine()::reload), (loc) -> {
-
-            try {
-                URI uri = new URI(loc);
-                IScreen sc = mapi.getGUIManager().getScreenRegistry().getRegistredScreen(uri.getScheme(), uri.getHost());
-                if(sc == null){
-                    Platform.runLater(() -> data.webEngine().load(loc));
-                } else {
-                    newTab(sc, true);
-                    try {
-                        changearray[0].accept(data.webEngine().getLocation());
-                    } catch(Throwable e) {}
-                }
-            } catch(Throwable e){
-                Platform.runLater(() -> data.webEngine().load(loc));
-            }
-
-        }, data);
-        if (d[0] != null) {
-            changearray[0].accept(d[0]);
-        }
-        devtoolsarray[0] = () -> DevWindow.create(data);
-
-        main.setScene(data.scene());
+        Component main = WebUtils.createPanel(BrowserWindow.this, nav,null, enginearray, panel, handlers);
 
         JPanel content = new JPanel();
         content.add(nav);
@@ -584,16 +367,15 @@ public class BrowserWindow {
 
         addKeyListener(panel);
 
-        synchronized (tabLinks) {
-            tabLinks.put(panel, data);
-        }
         tabs.addTab("Tab", panel);
 
         update();
 
+        handlers.forEach(Runnable::run);
+
         if (autoselect) tabs.setSelectedComponent(panel);
 
-        return data;
+        return enginearray[0];
     }
 
 
@@ -636,7 +418,8 @@ public class BrowserWindow {
 
 
         }, () -> {
-        }, (loc) -> Platform.runLater(() -> {
+        }, (loc) -> {
+
             try {
                 URI uri = new URI(loc);
                 IScreen sc = mapi.getGUIManager().getScreenRegistry().getRegistredScreen(uri.getScheme(), uri.getHost());
@@ -653,7 +436,8 @@ public class BrowserWindow {
                 newTab(loc, true);
                 changearray[0].accept(screen.getLocation());
             }
-        }), null);
+
+        }, null);
 
         changearray[0] = change;
 
@@ -707,11 +491,11 @@ public class BrowserWindow {
         }
     }
 
-    private Consumer<String> buildNav(JPanel nav, Runnable backwards, Runnable forwards, Runnable reload, Consumer<String> location, MainContent.MainContentData mcd) {
+    public Consumer<String> buildNav(JPanel nav, Runnable backwards, Runnable forwards, Runnable reload, Consumer<String> location, IWebEngine mcd) {
 
-        ArrayList<BiConsumer<MainContent.MainContentData, String>> handlers = new ArrayList<>();
+        ArrayList<BiConsumer<IWebEngine, String>> handlers = new ArrayList<>();
 
-        final int webFunctionCalls = buildFunctionCalls(nav, backwards, forwards, reload, mcd == null ? null : mcd.history(), handlers::add);
+        final int webFunctionCalls = buildFunctionCalls(nav, backwards, forwards, reload, mcd == null ? null : mcd.getHistory(), handlers::add);
         final int extensionSymbols = buildExtensionBar(nav, webFunctionCalls);
 
         buildLocationBar(nav, location, webFunctionCalls, extensionSymbols, handlers::add);
@@ -719,7 +503,7 @@ public class BrowserWindow {
         return (loc) -> handlers.forEach((consumer) -> consumer.accept(mcd, loc));
     }
 
-    private int buildFunctionCalls(JPanel nav, Runnable backwards, Runnable forwards, Runnable reload, WebHistory history, Consumer<BiConsumer<MainContent.MainContentData, String>> add) {
+    private int buildFunctionCalls(JPanel nav, Runnable backwards, Runnable forwards, Runnable reload, IWebHistory history, Consumer<BiConsumer<IWebEngine, String>> add) {
 
         JButton backwardsBtn = new JButton("<-") {
 
@@ -729,7 +513,7 @@ public class BrowserWindow {
                     model.setEnabled(false);
                     return false;
                 }
-                boolean enabled = history.getCurrentIndex() > 0;
+                boolean enabled = history.hasBackwards();
                 if (!enabled && model.isRollover()) {
                     model.setRollover(false);
                 }
@@ -747,7 +531,7 @@ public class BrowserWindow {
                     return false;
                 }
 
-                boolean enabled = (history.getCurrentIndex() + 1) < history.getEntries().size();
+                boolean enabled = history.hasForwards();
 
                 if (!enabled && model.isRollover()) {
                     model.setRollover(false);
@@ -908,7 +692,7 @@ public class BrowserWindow {
 
     }
 
-    private void buildLocationBar(JPanel nav, Consumer<String> location, int webFunctionCalls, int extensionSymbols, Consumer<BiConsumer<MainContent.MainContentData, String>> add) {
+    private void buildLocationBar(JPanel nav, Consumer<String> location, int webFunctionCalls, int extensionSymbols, Consumer<BiConsumer<IWebEngine, String>> add) {
 
         final int y = 2;
         final int height = 26;

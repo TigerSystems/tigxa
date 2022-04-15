@@ -14,6 +14,7 @@ import de.MarkusTieger.Tigxa.http.cookie.CookieManager;
 import de.MarkusTieger.Tigxa.update.Updater;
 import de.MarkusTieger.Tigxa.update.Version;
 import de.MarkusTieger.Tigxa.web.TrustManager;
+import de.MarkusTieger.Tigxa.web.WebUtils;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -123,9 +124,18 @@ public class Browser {
     @Setter
     private static Function<IAPI, IExtension> injectedExtension;
 
-    public static void start() {
+    @Getter
+    private static Mode mode;
+
+    public static void start(Mode mode) {
+
+        mode = Mode.NONE;
+
+        Browser.mode = mode;
 
         TrustManager.initialize();
+
+        WebUtils.initialize(mode);
 
         configRoot = initializeConfigRoot();
 
@@ -169,7 +179,7 @@ public class Browser {
             e.printStackTrace();
         }
 
-        createWindowWithDefaultHomePage(mainAPI);
+        createWindowWithDefaultHomePage(mode, mainAPI);
 
         extmanager.enableExtensions();
 
@@ -243,9 +253,9 @@ public class Browser {
         }
     }
 
-    private static void createWindowWithDefaultHomePage(IAPI api) {
+    private static void createWindowWithDefaultHomePage(Mode mode, IAPI api) {
         BrowserWindow window = new BrowserWindow();
-        window.initWindow(api, configRoot);
+        window.initWindow(mode, api, configRoot);
         window.newTab((String) null, true);
         if(latest != null) {
             window.newTab(api.getGUIManager().getScreenRegistry().getRegistredScreen(api.getNamespace(), "update"), true);
@@ -269,4 +279,13 @@ public class Browser {
 
         storeConfig(config);
     }
+
+
+
+    public static enum Mode {
+
+        JAVAFX, SWT, SWING, DJ_NATIVE_SWT, NONE;
+
+    }
+
 }

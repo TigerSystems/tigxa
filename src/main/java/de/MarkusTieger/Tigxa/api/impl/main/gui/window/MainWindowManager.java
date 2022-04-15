@@ -25,7 +25,7 @@ public class MainWindowManager implements IWindowManager {
     @Override
     public IWindow addWindow() {
         BrowserWindow window = new BrowserWindow();
-        window.initWindow(api, configRoot);
+        window.initWindow(Browser.getMode(), api, configRoot);
         IWindow win = genWindow(window);
         synchronized (map) {
             map.put(window, win);

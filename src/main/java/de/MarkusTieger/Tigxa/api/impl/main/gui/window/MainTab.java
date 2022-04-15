@@ -3,6 +3,7 @@ package de.MarkusTieger.Tigxa.api.impl.main.gui.window;
 import de.MarkusTieger.Tigxa.api.window.ITab;
 import de.MarkusTieger.Tigxa.api.window.IWindow;
 import de.MarkusTieger.Tigxa.api.window.TabType;
+import de.MarkusTieger.Tigxa.web.WebUtils;
 import lombok.Getter;
 
 import javax.swing.*;
@@ -37,7 +38,7 @@ public class MainTab implements ITab {
         if (isActive()) {
             window.map.remove(window, this);
             window.window.tabs.remove(window.window.tabs.indexOfComponent(comp));
-            window.window.unloadTab(comp);
+            WebUtils.unloadTab(window.window, comp);
             window.window.update();
         }
     }

@@ -1,3 +1,7 @@
+import java.util.zip.ZipEntry
+import java.util.zip.ZipInputStream
+import java.util.zip.ZipOutputStream
+
 plugins {
     id 'java'
     id 'application'
@@ -7,14 +11,26 @@ plugins {
 }
 
 group 'de.MarkusTieger'
-version '1.18.0'
+version '1.19.0'
+
+String dependencyOS = System.getProperty("os.name")
+String dependencyArch = System.getProperty("os.arch")
+
+boolean overwrite = false;
 
 if(System.getProperty("os.linux") != null){
     System.setProperty("os.name", "Linux")
     System.setProperty("os.arch", "amd64")
     System.setProperty("os.version", "5.13.0-37")
+
+    overwrite = true;
+
     System.out.println("Updated OS to Linux for Build")
 }
+
+swt(dependencyOS, dependencyArch, overwrite)
+
+
 
 String env = System.getenv("build_number");
 String commit = System.getenv("commit_hash");
@@ -79,7 +95,7 @@ tasks.withType(JavaCompile) {
 
 application {
     mainModule = 'de.MarkusTieger.Tigxa'
-    mainClass = 'de.MarkusTieger.Tigxa.Bootstrap'
+    mainClass = 'de.MarkusTieger.Tigxa.bootstrap.Bootstrap'
 }
 
 javafx {
@@ -111,6 +127,7 @@ dependencies {
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:${junitVersion}")
 
 
+
     // My Depends
 
     compileOnly 'org.projectlombok:lombok:1.18.22'
@@ -128,6 +145,18 @@ dependencies {
 
     implementation("net.sf.sociaal:freetts:1.2.2")
 
+
+
+    // SWT
+
+    // implementation("org.eclipse.swt:org.eclipse.swt:[3.0.0,)")
+    // implementation("org.eclipse.swt:org.eclipse.swt.win32.win32.x86_64:4.3")
+    // implementation files('libs/swt/DJNativeSwing.jar')
+    // implementation files('libs/swt/DJNativeSwing-SWT.jar')
+    implementation files('libs/swt/swt.all.jar')
+
+
+    // API
 
     implementation('de.MarkusTieger:tigxa-events:[1.0.0,)')
     implementation('de.MarkusTieger:tigxa-api:[1.0.0,)')
@@ -159,4 +188,110 @@ publishing {
             }
         }
     }
+}
+
+public static void swt(String dependencyOS, String dependencyArch, boolean overwrite){
+    String win_x86_64_swt = "https://repo1.maven.org/maven2/org/eclipse/swt/org.eclipse.swt.win32.win32.x86_64/4.3/org.eclipse.swt.win32.win32.x86_64-4.3.jar";
+
+    String linux_x86_64_swt = "https://repo1.maven.org/maven2/org/eclipse/swt/org.eclipse.swt.gtk.linux.x86_64/4.3/org.eclipse.swt.gtk.linux.x86_64-4.3.jar";
+
+    String osx_x86_64_swt = "https://repo1.maven.org/maven2/org/eclipse/swt/org.eclipse.swt.cocoa.macosx.x86_64/4.3/org.eclipse.swt.cocoa.macosx.x86_64-4.3.jar";
+
+    String swt = linux_x86_64_swt;
+
+    if(dependencyOS.toLowerCase().contains("win".toLowerCase())){
+        swt = win_x86_64_swt
+        if(dependencyArch.equalsIgnoreCase("amd64")) swt = win_x86_64_swt
+    }
+    if(dependencyOS.toLowerCase().contains("linux".toLowerCase())){
+        if(dependencyArch.equalsIgnoreCase("amd64")) swt = linux_x86_64_swt
+    }
+    if(dependencyOS.toLowerCase().contains("osx".toLowerCase())){
+        swt = osx_x86_64_swt
+        if(dependencyArch.equalsIgnoreCase("amd64")) swt = osx_x86_64_swt
+    }
+
+    boolean download = false
+
+    File target = new File("libs/swt", "swt.all.jar")
+    if(!target.exists() || overwrite){
+        download = true
+    }
+
+    if(download){
+
+        try {
+
+            File swt_target = new File("libs/swt", "swt.jar")
+            if(!swt_target.exists()){
+                swt_target.createNewFile()
+            }
+
+            HttpURLConnection con = (HttpURLConnection) new URL(swt).openConnection()
+            con.setRequestProperty("User-Agent", "Tigxa Build Gradle")
+            InputStream inputStream = con.getInputStream()
+            FileOutputStream outputStream = new FileOutputStream(swt_target)
+            int len
+            byte[] buffer = new byte[1024]
+            while((len = inputStream.read(buffer)) > 0){
+                outputStream.write(buffer, 0, len)
+            }
+            outputStream.flush()
+            outputStream.close()
+            inputStream.close()
+
+            if(!target.exists()) target.createNewFile()
+            outputStream = new FileOutputStream(target)
+            ZipOutputStream zos = new ZipOutputStream(outputStream)
+
+            List<String> entries = new ArrayList<>()
+            FileInputStream fis = new FileInputStream(new File("libs/swt", "DJNativeSwing.jar"))
+            ZipInputStream zis = new ZipInputStream(fis)
+            ZipEntry ze = null;
+
+            while((ze = zis.getNextEntry()) != null){
+                entries.add(ze.getName())
+                if(ze.isDirectory()){
+                    zos.putNextEntry(new ZipEntry(ze.getName()))
+                    zos.closeEntry()
+                } else {
+                    zos.putNextEntry(new ZipEntry(ze.getName()))
+                    while((len = zis.read(buffer)) > 0){
+                        zos.write(buffer, 0, len)
+                    }
+                    zos.closeEntry()
+                }
+
+                zis.closeEntry()
+            }
+            zis.close()
+
+            fis = new FileInputStream(swt_target)
+            zis = new ZipInputStream(fis)
+
+            while((ze = zis.getNextEntry()) != null){
+                if(entries.contains(ze.getName())) continue
+                if(ze.isDirectory()){
+                    zos.putNextEntry(new ZipEntry(ze.getName()))
+                    zos.closeEntry()
+                } else {
+                    zos.putNextEntry(new ZipEntry(ze.getName()))
+                    while((len = zis.read(buffer)) > 0){
+                        zos.write(buffer, 0, len)
+                    }
+                    zos.closeEntry()
+                }
+
+                zis.closeEntry()
+            }
+            zis.close()
+            zos.finish()
+            zos.flush()
+            zos.close()
+        } catch(Throwable e){
+            e.printStackTrace()
+        }
+
+    }
+
 }

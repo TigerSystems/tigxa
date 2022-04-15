@@ -8,8 +8,6 @@ import de.MarkusTieger.Tigxa.api.web.IWebManager;
 import de.MarkusTieger.Tigxa.api.window.ITab;
 import de.MarkusTieger.Tigxa.api.window.IWindow;
 import de.MarkusTieger.Tigxa.api.window.TabType;
-import de.MarkusTieger.Tigxa.web.MainContent;
-import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebView;
 
 import java.awt.*;
@@ -34,15 +32,10 @@ public class MainWebManager implements IWebManager {
         if (!api.getWindowManager().listWindows().contains(window)) return null;
         if (!window.listTabs().contains(iTab)) return null;
 
-        Map<Component, MainContent.MainContentData> map = ((MainWindow)window).window.getTabLinks();
+        Map<Component, IWebEngine> map = ((MainWindow)window).window.getTabLinks();
         synchronized (map){
-            return fromHandler(map.get(((MainTab)iTab).getComp()).webView());
+            return map.get(((MainTab)iTab).getComp());
         }
-    }
-
-    private IWebEngine genEngine(WebView data) {
-        MainWebEngine engine = new MainWebEngine(this, data);
-        return engine;
     }
 
     @Override
@@ -50,14 +43,4 @@ public class MainWebManager implements IWebManager {
         return getEngineByTab(iWindow.getSelectedTab());
     }
 
-    public IWebEngine fromHandler(WebView data) {
-        synchronized (map){
-            IWebEngine engine = map.get(data);
-            if(engine == null){
-                engine = genEngine(data);
-                map.put(data, engine);
-            }
-            return engine;
-        }
-    }
 }

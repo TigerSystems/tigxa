@@ -3,13 +3,13 @@ package de.MarkusTieger.Tigxa.web;
 import de.MarkusTieger.Tigxa.api.IAPI;
 import de.MarkusTieger.Tigxa.api.impl.main.gui.window.MainWindow;
 import de.MarkusTieger.Tigxa.api.impl.main.gui.window.MainWindowManager;
-import de.MarkusTieger.Tigxa.api.impl.main.web.MainWebManager;
 import de.MarkusTieger.Tigxa.api.web.IWebEngine;
 import de.MarkusTieger.Tigxa.api.window.ITab;
 import de.MarkusTieger.Tigxa.events.*;
 import de.MarkusTieger.Tigxa.gui.image.ImageLoader;
 import de.MarkusTieger.Tigxa.gui.window.BrowserWindow;
 import de.MarkusTieger.Tigxa.http.HttpUtils;
+import de.MarkusTieger.Tigxa.web.engine.fx.FXWebEngine;
 import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -36,7 +36,7 @@ import java.util.function.Consumer;
 public class MainContent {
 
     public record MainContentData(JFXPanel jfx, WebView webView, WebEngine webEngine,
-                                  Scene scene, WebHistory history, Runnable screenshot) {
+                                  Scene scene, WebHistory history, Runnable screenshot, FXWebEngine apiEngine) {
     }
 
     private static final String CLICK_CODE = "" +
@@ -93,7 +93,7 @@ public class MainContent {
 
         webEngine.setUserAgent(HttpUtils.AGENT);
 
-        IWebEngine engine = ((MainWebManager)window.getMapi().getWebManager()).fromHandler(webView);
+        FXWebEngine engine = new FXWebEngine(webView);
 
         webEngine.setConfirmHandler(new Callback<String, Boolean>() {
             @Override
@@ -155,18 +155,22 @@ public class MainContent {
             @Override
             public WebEngine call(PopupFeatures param) {
 
-                MainContentData data = window.newTab(true);
+                IWebEngine data = window.newTab(true);
 
                 try {
                     MainWindow w = ((MainWindow) ((MainWindowManager) window.getMapi().getWindowManager()).fromBW(window));
                     ITab tab = w.fromHandler(data);
 
-                    PopupCreationEvent event = new PopupCreationEvent(engine, ((MainWebManager) window.getMapi().getWebManager()).fromHandler(data.webView()), w, tab);
+                    PopupCreationEvent event = new PopupCreationEvent(engine, data, w, tab);
                     window.getMapi().getEventManager().call(event);
                 } catch (Throwable e) {
                 }
 
-                return data.webEngine();
+                if(data instanceof FXWebEngine fx){
+                    return fx.getHandler().getEngine();
+                }
+
+                return null;
             }
         });
 
@@ -202,7 +206,7 @@ public class MainContent {
                     new_window.addActionListener((e) -> {
                         Platform.runLater(() -> {
                             BrowserWindow w = new BrowserWindow();
-                            w.initWindow(window.getMapi(), window.getConfigRoot());
+                            w.initWindow(window.getMode(), window.getMapi(), window.getConfigRoot());
                             w.newTab((result + ""), true);
                         });
                     });
@@ -236,7 +240,7 @@ public class MainContent {
 
         jfx.setScene(scene);
 
-        return new MainContentData(jfx, webView, webEngine, scene, webEngine.getHistory(), screenshot);
+        return new MainContentData(jfx, webView, webEngine, scene, webEngine.getHistory(), screenshot, engine);
     }
 
     private static void addDefaults(JPopupMenu m, Runnable screenshot, WebEngine webEngine, Runnable devtools) {
@@ -263,9 +267,9 @@ public class MainContent {
             byte[] bytes = in.readAllBytes();
             in.close();
 
-            MainContentData data = window.newTab(true);
+            IWebEngine data = window.newTab(true);
 
-            data.webEngine().loadContent(new String(bytes, StandardCharsets.UTF_8), "plain/text");
+            data.loadContent(new String(bytes, StandardCharsets.UTF_8), "plain/text");
 
         } catch (Exception e) {
             e.printStackTrace();

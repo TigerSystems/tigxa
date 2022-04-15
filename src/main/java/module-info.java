@@ -1,5 +1,7 @@
 open module de.MarkusTieger.Tigxa {
 
+    requires swt.all;
+
     requires javafx.controls;
     requires javafx.fxml;
     requires javafx.web;
@@ -19,7 +21,6 @@ open module de.MarkusTieger.Tigxa {
     requires static lombok;
 
     requires yubico.validation.client2;
-
 
     requires tigxa.api;
     requires tigxa.events;
