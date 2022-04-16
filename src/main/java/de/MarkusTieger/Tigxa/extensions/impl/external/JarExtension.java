@@ -48,6 +48,6 @@ public class JarExtension extends BasicExtension {
 
     @Override
     public void onEvent(IEvent iEvent) {
-        Platform.runLater((e) -> ext.onEvent(iEvent));
+        Platform.runLater(() -> ext.onEvent(iEvent));
     }
 }
