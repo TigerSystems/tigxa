@@ -34,8 +34,13 @@ public class DJNativesWebHistory implements IWebHistory {
     }
 
     @Override
-    public int getCurrentIndex() {
-        return 0;
+    public void backward() {
+        syncExec(browser::navigateBack);
+    }
+
+    @Override
+    public void forward() {
+        syncExec(browser::navigateForward);
     }
 
     private void syncExec(final Runnable r) {
@@ -45,21 +50,5 @@ public class DJNativesWebHistory implements IWebHistory {
         } catch (final Exception e) {
             e.printStackTrace();
         }
-    }
-
-    @Override
-    public String get(int i) {
-        return null;
-    }
-
-    @Override
-    public String go(int i) {
-        String[] data = new String[1];
-        syncExec(() -> {
-            if(i == 1) browser.navigateForward();
-            if(i == -1) browser.navigateBack();
-            data[0] = browser.getResourceLocation();
-        });
-        return data[0];
     }
 }

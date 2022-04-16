@@ -15,7 +15,7 @@ public class FXWebEngine implements IWebEngine {
 
     public FXWebEngine(WebView data) {
         this.data = data;
-        this.history = new FXWebHistory(data.getEngine().getHistory());
+        this.history = new FXWebHistory(data.getEngine(), data.getEngine().getHistory());
     }
 
     @Override

@@ -14,26 +14,22 @@ public class SWTWebHistory implements IWebHistory {
 
     @Override
     public boolean hasBackwards() {
-        return browser.isBackEnabled() && false;
+        return browser.isBackEnabled();
     }
 
     @Override
     public boolean hasForwards() {
-        return browser.isForwardEnabled() && false; // TODO: WebHistory
+        return browser.isForwardEnabled();
     }
 
     @Override
-    public int getCurrentIndex() {
-        return 0;
+    public void backward() {
+        browser.back();
     }
 
     @Override
-    public String get(int i) {
-        return null;
+    public void forward() {
+        browser.forward();
     }
 
-    @Override
-    public String go(int i) {
-        return null;
-    }
 }

@@ -4,6 +4,7 @@ import de.MarkusTieger.Tigxa.api.IAPI;
 import de.MarkusTieger.Tigxa.api.action.IActionHandler;
 import de.MarkusTieger.Tigxa.api.event.IEventManager;
 import de.MarkusTieger.Tigxa.api.gui.IGUIManager;
+import de.MarkusTieger.Tigxa.api.media.IMediaManager;
 import de.MarkusTieger.Tigxa.api.permission.IPermissionManager;
 import de.MarkusTieger.Tigxa.api.permission.Permission;
 import de.MarkusTieger.Tigxa.api.web.IWebManager;
@@ -49,6 +50,13 @@ public class ExtensionAPI implements IAPI {
         if (!getPermissionManager().hasPermission(Permission.WEB))
             throw new RuntimeException("The Plugin doesn't have the Web permission!");
         return parent.getWebManager();
+    }
+
+    @Override
+    public IMediaManager getMediaManager() {
+        if (!getPermissionManager().hasPermission(Permission.MEDIA))
+            throw new RuntimeException("The Plugin doesn't have the Media permission!");
+        return parent.getMediaManager();
     }
 
     @Override

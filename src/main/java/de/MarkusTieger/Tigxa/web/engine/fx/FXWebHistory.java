@@ -1,13 +1,17 @@
 package de.MarkusTieger.Tigxa.web.engine.fx;
 
 import de.MarkusTieger.Tigxa.api.web.IWebHistory;
+import javafx.application.Platform;
+import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebHistory;
 
 public class FXWebHistory implements IWebHistory {
 
+    private final WebEngine engine;
     private final WebHistory history;
 
-    public FXWebHistory(WebHistory history){
+    public FXWebHistory(WebEngine engine, WebHistory history){
+        this.engine = engine;
         this.history = history;
     }
 
@@ -22,19 +26,20 @@ public class FXWebHistory implements IWebHistory {
     }
 
     @Override
-    public int getCurrentIndex() {
-        return history.getCurrentIndex();
+    public void backward() {
+        String url = history.getEntries().get(history.getCurrentIndex() - 1).getUrl();
+        Platform.runLater(() -> {
+            engine.load(url);
+            history.go(-1);
+        });
     }
 
     @Override
-    public String get(int i) {
-        return history.getEntries().get(getCurrentIndex() + i).getUrl();
-    }
-
-    @Override
-    public String go(int i) {
-        String loc = get(i);
-        history.go(i);
-        return loc;
+    public void forward() {
+        String url = history.getEntries().get(history.getCurrentIndex() + 1).getUrl();
+        Platform.runLater(() -> {
+            engine.load(url);
+            history.go(1);
+        });
     }
 }

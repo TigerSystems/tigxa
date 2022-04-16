@@ -1,5 +1,6 @@
 open module de.MarkusTieger.Tigxa {
 
+    // Web
     requires swt.all;
 
     requires javafx.controls;
@@ -11,10 +12,14 @@ open module de.MarkusTieger.Tigxa {
     requires com.dlsc.formsfx;
     requires org.kordamp.bootstrapfx.core;
 
+    // GUI
+
     requires java.desktop;
 
     requires com.formdev.flatlaf;
     requires com.formdev.flatlaf.intellijthemes;
+
+    // Technical
     requires jdk.jsobject;
 
     requires com.google.gson;
@@ -22,8 +27,16 @@ open module de.MarkusTieger.Tigxa {
 
     requires yubico.validation.client2;
 
+    // API
     requires tigxa.api;
     requires tigxa.events;
+
+    // Media
+    requires uk.co.caprica.vlcj;
+    requires vlcj.natives;
+    requires uk.co.caprica.vlcj.javafx;
+
+    // Music
     requires freetts;
 
     exports de.MarkusTieger.Tigxa;

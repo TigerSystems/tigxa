@@ -7,7 +7,10 @@ import de.MarkusTieger.Tigxa.api.event.IEventManager;
 import de.MarkusTieger.Tigxa.api.gui.IGUIManager;
 import de.MarkusTieger.Tigxa.api.impl.main.gui.screen.MainGuiManager;
 import de.MarkusTieger.Tigxa.api.impl.main.gui.window.MainWindowManager;
+import de.MarkusTieger.Tigxa.api.impl.main.media.MainMediaManager;
 import de.MarkusTieger.Tigxa.api.impl.main.web.MainWebManager;
+import de.MarkusTieger.Tigxa.api.media.IMediaEngine;
+import de.MarkusTieger.Tigxa.api.media.IMediaManager;
 import de.MarkusTieger.Tigxa.api.permission.IPermissionManager;
 import de.MarkusTieger.Tigxa.api.web.IWebManager;
 import de.MarkusTieger.Tigxa.api.window.IWindowManager;
@@ -22,6 +25,7 @@ public class MainAPI implements IAPI {
     private final IEventManager event;
     private final IGUIManager gui;
     private final IWebManager web;
+    private final IMediaManager media;
 
     public MainAPI(File configRoot) {
         perm = new MainPermManager();
@@ -29,6 +33,7 @@ public class MainAPI implements IAPI {
         gui = new MainGuiManager(this);
         event = new MainEventManager(perm);
         web = new MainWebManager(this);
+        media = new MainMediaManager(this);
     }
 
     @Override
@@ -44,6 +49,11 @@ public class MainAPI implements IAPI {
     @Override
     public IWebManager getWebManager() {
         return web;
+    }
+
+    @Override
+    public IMediaManager getMediaManager() {
+        return media;
     }
 
     @Override

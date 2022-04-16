@@ -1,12 +1,13 @@
 package de.MarkusTieger.Tigxa.api.impl.main.gui.window;
 
+import de.MarkusTieger.Tigxa.api.engine.IEngine;
 import de.MarkusTieger.Tigxa.api.gui.IScreen;
+import de.MarkusTieger.Tigxa.api.media.IMediaEngine;
 import de.MarkusTieger.Tigxa.api.web.IWebEngine;
 import de.MarkusTieger.Tigxa.api.window.ITab;
 import de.MarkusTieger.Tigxa.api.window.IWindow;
 import de.MarkusTieger.Tigxa.api.window.TabType;
 import de.MarkusTieger.Tigxa.gui.window.BrowserWindow;
-import de.MarkusTieger.Tigxa.web.MainContent;
 
 import java.awt.*;
 import java.util.List;
@@ -35,6 +36,16 @@ public class MainWindow implements IWindow {
     }
 
     @Override
+    public ITab addMedia(String url, boolean autoselect) {
+        Component comp = window.newMediaTab(url, autoselect);
+        ITab tab = genTab(TabType.MEDIA, comp);
+        synchronized (map) {
+            map.put(comp, tab);
+        }
+        return tab;
+    }
+
+    @Override
     public ITab add(IScreen iScreen) {
         if (!windowManager.api.getGUIManager().verify(iScreen)) return null;
 
@@ -54,7 +65,17 @@ public class MainWindow implements IWindow {
                 Component comp = window.tabs.getComponent(i);
                 ITab tab = map.get(comp);
                 if (tab == null) {
-                    tab = genTab(window.getTabLinks().get(comp) == null ? TabType.SCREEN : TabType.WEB, comp);
+                    TabType type = null;
+                    if(window.getTabLinks().get(comp) == null){
+                        type = TabType.SCREEN;
+                    } else {
+                        if(window.getTabLinks().get(comp) instanceof IMediaEngine media){
+                            type = TabType.MEDIA;
+                        } else if(window.getTabLinks().get(comp) instanceof IWebEngine web) {
+                            type = TabType.WEB;
+                        }
+                    }
+                    tab = genTab(type, comp);
                     map.put(comp, tab);
                 }
                 tabs.add(tab);
@@ -108,11 +129,11 @@ public class MainWindow implements IWindow {
         return window;
     }
 
-    public ITab fromHandler(IWebEngine data) {
-        Map<Component, IWebEngine> tabLinks = window.getTabLinks();
+    public ITab fromHandler(IEngine data) {
+        Map<Component, IEngine> tabLinks = window.getTabLinks();
         Component c = null;
         synchronized (tabLinks) {
-            for (Map.Entry<Component, IWebEngine> e : tabLinks.entrySet()) {
+            for (Map.Entry<Component, IEngine> e : tabLinks.entrySet()) {
                 if (e.getValue().equals(data)) {
                     c = e.getKey();
                     break;

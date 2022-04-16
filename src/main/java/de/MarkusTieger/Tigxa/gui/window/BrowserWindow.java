@@ -2,8 +2,10 @@ package de.MarkusTieger.Tigxa.gui.window;
 
 import de.MarkusTieger.Tigxa.Browser;
 import de.MarkusTieger.Tigxa.api.IAPI;
+import de.MarkusTieger.Tigxa.api.engine.IEngine;
 import de.MarkusTieger.Tigxa.api.gui.IScreen;
 import de.MarkusTieger.Tigxa.api.impl.main.gui.window.MainWindowManager;
+import de.MarkusTieger.Tigxa.api.media.IMediaEngine;
 import de.MarkusTieger.Tigxa.api.permission.Permission;
 import de.MarkusTieger.Tigxa.api.web.IWebEngine;
 import de.MarkusTieger.Tigxa.api.web.IWebHistory;
@@ -13,14 +15,11 @@ import de.MarkusTieger.Tigxa.extension.IExtension;
 import de.MarkusTieger.Tigxa.gui.components.DraggableTabbedPane;
 import de.MarkusTieger.Tigxa.gui.image.ImageLoader;
 import de.MarkusTieger.Tigxa.gui.theme.ThemeManager;
-import de.MarkusTieger.Tigxa.web.MainContent;
+import de.MarkusTieger.Tigxa.media.MediaUtils;
 import de.MarkusTieger.Tigxa.web.WebUtils;
 import javafx.application.Platform;
-import javafx.embed.swing.JFXPanel;
-import javafx.scene.web.WebHistory;
 import lombok.Getter;
 
-import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
@@ -29,7 +28,6 @@ import java.awt.*;
 import java.awt.event.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
-import java.io.IOException;
 import java.net.*;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
@@ -224,7 +222,91 @@ public class BrowserWindow {
     }
 
     @Getter
-    private final Map<Component, IWebEngine> tabLinks = Collections.synchronizedMap(new HashMap<>());
+    private final Map<Component, IEngine> tabLinks = Collections.synchronizedMap(new HashMap<>());
+
+
+
+
+
+
+
+    public Component newMediaTab(String url, boolean autoselect) {
+
+        if (tabs == null) throw new RuntimeException("GUI is not initialized!");
+
+        if (url == null) url = Browser.HOMEPAGE;
+
+        JPanel panel = new JPanel();
+
+        JPanel nav = new JPanel() {
+
+            @Override
+            public Dimension getPreferredSize() {
+                Dimension dim = panel.getSize();
+                dim.height = 30;
+                return dim;
+            }
+
+            @Override
+            public Dimension getMaximumSize() {
+                return getPreferredSize();
+            }
+
+            @Override
+            public Dimension getMinimumSize() {
+                return getPreferredSize();
+            }
+        };
+        nav.setLayout(null);
+
+
+        List<Runnable> handlers = new ArrayList<>();
+
+        Component main = MediaUtils.createPanel(BrowserWindow.this, nav, url, new IMediaEngine[1], panel, handlers);
+
+        JPanel content = new JPanel();
+
+        content.add(nav);
+
+        JPanel mainContent = new JPanel() {
+
+            @Override
+            public Dimension getPreferredSize() {
+                Dimension dim = panel.getSize();
+                dim.height -= 30;
+                return dim;
+            }
+
+            @Override
+            public Dimension getMaximumSize() {
+                return getPreferredSize();
+            }
+
+            @Override
+            public Dimension getMinimumSize() {
+                return getPreferredSize();
+            }
+        };
+        mainContent.setLayout(new GridLayout(1, 1));
+        mainContent.add(main);
+        content.add(mainContent);
+
+        panel.setLayout(new GridLayout(1, 1));
+        panel.add(content);
+
+        addKeyListener(panel);
+
+        tabs.addTab("Tab", panel);
+
+        update();
+
+        handlers.forEach(Runnable::run);
+
+        if (autoselect) tabs.setSelectedComponent(panel);
+
+        return panel;
+    }
+
 
     public Component newTab(String url, boolean autoselect) {
 
@@ -491,11 +573,11 @@ public class BrowserWindow {
         }
     }
 
-    public Consumer<String> buildNav(JPanel nav, Runnable backwards, Runnable forwards, Runnable reload, Consumer<String> location, IWebEngine mcd) {
+    public Consumer<String> buildNav(JPanel nav, Runnable backwards, Runnable forwards, Runnable reload, Consumer<String> location, IEngine mcd) {
 
-        ArrayList<BiConsumer<IWebEngine, String>> handlers = new ArrayList<>();
+        ArrayList<BiConsumer<IEngine, String>> handlers = new ArrayList<>();
 
-        final int webFunctionCalls = buildFunctionCalls(nav, backwards, forwards, reload, mcd == null ? null : mcd.getHistory(), handlers::add);
+        final int webFunctionCalls = buildFunctionCalls(nav, backwards, forwards, reload, mcd == null ? null : (mcd instanceof IWebEngine web ? web.getHistory() : null), handlers::add);
         final int extensionSymbols = buildExtensionBar(nav, webFunctionCalls);
 
         buildLocationBar(nav, location, webFunctionCalls, extensionSymbols, handlers::add);
@@ -503,7 +585,7 @@ public class BrowserWindow {
         return (loc) -> handlers.forEach((consumer) -> consumer.accept(mcd, loc));
     }
 
-    private int buildFunctionCalls(JPanel nav, Runnable backwards, Runnable forwards, Runnable reload, IWebHistory history, Consumer<BiConsumer<IWebEngine, String>> add) {
+    private int buildFunctionCalls(JPanel nav, Runnable backwards, Runnable forwards, Runnable reload, IWebHistory history, Consumer<BiConsumer<IEngine, String>> add) {
 
         JButton backwardsBtn = new JButton("<-") {
 
@@ -692,7 +774,7 @@ public class BrowserWindow {
 
     }
 
-    private void buildLocationBar(JPanel nav, Consumer<String> location, int webFunctionCalls, int extensionSymbols, Consumer<BiConsumer<IWebEngine, String>> add) {
+    private void buildLocationBar(JPanel nav, Consumer<String> location, int webFunctionCalls, int extensionSymbols, Consumer<BiConsumer<IEngine, String>> add) {
 
         final int y = 2;
         final int height = 26;
@@ -919,4 +1001,24 @@ public class BrowserWindow {
         frame.setVisible(false);
     }
 
+    public boolean isFullscreen() {
+        return frame.isUndecorated();
+    }
+
+    public void enterFullscreen() {
+        Toolkit kit = Toolkit.getDefaultToolkit();
+        frame.setVisible(false);
+        frame.setSize(kit.getScreenSize());
+        frame.setUndecorated(true);
+        frame.setAlwaysOnTop(true);
+        frame.setVisible(true);
+    }
+
+    public void exitFullscreen() {
+        frame.setVisible(false);
+        frame.setUndecorated(false);
+        frame.setAlwaysOnTop(false);
+        frame.setVisible(true);
+        frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
+    }
 }

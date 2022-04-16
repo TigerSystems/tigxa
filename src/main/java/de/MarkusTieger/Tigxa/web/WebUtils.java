@@ -3,11 +3,13 @@ package de.MarkusTieger.Tigxa.web;
 import chrriis.dj.nativeswing.swtimpl.NativeInterface;
 import chrriis.dj.nativeswing.swtimpl.components.*;
 import de.MarkusTieger.Tigxa.Browser;
+import de.MarkusTieger.Tigxa.api.engine.IEngine;
 import de.MarkusTieger.Tigxa.api.gui.IScreen;
 import de.MarkusTieger.Tigxa.api.web.IWebEngine;
 import de.MarkusTieger.Tigxa.api.web.IWebHistory;
 import de.MarkusTieger.Tigxa.gui.window.BrowserWindow;
 import de.MarkusTieger.Tigxa.web.engine.djnatives.DJNativesWebEngine;
+import de.MarkusTieger.Tigxa.web.engine.fx.FXConent;
 import de.MarkusTieger.Tigxa.web.engine.none.NoneWebEngine;
 import de.MarkusTieger.Tigxa.web.engine.swing.SwingWebEngine;
 
@@ -18,18 +20,14 @@ import org.eclipse.swt.browser.LocationEvent;
 import org.eclipse.swt.browser.LocationListener;
 import org.eclipse.swt.browser.TitleEvent;
 import org.eclipse.swt.browser.TitleListener;
-import org.eclipse.swt.internal.C;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
-import javax.swing.event.DocumentEvent;
-import javax.swing.event.DocumentListener;
 import javax.swing.event.HyperlinkEvent;
 import javax.swing.event.HyperlinkListener;
-import javax.swing.text.EditorKit;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -40,7 +38,6 @@ import java.net.URL;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
-import java.util.function.Supplier;
 
 public class WebUtils {
 
@@ -52,13 +49,14 @@ public class WebUtils {
 
     public static void reload(BrowserWindow window){
 
-        Map<Component, IWebEngine> tabLinks = window.getTabLinks();
+        Map<Component, IEngine> tabLinks = window.getTabLinks();
 
         synchronized (tabLinks) {
                         Component c = window.tabs.getSelectedComponent();
-                        IWebEngine data = tabLinks.get(c);
+                        IEngine data = tabLinks.get(c);
                         if (data == null) return;
-                        data.reload();
+                        if(!(data instanceof IWebEngine web)) return;
+                        web.reload();
                     }
 
     }
@@ -70,10 +68,10 @@ public class WebUtils {
 
     public static void unloadTab(BrowserWindow window, Component c) {
 
-        Map<Component, IWebEngine> tabLinks = window.getTabLinks();
+        Map<Component, IEngine> tabLinks = window.getTabLinks();
 
         synchronized (tabLinks) {
-            IWebEngine data = tabLinks.get(c);
+            IEngine data = tabLinks.get(c);
             if (data == null) return;
             data.load(null);
         }
@@ -125,7 +123,7 @@ public class WebUtils {
             }};
             Runnable devtools = () -> devtoolsarray[0].run();
 
-            MainContent.MainContentData data = MainContent.createContent(window, (title) -> {
+            FXConent.MainContentData data = FXConent.createContent(window, (title) -> {
 
                         int index = -1;
 
@@ -166,7 +164,7 @@ public class WebUtils {
                 // Backwards
                 IWebHistory history = fe.getHistory();
                 if(history.hasBackwards()){
-                    fe.load(history.go(-1));
+                    history.backward();
                 }
 
             }, () -> {
@@ -174,7 +172,7 @@ public class WebUtils {
                 // Forwards
                 IWebHistory history = fe.getHistory();
                 if(history.hasForwards()){
-                    fe.load(history.go(1));
+                    history.forward();
                 }
 
 
@@ -263,7 +261,7 @@ public class WebUtils {
                 // Backwards
                 IWebHistory history = fe.getHistory();
                 if(history.hasBackwards()){
-                    fe.load(history.go(-1));
+                    history.backward();
                 }
 
             }, () -> {
@@ -271,7 +269,7 @@ public class WebUtils {
                 // Forwards
                 IWebHistory history = fe.getHistory();
                 if(history.hasForwards()){
-                    fe.load(history.go(1));
+                    history.forward();
                 }
 
 
@@ -415,7 +413,7 @@ public class WebUtils {
                     // Backwards
                     IWebHistory history = fe.getHistory();
                     if (history.hasBackwards()) {
-                        fe.load(history.go(-1));
+                        history.backward();
                     }
 
                 }, () -> {
@@ -423,7 +421,7 @@ public class WebUtils {
                     // Forwards
                     IWebHistory history = fe.getHistory();
                     if (history.hasForwards()) {
-                        fe.load(history.go(1));
+                        history.forward();
                     }
 
 
@@ -512,7 +510,7 @@ public class WebUtils {
             visibleHandler.add(invokeRun);
         }
 
-        Map<Component, IWebEngine> tabLinks = window.getTabLinks();
+        Map<Component, IEngine> tabLinks = window.getTabLinks();
         synchronized (tabLinks) {
             tabLinks.put(component, engine);
         }
@@ -566,7 +564,7 @@ public class WebUtils {
             // Backwards
             IWebHistory history = fe.getHistory();
             if (history.hasBackwards()) {
-                fe.load(history.go(-1));
+                history.backward();
             }
 
         }, () -> {
@@ -574,7 +572,7 @@ public class WebUtils {
             // Forwards
             IWebHistory history = fe.getHistory();
             if (history.hasForwards()) {
-                fe.load(history.go(1));
+                history.forward();
             }
 
 

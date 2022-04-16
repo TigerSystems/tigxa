@@ -1,5 +1,6 @@
-package de.MarkusTieger.Tigxa.web;
+package de.MarkusTieger.Tigxa.web.engine.fx;
 
+import de.MarkusTieger.Tigxa.Browser;
 import de.MarkusTieger.Tigxa.api.IAPI;
 import de.MarkusTieger.Tigxa.api.impl.main.gui.window.MainWindow;
 import de.MarkusTieger.Tigxa.api.impl.main.gui.window.MainWindowManager;
@@ -9,7 +10,7 @@ import de.MarkusTieger.Tigxa.events.*;
 import de.MarkusTieger.Tigxa.gui.image.ImageLoader;
 import de.MarkusTieger.Tigxa.gui.window.BrowserWindow;
 import de.MarkusTieger.Tigxa.http.HttpUtils;
-import de.MarkusTieger.Tigxa.web.engine.fx.FXWebEngine;
+import de.MarkusTieger.Tigxa.media.MediaUtils;
 import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -33,7 +34,7 @@ import java.net.*;
 import java.nio.charset.StandardCharsets;
 import java.util.function.Consumer;
 
-public class MainContent {
+public class FXConent {
 
     public record MainContentData(JFXPanel jfx, WebView webView, WebEngine webEngine,
                                   Scene scene, WebHistory history, Runnable screenshot, FXWebEngine apiEngine) {
@@ -195,10 +196,24 @@ public class MainContent {
                     m.show(jfx, (int) event.getX(), (int) event.getY());
                 } else {
 
+                    String s = result + "";
+                    if(!(s.toLowerCase().startsWith("http://".toLowerCase()) || s.toLowerCase().startsWith("https://"))){
+                        try {
+                            URL current = new URL(webEngine.getLocation());
+                            if(s.startsWith("/")){
+                                s = new URI(current.getProtocol(), null, current.getHost(), current.getPort(), s, null, null).toString();
+                            } else {
+                                s = new URI(current.getProtocol(), null, current.getHost(), current.getPort(), current.getPath() + s, null, null).toString();
+                            }
+                        } catch (Exception e){
+                        }
+                    }
+                    final String str = s;
+
                     JMenuItem new_tab = new JMenuItem("Open in new Tab");
                     new_tab.addActionListener((e) -> {
                         Platform.runLater(() -> {
-                            window.newTab((result + ""), true);
+                            window.newTab((str), true);
                         });
                     });
 
@@ -207,21 +222,38 @@ public class MainContent {
                         Platform.runLater(() -> {
                             BrowserWindow w = new BrowserWindow();
                             w.initWindow(window.getMode(), window.getMapi(), window.getConfigRoot());
-                            w.newTab((result + ""), true);
+                            w.newTab((str), true);
                         });
                     });
 
                     JMenuItem copy = new JMenuItem("Copy to Clipboard");
                     copy.addActionListener((e) -> {
                         Toolkit toolkit = Toolkit.getDefaultToolkit();
-                        toolkit.getSystemClipboard().setContents(new StringSelection(result + ""), null);
+                        toolkit.getSystemClipboard().setContents(new StringSelection(str), null);
                     });
+
+                    JMenuItem download = new JMenuItem("Download File");
+                    download.addActionListener((e) -> {
+                        Browser.getDownloader().download(str);
+                    });
+
+                    JMenu open_media = new JMenu("Open Media with");
+                    open_media.setEnabled(MediaUtils.isReady());
+
+                    JMenuItem media_vlc = new JMenuItem("VLC");
+                    media_vlc.addActionListener((e) -> {
+                        window.newMediaTab(str, true);
+                    });
+                    open_media.add(media_vlc);
+
 
                     JPopupMenu context = new JPopupMenu();
 
                     context.add(new_tab);
                     context.add(new_window);
                     context.add(copy);
+                    context.add(download);
+                    context.add(open_media);
                     context.addSeparator();
 
                     addDefaults(context, screenshot, webEngine, devtools);

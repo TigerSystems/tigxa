@@ -15,17 +15,12 @@ public class NoneWebHistory implements IWebHistory {
     }
 
     @Override
-    public int getCurrentIndex() {
-        return 0;
+    public void backward() {
+
     }
 
     @Override
-    public String get(int i) {
-        return null;
-    }
+    public void forward() {
 
-    @Override
-    public String go(int i) {
-        return null;
     }
 }

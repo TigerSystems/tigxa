@@ -1,11 +1,12 @@
-package de.MarkusTieger.Tigxa.api.impl.main.web;
+package de.MarkusTieger.Tigxa.api.impl.main.media;
 
 import de.MarkusTieger.Tigxa.api.IAPI;
 import de.MarkusTieger.Tigxa.api.engine.IEngine;
 import de.MarkusTieger.Tigxa.api.impl.main.gui.window.MainTab;
 import de.MarkusTieger.Tigxa.api.impl.main.gui.window.MainWindow;
+import de.MarkusTieger.Tigxa.api.media.IMediaEngine;
+import de.MarkusTieger.Tigxa.api.media.IMediaManager;
 import de.MarkusTieger.Tigxa.api.web.IWebEngine;
-import de.MarkusTieger.Tigxa.api.web.IWebManager;
 import de.MarkusTieger.Tigxa.api.window.ITab;
 import de.MarkusTieger.Tigxa.api.window.IWindow;
 import de.MarkusTieger.Tigxa.api.window.TabType;
@@ -16,19 +17,19 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-public class MainWebManager implements IWebManager {
+public class MainMediaManager implements IMediaManager {
 
     private final IAPI api;
 
-    public MainWebManager(IAPI api) {
+    public MainMediaManager(IAPI api) {
         this.api = api;
     }
 
-    private final Map<WebView, IWebEngine> map = Collections.synchronizedMap(new HashMap<>());
+    private final Map<WebView, IMediaEngine> map = Collections.synchronizedMap(new HashMap<>());
 
     @Override
-    public IWebEngine getEngineByTab(ITab iTab) {
-        if (iTab.getType() != TabType.WEB) return null;
+    public IMediaEngine getEngineByTab(ITab iTab) {
+        if (iTab.getType() != TabType.MEDIA) return null;
 
         IWindow window = iTab.getWindow();
         if (!api.getWindowManager().listWindows().contains(window)) return null;
@@ -36,13 +37,12 @@ public class MainWebManager implements IWebManager {
 
         Map<Component, IEngine> map = ((MainWindow)window).window.getTabLinks();
         synchronized (map){
-            return (IWebEngine) map.get(((MainTab)iTab).getComp());
+            return (IMediaEngine) map.get(((MainTab)iTab).getComp());
         }
     }
 
     @Override
-    public IWebEngine getEngineFromCurrentTab(IWindow iWindow) {
+    public IMediaEngine getEngineFromCurrentTab(IWindow iWindow) {
         return getEngineByTab(iWindow.getSelectedTab());
     }
-
 }

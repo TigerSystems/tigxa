@@ -3,6 +3,7 @@ package de.MarkusTieger.Tigxa;
 import com.formdev.flatlaf.FlatLightLaf;
 import de.MarkusTieger.Tigxa.api.IAPI;
 import de.MarkusTieger.Tigxa.api.impl.main.MainAPI;
+import de.MarkusTieger.Tigxa.downloads.FileDownloader;
 import de.MarkusTieger.Tigxa.extension.IExtension;
 import de.MarkusTieger.Tigxa.extensions.impl.ExtensionManager;
 import de.MarkusTieger.Tigxa.extensions.impl.internal.AdblockerExtension;
@@ -11,6 +12,7 @@ import de.MarkusTieger.Tigxa.gui.screen.InternalScreenRegistry;
 import de.MarkusTieger.Tigxa.gui.theme.ThemeManager;
 import de.MarkusTieger.Tigxa.gui.window.BrowserWindow;
 import de.MarkusTieger.Tigxa.http.cookie.CookieManager;
+import de.MarkusTieger.Tigxa.media.MediaUtils;
 import de.MarkusTieger.Tigxa.update.Updater;
 import de.MarkusTieger.Tigxa.update.Version;
 import de.MarkusTieger.Tigxa.web.TrustManager;
@@ -116,6 +118,9 @@ public class Browser {
     private static Updater updater = new Updater();
 
     @Getter
+    private static FileDownloader downloader = new FileDownloader();
+
+    @Getter
     private static List<Consumer<Version>> updateListener = new ArrayList<>();
 
     @Getter
@@ -132,6 +137,7 @@ public class Browser {
         Browser.mode = mode;
 
         WebUtils.initialize(mode);
+        MediaUtils.initialize();
 
         TrustManager.initialize();
 
@@ -277,7 +283,6 @@ public class Browser {
 
         storeConfig(config);
     }
-
 
 
     public static enum Mode {
