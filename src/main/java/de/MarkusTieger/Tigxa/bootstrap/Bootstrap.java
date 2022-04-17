@@ -13,6 +13,13 @@ public class Bootstrap {
 
     public static void main(String[] args) {
 
+        if(args.length > 0){
+            if(args[0].equalsIgnoreCase("recovery")){
+                ErrorLauncher.launch(LaunchError.ALL_FAILED);
+                return;
+            }
+        }
+
         Logger root = Logger.getRootLogger();
 
         Layout layout = new PatternLayout("[%d{HH:mm:ss}] [ %t/%-5p] [%l] %m%n");
@@ -30,8 +37,6 @@ public class Bootstrap {
         LOGGER.info("----------------------------------------");
 
         LOGGER.info("Bootstrap is launching Application...");
-
-        if(true) return;
 
         String force_launch = System.getProperty("tigxa.force_launch");
 
