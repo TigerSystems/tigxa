@@ -43,6 +43,8 @@ public class PrefixSearch {
 
             map.put("z", "https://www.amazon.com/s/ref=nb_sb_noss?field-keywords=%s");
             map.put("az", map.get("z"));
+
+            map.put("git", "https://github.com/search?q=%s");
         }
         Browser.saveConfig();
 
