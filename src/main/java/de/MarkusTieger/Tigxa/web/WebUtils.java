@@ -14,6 +14,7 @@ import de.MarkusTieger.Tigxa.web.engine.none.NoneWebEngine;
 import de.MarkusTieger.Tigxa.web.engine.swing.SwingWebEngine;
 
 import de.MarkusTieger.Tigxa.web.engine.swt.SWTWebEngine;
+import org.apache.log4j.Logger;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.awt.SWT_AWT;
 import org.eclipse.swt.browser.LocationEvent;
@@ -41,8 +42,12 @@ import java.util.function.Consumer;
 
 public class WebUtils {
 
+    private static final Logger LOGGER = Logger.getLogger(WebUtils.class);
+
     public static void initialize(Browser.Mode mode){
+        LOGGER.debug("Initializing...");
         if(mode == Browser.Mode.DJ_NATIVE_SWT){
+            LOGGER.debug("Opening Native-Interface of \"" + mode.name() + "\"...");
             NativeInterface.open();
         }
     }
@@ -56,6 +61,7 @@ public class WebUtils {
                         IEngine data = tabLinks.get(c);
                         if (data == null) return;
                         if(!(data instanceof IWebEngine web)) return;
+
                         web.reload();
                     }
 

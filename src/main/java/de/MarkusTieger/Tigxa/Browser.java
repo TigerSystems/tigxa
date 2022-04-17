@@ -19,6 +19,8 @@ import de.MarkusTieger.Tigxa.web.TrustManager;
 import de.MarkusTieger.Tigxa.web.WebUtils;
 import lombok.Getter;
 import lombok.Setter;
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
 
 import javax.swing.*;
 import java.io.File;
@@ -36,6 +38,8 @@ import javax.speech.synthesis.Synthesizer;
 import javax.speech.synthesis.SynthesizerModeDesc;
 
 public class Browser {
+
+    private static final Logger LOGGER = LogManager.getLogger(Browser.class);
 
     public static final String DEFAULT_HOMEPAGE = "https://google.com";
     public static final String DEFAULT_SEARCH = "https://google.com/search?q=%s";
@@ -136,20 +140,31 @@ public class Browser {
 
         Browser.mode = mode;
 
+        LOGGER.info("Starting " + FULL_NAME + " v." + FULL_VERSION);
+
+        LOGGER.info("Initializing Web-Engine...");
         WebUtils.initialize(mode);
+
+        LOGGER.info("Initialize Media-Engine...");
         MediaUtils.initialize();
 
+        LOGGER.info("Initialize TrustManager...");
         TrustManager.initialize();
 
+        LOGGER.info("Initialize Config-Root...");
         configRoot = initializeConfigRoot();
 
+        LOGGER.info("Loading Configuration...");
         config = loadConfig();
 
+        LOGGER.info("Loading Configurations into Memory...");
         HOMEPAGE = config.getProperty("homepage", DEFAULT_HOMEPAGE);
         SEARCH = config.getProperty("search", DEFAULT_SEARCH);
         SAVE_COOKIES = !config.getProperty("save_cookies", "true").equalsIgnoreCase("false");
         FONT = config.getProperty("font", "-");
         if(FONT.equalsIgnoreCase("-")) FONT = null;
+
+        LOGGER.info("Applying Theme...");
 
         if (!ThemeManager.setTheme(config)) {
             ThemeManager.setTheme(FlatLightLaf.class);
@@ -157,130 +172,187 @@ public class Browser {
 
         ThemeManager.applyFontByConfig(config);
 
-        if(SAVE_COOKIES) CookieManager.initialize(configRoot);
+        if(SAVE_COOKIES) {
+            LOGGER.info("Initialize Cookie-Store...");
+            CookieManager.initialize(configRoot);
+        }
+
+        LOGGER.info("Initializing Extension-API...");
 
         mainAPI = new MainAPI(configRoot);
+
+        LOGGER.info("Initializing Screens...");
 
         InternalScreenRegistry registry = new InternalScreenRegistry(mainAPI);
         registry.init();
         registry.apply();
 
+        LOGGER.info("Registring Update-Watcher...");
+
         updateListener.add((ver) -> latest = ver);
+
+        LOGGER.info("Checking for Updates...");
 
         checkUpdates();
 
+        LOGGER.info("Initializing Extension-Manager...");
+
         extmanager = new ExtensionManager();
+
+        LOGGER.info("Loading Extensions...");
         try {
             extmanager.loadExtensions(mainAPI, configRoot);
 
             if(injectedExtension != null){
+                LOGGER.info("Injected-Extension found! Injecting...");
                 extmanager.loadExtension(mainAPI, injectedExtension);
             }
 
+            LOGGER.info("Loading Internal-Extensions...");
             extmanager.loadExtension(mainAPI, AdblockerExtension::new);
             extmanager.loadExtension(mainAPI, SettingsExtension::new);
         } catch (IOException e) {
-            e.printStackTrace();
+            LOGGER.warn("Extensions can't loaded", e);
         }
 
+        LOGGER.info("Creating Window...");
         createWindowWithDefaultHomePage(mode, mainAPI);
 
+        LOGGER.info("Enabling Extensions...");
         extmanager.enableExtensions();
 
+        LOGGER.info("Store Configurations...");
         storeConfig(config);
 
     }
 
     private static void checkUpdates() {
+
+        LOGGER.debug("Checking Update-Conditions...");
+
         if(!updater.checkJar()) return;
         if(updater.isUpdated()) return;
         if(updater.isDebugBuild()) return;
 
+        LOGGER.debug("Retrieving Latest-Update...");
+
         Version latest = updater.getLatestVersion();
+        if(latest == null){
+            LOGGER.debug("Latest Version can't found.");
+            return;
+        }
+        LOGGER.debug("Checking Current-Version...");
         boolean update = false;
         if(!latest.version().equalsIgnoreCase(Browser.VERSION)) update = true;
         if(!latest.build().equalsIgnoreCase(Browser.BUILD)) update = true;
         if(!latest.commit().equalsIgnoreCase(Browser.COMMIT_HASH)) update = true;
 
         if(update) {
+            LOGGER.debug("Newer Update found!");
             updateListener.forEach((listener) -> listener.accept(latest));
-        }
+        } else LOGGER.debug("Current Version is the latest.");
     }
 
     public static void updateUI() {
+        LOGGER.debug("Updating UI for Windows...");
         synchronized (windows) {
             windows.forEach(BrowserWindow::updateUI);
         }
+
+        LOGGER.debug("Updating UI for Frames...");
         synchronized (frames) {
             frames.forEach(SwingUtilities::updateComponentTreeUI);
         }
     }
 
     private static Properties loadConfig() {
+
+        LOGGER.debug("Checking Configuration...");
+
         File file = new File(configRoot, "tigxa.properties");
         if (file.exists()) {
+            LOGGER.debug("Loading Configuration...");
             Properties prop = new Properties();
             try {
                 FileReader reader = new FileReader(file, StandardCharsets.UTF_8);
                 prop.load(reader);
                 reader.close();
             } catch (IOException e) {
-                e.printStackTrace();
+                LOGGER.warn("Configuration-Loading failed!", e);
             }
             return prop;
         } else {
+            LOGGER.debug("Creating File...");
             try {
                 file.createNewFile();
             } catch (IOException e) {
-                e.printStackTrace();
+                LOGGER.warn("Can't Create File!", e);
             }
         }
         return new Properties();
     }
 
     private static void storeConfig(Properties prop) {
+
+        LOGGER.debug("Preparing Config-Store...");
+
         File file = new File(configRoot, "tigxa.properties");
         if (!file.exists()) {
+            LOGGER.debug("Creating File...");
             try {
                 file.createNewFile();
             } catch (IOException e) {
-                e.printStackTrace();
+                LOGGER.warn("Can't Create File!", e);
             }
         }
+
+        LOGGER.debug("Writing to File...");
         try {
             FileWriter writer = new FileWriter(file, StandardCharsets.UTF_8);
             prop.store(writer, "Tigxa Configuration File");
             writer.flush();
             writer.close();
         } catch (IOException e) {
-            e.printStackTrace();
+            LOGGER.warn("Can't write to File!", e);
         }
     }
 
     private static void createWindowWithDefaultHomePage(Mode mode, IAPI api) {
+        LOGGER.debug("Initializing Window...");
         BrowserWindow window = new BrowserWindow();
         window.initWindow(mode, api, configRoot);
+        LOGGER.debug("Opening Tab...");
         window.newTab((String) null, true);
         if(latest != null) {
+            LOGGER.debug("Opening Update-Tab...");
             window.newTab(api.getGUIManager().getScreenRegistry().getRegistredScreen(api.getNamespace(), "update"), true);
         }
     }
 
     private static File initializeConfigRoot() {
+        LOGGER.debug("Initializing Config-Root...");
         File configRoot = new File(System.getProperty("user.home", "."));
-        if (!configRoot.exists()) configRoot.mkdirs();
+        if (!configRoot.exists()) {
+            LOGGER.debug("Mkdir...");
+            configRoot.mkdirs();
+        }
         return configRoot;
     }
 
     public static void saveConfig() {
 
+        LOGGER.debug("Save Config...");
+
+        LOGGER.debug("Save Theme...");
         ThemeManager.saveConfig(config);
 
+        LOGGER.debug("Save Memory...");
         config.setProperty("homepage", HOMEPAGE);
         config.setProperty("search", SEARCH);
         config.setProperty("save_cookies", SAVE_COOKIES ? "true" : "false");
         config.setProperty("font", FONT == null ? "-" : FONT);
 
+        LOGGER.debug("Save-Config...");
         storeConfig(config);
     }
 

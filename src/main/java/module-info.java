@@ -1,5 +1,8 @@
 open module de.MarkusTieger.Tigxa {
 
+    // Logging
+    requires log4j;
+
     // Web
     requires swt.all;
 

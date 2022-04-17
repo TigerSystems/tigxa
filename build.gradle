@@ -11,7 +11,7 @@ plugins {
 }
 
 group 'de.MarkusTieger'
-version '1.21.1'
+version '1.22.0'
 
 String dependencyOS = System.getProperty("os.name")
 String dependencyArch = System.getProperty("os.arch")
@@ -123,21 +123,29 @@ dependencies {
 
 
 
-    // My Depends
+    // Logging
+
+    implementation("log4j:log4j:1.2.17")
+
+
+    // GUI
+
+    implementation('com.formdev:flatlaf:2.1')
+    implementation('com.formdev:flatlaf-extras:2.1')
+    implementation('com.formdev:flatlaf-intellij-themes:2.1')
+
+    // Technical
 
     compileOnly 'org.projectlombok:lombok:1.18.22'
     annotationProcessor 'org.projectlombok:lombok:1.18.22'
     testCompileOnly 'org.projectlombok:lombok:1.18.22'
     testAnnotationProcessor 'org.projectlombok:lombok:1.18.22'
 
-    implementation('com.formdev:flatlaf:2.1')
-    implementation('com.formdev:flatlaf-extras:2.1')
-    implementation('com.formdev:flatlaf-intellij-themes:2.1')
-
     implementation("com.google.code.gson:gson:2.9.0")
 
     implementation('com.yubico:yubico-validation-client2:3.1.0')
 
+    // Music
     implementation("net.sf.sociaal:freetts:1.2.2")
 
 
@@ -195,6 +203,7 @@ publishing {
         }
     }
 }
+
 
 public static void swt(String dependencyOS, String dependencyArch, boolean overwrite){
     String win_x86_64_swt = "https://repo1.maven.org/maven2/org/eclipse/swt/org.eclipse.swt.win32.win32.x86_64/4.3/org.eclipse.swt.win32.win32.x86_64-4.3.jar";
