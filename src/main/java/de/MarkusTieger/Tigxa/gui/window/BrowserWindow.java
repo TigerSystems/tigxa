@@ -17,6 +17,7 @@ import de.MarkusTieger.Tigxa.gui.image.ImageLoader;
 import de.MarkusTieger.Tigxa.gui.theme.ThemeManager;
 import de.MarkusTieger.Tigxa.media.MediaUtils;
 import de.MarkusTieger.Tigxa.web.WebUtils;
+import de.MarkusTieger.Tigxa.web.search.PrefixSearch;
 import javafx.application.Platform;
 import lombok.Getter;
 
@@ -134,7 +135,7 @@ public class BrowserWindow {
         tabs.setHandler((index, c) -> {
 
             tabs.removeTabAt(index);
-            if (tabs.getTabCount() < 1) {
+            if (tabs.getTabCount() < 2) {
                 frame.setVisible(false);
 
                 List<BrowserWindow> windows = Browser.getWindows();
@@ -146,7 +147,11 @@ public class BrowserWindow {
             WebUtils.unloadTab(BrowserWindow.this, c);
             update();
 
-        }, () -> Platform.runLater(() -> newTab((String)null, true)));
+        }, () -> {
+
+            Platform.runLater(() -> newTab((String)null, true));
+
+        } );
 
         /*if(theme.tabBG() != null) tabs.setBackground(theme.tabBG());
         if(theme.tabFG() != null) tabs.setForeground(theme.tabFG());*/
@@ -173,7 +178,7 @@ public class BrowserWindow {
 
                     Component c = tabs.getSelectedComponent();
                     tabs.removeTabAt(index);
-                    if (tabs.getTabCount() < 1) {
+                    if (tabs.getTabCount() < 2) {
                         frame.setVisible(false);
 
                         List<BrowserWindow> windows = Browser.getWindows();
@@ -929,30 +934,7 @@ public class BrowserWindow {
         field.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                try {
-                    URI uri = new URI(field.getText());
-                    if (uri.getScheme() == null) throw new URISyntaxException(field.getText(), "No Scheme set!");
-                    location.accept(uri.toString());
-                } catch (URISyntaxException ex) {
-                    try {
-                        URI uri = new URI("https://" + field.getText());
-                        try {
-                            InetAddress.getByName(uri.getHost());
-                            location.accept(uri.toString());
-                        } catch (UnknownHostException exc) {
-                            throw new URISyntaxException(field.getText(), "Unknown Host!");
-                        }
-                    } catch (URISyntaxException exc) {
-                        String query = field.getText();
-                        try {
-
-                            URI uri = new URI(String.format(Browser.SEARCH, URLEncoder.encode(query, StandardCharsets.UTF_8)));
-                            location.accept(uri.toString());
-                        } catch (URISyntaxException uriSyntaxException) {
-                            uriSyntaxException.printStackTrace();
-                        }
-                    }
-                }
+                PrefixSearch.search(location, field.getText());
             }
         });
         field.addFocusListener(new FocusListener() {

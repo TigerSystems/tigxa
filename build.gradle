@@ -11,7 +11,7 @@ plugins {
 }
 
 group 'de.MarkusTieger'
-version '1.23.0'
+version '1.24.0'
 
 String dependencyOS = System.getProperty("os.name")
 String dependencyArch = System.getProperty("os.arch")

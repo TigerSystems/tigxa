@@ -97,9 +97,9 @@ public class ThemeManager {
     }
 
     public static boolean setTheme(Properties prop) {
-        String classname = prop.getProperty("theme");
+        String classname = prop.getProperty(ThemeManager.class.getName() + ".theme");
         if (classname == null) {
-            prop.setProperty("theme", classname = FlatLightLaf.class.getName());
+            prop.setProperty(ThemeManager.class.getName() + ".theme", classname = FlatLightLaf.class.getName());
         }
         try {
             Class<?> clazz = Class.forName(classname);
@@ -127,7 +127,7 @@ public class ThemeManager {
     }
 
     public static void saveConfig(Properties config) {
-        config.setProperty("theme", theme.getName());
+        if(theme != null) config.setProperty(ThemeManager.class.getName() + ".theme", theme.getName());
     }
 
     public static boolean isDark() {

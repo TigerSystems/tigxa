@@ -17,6 +17,7 @@ import de.MarkusTieger.Tigxa.update.Updater;
 import de.MarkusTieger.Tigxa.update.Version;
 import de.MarkusTieger.Tigxa.web.TrustManager;
 import de.MarkusTieger.Tigxa.web.WebUtils;
+import de.MarkusTieger.Tigxa.web.search.PrefixSearch;
 import javafx.scene.web.WebView;
 import lombok.Getter;
 import lombok.Setter;
@@ -42,7 +43,7 @@ public class Browser {
 
     private static final Logger LOGGER = LogManager.getLogger(Browser.class);
 
-    public static final String DEFAULT_HOMEPAGE = "https://google.com";
+    public static final String DEFAULT_HOMEPAGE = "https://link.tigersystems.cf/homepage";
     public static final String DEFAULT_SEARCH = "https://google.com/search?q=%s";
 
     public static final String NAME;
@@ -170,11 +171,15 @@ public class Browser {
         config = loadConfig();
 
         LOGGER.info("Loading Configurations into Memory...");
-        HOMEPAGE = config.getProperty("homepage", DEFAULT_HOMEPAGE);
-        SEARCH = config.getProperty("search", DEFAULT_SEARCH);
-        SAVE_COOKIES = !config.getProperty("save_cookies", "true").equalsIgnoreCase("false");
-        FONT = config.getProperty("font", "-");
+        HOMEPAGE = config.getProperty(Browser.class.getName() + ".homepage", DEFAULT_HOMEPAGE);
+        SEARCH = config.getProperty(Browser.class.getName() + ".search", DEFAULT_SEARCH);
+        SAVE_COOKIES = !config.getProperty(Browser.class.getName() + ".save_cookies", "true").equalsIgnoreCase("false");
+        FONT = config.getProperty(Browser.class.getName() + ".font", "-");
         if(FONT.equalsIgnoreCase("-")) FONT = null;
+
+        LOGGER.info("Loading Prefix-Search...");
+
+        PrefixSearch.load(config);
 
         LOGGER.info("Applying Theme...");
 
@@ -359,10 +364,13 @@ public class Browser {
         ThemeManager.saveConfig(config);
 
         LOGGER.debug("Save Memory...");
-        config.setProperty("homepage", HOMEPAGE);
-        config.setProperty("search", SEARCH);
-        config.setProperty("save_cookies", SAVE_COOKIES ? "true" : "false");
-        config.setProperty("font", FONT == null ? "-" : FONT);
+        config.setProperty(Browser.class.getName() + ".homepage", HOMEPAGE);
+        config.setProperty(Browser.class.getName() + ".search", SEARCH);
+        config.setProperty(Browser.class.getName() + ".save_cookies", SAVE_COOKIES ? "true" : "false");
+        config.setProperty(Browser.class.getName() + ".font", FONT == null ? "-" : FONT);
+
+        LOGGER.debug("Save Prefix-Search...");
+        PrefixSearch.save(config);
 
         LOGGER.debug("Save-Config...");
         storeConfig(config);
