@@ -1,5 +1,6 @@
 package de.MarkusTieger.Tigxa.bootstrap;
 
+import com.formdev.flatlaf.FlatLightLaf;
 import de.MarkusTieger.Tigxa.Browser;
 import org.apache.log4j.*;
 
@@ -11,11 +12,11 @@ public class Bootstrap {
 
     private static final Logger LOGGER = Logger.getLogger(Bootstrap.class);
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws Throwable {
 
         if(args.length > 0){
-            if(args[0].equalsIgnoreCase("recovery")){
-                ErrorLauncher.launch(LaunchError.ALL_FAILED);
+            if(args[0].equalsIgnoreCase("first-exec-recovery")){
+                ErrorLauncher.startUpdater();
                 return;
             }
         }
@@ -37,6 +38,17 @@ public class Bootstrap {
         LOGGER.info("----------------------------------------");
 
         LOGGER.info("Bootstrap is launching Application...");
+
+        LOGGER.info("Initializing Default Look and Feel of this Application...");
+        FlatLightLaf.setup();
+
+        if(args.length > 0){
+            if(args[0].equalsIgnoreCase("recovery")){
+                LOGGER.info("Starting Recovery...");
+                ErrorLauncher.launch(LaunchError.ALL_FAILED);
+                return;
+            }
+        }
 
         String force_launch = System.getProperty("tigxa.force_launch");
 

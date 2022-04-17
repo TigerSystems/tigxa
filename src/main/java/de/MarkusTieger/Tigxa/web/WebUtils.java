@@ -52,7 +52,7 @@ public class WebUtils {
         }
     }
 
-    public static void reload(BrowserWindow window){
+    public static void reload(BrowserWindow window) {
 
         Map<Component, IEngine> tabLinks = window.getTabLinks();
 
@@ -137,7 +137,7 @@ public class WebUtils {
 
                         if (index == -1) return;
 
-                        window.tabs.setTitleAt(index, title);
+                        title(window.tabs, index, title);
 
                     }, (icon) -> {
 
@@ -471,7 +471,7 @@ public class WebUtils {
 
                         if (index == -1) return;
 
-                        window.tabs.setTitleAt(index, titleEvent.title);
+                        title(window.tabs, index, titleEvent.title);
                     }
                 });
                 // Authication-Listener
@@ -522,6 +522,23 @@ public class WebUtils {
         }
 
         return component;
+    }
+
+    private static void title(JTabbedPane tabs, int index, String title) {
+        String sh = "";
+        int width = 0;
+        for(char c : title.toCharArray()){
+            width += tabs.getFontMetrics(tabs.getFont()).charWidth(c);
+            if(width <= 150){
+                sh += c;
+            } else {
+                sh += "...";
+                break;
+            }
+        }
+
+        tabs.setTitleAt(index, sh);
+        tabs.setToolTipTextAt(index, title);
     }
 
     private static Component createDJNativesPanel(BrowserWindow window, JPanel nav, String url, IWebEngine[] enginearray, JPanel panel, List<Runnable> visibleHandler) {
@@ -651,7 +668,7 @@ public class WebUtils {
 
                 if (index == -1) return;
 
-                window.tabs.setTitleAt(index, webBrowserEvent.getWebBrowser().getPageTitle());
+                title(window.tabs, index, webBrowserEvent.getWebBrowser().getPageTitle());
 
             }
 

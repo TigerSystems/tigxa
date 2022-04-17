@@ -17,6 +17,7 @@ import de.MarkusTieger.Tigxa.update.Updater;
 import de.MarkusTieger.Tigxa.update.Version;
 import de.MarkusTieger.Tigxa.web.TrustManager;
 import de.MarkusTieger.Tigxa.web.WebUtils;
+import javafx.scene.web.WebView;
 import lombok.Getter;
 import lombok.Setter;
 import org.apache.log4j.LogManager;
@@ -99,8 +100,6 @@ public class Browser {
         }
 
         AUTHOR = author;
-
-
     }
 
     @Getter
@@ -142,16 +141,29 @@ public class Browser {
 
         LOGGER.info("Starting " + FULL_NAME + " v." + FULL_VERSION);
 
+        LOGGER.info("Checking Memory...");
+
+        long max = Runtime.getRuntime().maxMemory();
+        if(max < (((1000L) * 1000L) * 1000L)){
+            int option = JOptionPane.showConfirmDialog(null, "Not enough ram. You have less than 1 GB Ram allocated. Continue anyway?", "Not enough ram", JOptionPane.YES_NO_OPTION);
+            while(option == JOptionPane.CLOSED_OPTION){
+                option = JOptionPane.showConfirmDialog(null, "Not enough ram. You have less than 1 GB Ram allocated. Continue anyway?", "Not enough ram", JOptionPane.YES_NO_OPTION);
+            }
+            if(option != JOptionPane.YES_OPTION){
+                System.exit(0);
+            }
+        }
+
         LOGGER.info("Initializing Web-Engine...");
         WebUtils.initialize(mode);
 
-        LOGGER.info("Initialize Media-Engine...");
+        LOGGER.info("Initializing Media-Engine...");
         MediaUtils.initialize();
 
-        LOGGER.info("Initialize TrustManager...");
+        LOGGER.info("Initializing TrustManager...");
         TrustManager.initialize();
 
-        LOGGER.info("Initialize Config-Root...");
+        LOGGER.info("Initializing Config-Root...");
         configRoot = initializeConfigRoot();
 
         LOGGER.info("Loading Configuration...");

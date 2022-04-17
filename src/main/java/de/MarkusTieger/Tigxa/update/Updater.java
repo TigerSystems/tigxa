@@ -3,6 +3,8 @@ package de.MarkusTieger.Tigxa.update;
 import de.MarkusTieger.Tigxa.Browser;
 import de.MarkusTieger.Tigxa.http.HttpUtils;
 import lombok.Getter;
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
 
 import java.io.*;
 import java.net.HttpURLConnection;
@@ -11,6 +13,8 @@ import java.util.Scanner;
 import java.util.function.Consumer;
 
 public class Updater {
+
+    private static final Logger LOGGER = LogManager.getLogger(Updater.class);
 
     @Getter
     private boolean updated = false;
@@ -84,6 +88,8 @@ public class Updater {
 
             File target = new File(resource.toURI());
 
+            LOGGER.debug("Opening Streams...");
+
             URL url = new URL(path);
             HttpURLConnection con = (HttpURLConnection) url.openConnection();
             con.setRequestProperty("User-Agent", HttpUtils.AGENT);
@@ -100,15 +106,22 @@ public class Updater {
             while((len = in.read(buffer)) > 0){
                 out.write(buffer, 0, len);
                 readed += len;
-                percend.accept(((readed * 100D) / ((double) length)));
+
+                double p = ((readed * 100D) / ((double) length));
+                percend.accept(p);
+
+                LOGGER.debug("Percend: " + p);
             }
+
+            LOGGER.debug("Closing Streams...");
+
             out.flush();
             out.close();
             in.close();
 
             percend.accept(-1D);
             updated = true;
-            System.out.println("FINISHED!");
+            LOGGER.info("Update Finished!");
         } catch (Throwable e) {
             e.printStackTrace();
         }

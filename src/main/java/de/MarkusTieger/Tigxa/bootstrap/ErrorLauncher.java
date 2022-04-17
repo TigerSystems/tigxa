@@ -66,9 +66,7 @@ public class ErrorLauncher {
         if(option == JOptionPane.YES_OPTION){
             LOGGER.info("Starting Updater...");
             try {
-                Updater updater = new Updater();
-                Version latest = updater.getLatestVersion();
-                updater.update(latest, LOGGER::debug);
+                startUpdater();
                 LOGGER.info("Update-Finished!");
             } catch(Throwable e){
                 LOGGER.warn("Updater Failed!", e);
@@ -78,6 +76,12 @@ public class ErrorLauncher {
             LOGGER.info("Stopping Bootstrap...");
             System.exit(0);
         }
+    }
+
+    public static void startUpdater() throws Throwable {
+        Updater updater = new Updater();
+        Version latest = updater.getLatestVersion();
+        updater.update(latest, (p) -> {});
     }
 
     private static void launchSwingError() {

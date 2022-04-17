@@ -12,7 +12,7 @@ import de.MarkusTieger.Tigxa.api.web.IWebHistory;
 import de.MarkusTieger.Tigxa.api.window.IWindow;
 import de.MarkusTieger.Tigxa.api.window.IWindowManager;
 import de.MarkusTieger.Tigxa.extension.IExtension;
-import de.MarkusTieger.Tigxa.gui.components.DraggableTabbedPane;
+import de.MarkusTieger.Tigxa.gui.components.ModifiedTabbedPane;
 import de.MarkusTieger.Tigxa.gui.image.ImageLoader;
 import de.MarkusTieger.Tigxa.gui.theme.ThemeManager;
 import de.MarkusTieger.Tigxa.media.MediaUtils;
@@ -37,7 +37,7 @@ import java.util.function.Consumer;
 
 public class BrowserWindow {
 
-    public JTabbedPane tabs = null;
+    public ModifiedTabbedPane tabs = null;
     private KeyListener key = null;
 
     @Getter
@@ -48,7 +48,6 @@ public class BrowserWindow {
 
     @Getter
     private final JFrame frame = new JFrame(Browser.FULL_NAME + " v." + Browser.FULL_VERSION);
-    private final JLabel addpanel = new JLabel("Nice to see you");
 
 
     private IWindow api;
@@ -58,9 +57,7 @@ public class BrowserWindow {
 
     }
 
-    public void update() {
-
-    }
+    public void update() {}
 
     @Getter
     private IAPI mapi;
@@ -132,19 +129,28 @@ public class BrowserWindow {
         frame.setFocusable(true);
         if (image != null) frame.setIconImage(image);
 
-        JTabbedPane tabs = new DraggableTabbedPane();
+        ModifiedTabbedPane tabs = new ModifiedTabbedPane();
+
+        tabs.setHandler((index, c) -> {
+
+            tabs.removeTabAt(index);
+            if (tabs.getTabCount() < 1) {
+                frame.setVisible(false);
+
+                List<BrowserWindow> windows = Browser.getWindows();
+                synchronized (windows) {
+                    windows.remove(BrowserWindow.this);
+                    if (windows.size() == 0) System.exit(0);
+                }
+            }
+            WebUtils.unloadTab(BrowserWindow.this, c);
+            update();
+
+        }, () -> Platform.runLater(() -> newTab((String)null, true)));
 
         /*if(theme.tabBG() != null) tabs.setBackground(theme.tabBG());
         if(theme.tabFG() != null) tabs.setForeground(theme.tabFG());*/
 
-        tabs.addChangeListener(new ChangeListener() {
-            @Override
-            public void stateChanged(ChangeEvent e) {
-                if (tabs.getSelectedComponent() == addpanel) {
-                    Platform.runLater(() -> newTab((String) null, true));
-                }
-            }
-        });
 
         frame.add(tabs);
 
@@ -215,8 +221,6 @@ public class BrowserWindow {
         synchronized (windows) {
             windows.add(this);
         }
-
-
 
         frame.setVisible(true);
     }
