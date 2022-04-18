@@ -19,6 +19,12 @@ public class Bootstrap {
                 ErrorLauncher.startUpdater();
                 return;
             }
+            if(args[0].equalsIgnoreCase("version")){
+                System.out.println(Browser.FULL_NAME);
+                System.out.println(Browser.FULL_VERSION);
+                System.out.println("Made by " + Browser.AUTHOR);
+                return;
+            }
         }
 
         Logger root = Logger.getRootLogger();
