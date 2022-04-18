@@ -93,7 +93,7 @@ public class PasswordWindow {
 
                 if (result[0] == null) {
                     btns.forEach((btn) -> btn.setEnabled(true));
-                    pwd.setBackground(Color.RED);
+                    if(pwd.getClientProperty("JComponent.outline") == null) pwd.putClientProperty("JComponent.outline", "error");
                 } else {
                     b[0] = true;
                 }
@@ -313,7 +313,7 @@ public class PasswordWindow {
             });
             if (object == null) {
                 btns.forEach((btn) -> btn.setEnabled(true));
-                pwd.setBackground(Color.RED);
+                if(pwd.getClientProperty("JComponent.outline") == null) pwd.putClientProperty("JComponent.outline", "error");
                 return null;
             } else {
                 b[0] = true;

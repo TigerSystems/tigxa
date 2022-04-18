@@ -4,12 +4,11 @@ import com.formdev.flatlaf.*;
 import com.formdev.flatlaf.intellijthemes.FlatAllIJThemes;
 import de.MarkusTieger.Tigxa.Browser;
 import de.MarkusTieger.Tigxa.gui.screen.InternalScreenRegistry;
-import de.MarkusTieger.Tigxa.gui.theme.java.CrossPlatformTheme;
-import de.MarkusTieger.Tigxa.gui.theme.java.SystemTheme;
 
 import javax.swing.*;
 import javax.swing.plaf.FontUIResource;
 import java.awt.*;
+import java.awt.image.BufferedImage;
 import java.io.InputStream;
 import java.lang.reflect.Method;
 import java.util.HashMap;
@@ -22,11 +21,6 @@ public class ThemeManager {
 
     public static Map<ThemeCategory, Map<String, Class<?>>> getThemes() {
         Map<ThemeCategory, Map<String, Class<?>>> map = new HashMap<>();
-
-        Map<String, Class<?>> java = new HashMap<>();
-        java.put("System", SystemTheme.class);
-        java.put("Cross Platform", CrossPlatformTheme.class);
-        map.put(ThemeCategory.JAVA, java);
 
         FlatAllIJThemes.FlatIJLookAndFeelInfo[] themes = FlatAllIJThemes.INFOS;
 
@@ -45,7 +39,9 @@ public class ThemeManager {
 
         flatlaf.put("Light", FlatLightLaf.class);
         flatlaf.put("Dark", FlatDarkLaf.class);
+        flatlaf.put("IntelliJ", FlatIntelliJLaf.class);
         flatlaf.put("Darcula", FlatDarculaLaf.class);
+
         map.put(ThemeCategory.FLATLAF, flatlaf);
 
         return map;
@@ -57,6 +53,7 @@ public class ThemeManager {
 
             method.invoke(null);
             ThemeManager.theme = theme;
+            updateAccent();
 
             return true;
         } catch (Exception e) {
@@ -151,5 +148,23 @@ public class ThemeManager {
             e.printStackTrace();
         }
         return false;
+    }
+
+    private static Color accent = Color.BLACK;
+
+    public static void updateAccent(){
+        JProgressBar bar = new JProgressBar();
+        bar.setMinimum(0);
+        bar.setMaximum(1);
+        bar.setValue(1);
+        bar.setSize(25, 25);
+
+        BufferedImage img = new BufferedImage(25, 25, BufferedImage.TYPE_INT_ARGB);
+        bar.paint(img.getGraphics());
+        accent = new Color(img.getRGB(10, 10));
+    }
+
+    public static Color getAccentColor() {
+        return accent;
     }
 }

@@ -15,7 +15,9 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
 import java.awt.image.BufferedImage;
 import java.lang.reflect.Field;
+import java.util.ArrayList;
 import java.util.function.BiConsumer;
+import java.util.List;
 
 public class ModifiedTabbedPane extends JTabbedPane {
 
@@ -123,6 +125,18 @@ public class ModifiedTabbedPane extends JTabbedPane {
         });
     }
 
+    public void removeAll() {
+        remove();
+
+        int tabCount = getTabCount();
+        // We invoke removeTabAt for each tab, otherwise we may end up
+        // removing Components added by the UI.
+        while (tabCount-- > 0) {
+            super.removeTabAt(tabCount);
+        }
+        add();
+    }
+
     public void setHandler(BiConsumer<Integer, Component> closeHandler, Runnable addHandler){
         this.closeHandler = closeHandler;
         this.addHandler = addHandler;
@@ -197,4 +211,5 @@ public class ModifiedTabbedPane extends JTabbedPane {
         super.removeTabAt(index);
         add();
     }
+
 }

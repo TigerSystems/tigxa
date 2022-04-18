@@ -34,10 +34,7 @@ import java.util.*;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
-
-import javax.speech.Central;
-import javax.speech.synthesis.Synthesizer;
-import javax.speech.synthesis.SynthesizerModeDesc;
+// import com.sun.javafx.webkit.WebConsoleListener;
 
 public class Browser {
 
@@ -139,6 +136,13 @@ public class Browser {
     public static void start(Mode mode) {
 
         Browser.mode = mode;
+
+        /*WebConsoleListener.setDefaultListener(new WebConsoleListener() {
+            @Override
+            public void messageAdded(WebView webView, String message, int lineNumber, String sourceId) {
+                LOGGER.debug("[Console] " + message);
+            }
+        });*/
 
         LOGGER.info("Starting " + FULL_NAME + " v." + FULL_VERSION);
 
@@ -286,7 +290,7 @@ public class Browser {
 
         LOGGER.debug("Checking Configuration...");
 
-        File file = new File(configRoot, "tigxa.properties");
+        File file = new File(configRoot, "config.properties");
         if (file.exists()) {
             LOGGER.debug("Loading Configuration...");
             Properties prop = new Properties();
@@ -313,7 +317,7 @@ public class Browser {
 
         LOGGER.debug("Preparing Config-Store...");
 
-        File file = new File(configRoot, "tigxa.properties");
+        File file = new File(configRoot, "config.properties");
         if (!file.exists()) {
             LOGGER.debug("Creating File...");
             try {
@@ -349,6 +353,8 @@ public class Browser {
     private static File initializeConfigRoot() {
         LOGGER.debug("Initializing Config-Root...");
         File configRoot = new File(System.getProperty("user.home", "."));
+        configRoot = new File(configRoot, "Tigxa");
+
         if (!configRoot.exists()) {
             LOGGER.debug("Mkdir...");
             configRoot.mkdirs();

@@ -7,6 +7,7 @@ import de.MarkusTieger.Tigxa.api.engine.IEngine;
 import de.MarkusTieger.Tigxa.api.gui.IScreen;
 import de.MarkusTieger.Tigxa.api.web.IWebEngine;
 import de.MarkusTieger.Tigxa.api.web.IWebHistory;
+import de.MarkusTieger.Tigxa.gui.components.ModifiedTabbedPane;
 import de.MarkusTieger.Tigxa.gui.window.BrowserWindow;
 import de.MarkusTieger.Tigxa.web.engine.djnatives.DJNativesWebEngine;
 import de.MarkusTieger.Tigxa.web.engine.fx.FXConent;
@@ -93,7 +94,7 @@ public class WebUtils {
         }
     }
 
-    public static Component createPanel(BrowserWindow window, JPanel nav, String url, IWebEngine[] enginearray, JPanel panel, List<Runnable> visibleHandler) {
+    public static Component createPanel(ModifiedTabbedPane tabs, BrowserWindow window, JPanel nav, String url, IWebEngine[] enginearray, JPanel panel, List<Runnable> visibleHandler) {
 
         IWebEngine engine = null;
         Component component = null;
@@ -133,21 +134,21 @@ public class WebUtils {
 
                         int index = -1;
 
-                        index = window.tabs.indexOfComponent(panel);
+                        index = tabs.indexOfComponent(panel);
 
                         if (index == -1) return;
 
-                        title(window.tabs, index, title);
+                        title(tabs, index, title);
 
                     }, (icon) -> {
 
                         int index = -1;
 
-                        index = window.tabs.indexOfComponent(panel);
+                        index = tabs.indexOfComponent(panel);
 
                         if (index == -1) return;
 
-                        window.tabs.setIconAt(index, icon);
+                        tabs.setIconAt(index, icon);
 
                     }
                     , (loc) -> window.newTab(loc, false)
@@ -217,7 +218,7 @@ public class WebUtils {
 
 
             Component[] comps = new Component[1];
-            syncExec(() -> comps[0] = createDJNativesPanel(window, nav, url, enginearray, panel, visibleHandler));
+            syncExec(() -> comps[0] = createDJNativesPanel(tabs, window, nav, url, enginearray, panel, visibleHandler));
             component = comps[0];
 
 
@@ -467,11 +468,11 @@ public class WebUtils {
                     public void changed(TitleEvent titleEvent) {
                         int index = -1;
 
-                        index = window.tabs.indexOfComponent(panel);
+                        index = tabs.indexOfComponent(panel);
 
                         if (index == -1) return;
 
-                        title(window.tabs, index, titleEvent.title);
+                        title(tabs, index, titleEvent.title);
                     }
                 });
                 // Authication-Listener
@@ -527,6 +528,7 @@ public class WebUtils {
     private static void title(JTabbedPane tabs, int index, String title) {
         String sh = "";
         int width = 0;
+        if(title == null) return;
         for(char c : title.toCharArray()){
             width += tabs.getFontMetrics(tabs.getFont()).charWidth(c);
             if(width <= 150){
@@ -541,7 +543,7 @@ public class WebUtils {
         tabs.setToolTipTextAt(index, title);
     }
 
-    private static Component createDJNativesPanel(BrowserWindow window, JPanel nav, String url, IWebEngine[] enginearray, JPanel panel, List<Runnable> visibleHandler) {
+    private static Component createDJNativesPanel(ModifiedTabbedPane tabs, BrowserWindow window, JPanel nav, String url, IWebEngine[] enginearray, JPanel panel, List<Runnable> visibleHandler) {
 
         Component component = null;
         IWebEngine engine = null;
@@ -664,11 +666,11 @@ public class WebUtils {
 
                 int index = -1;
 
-                index = window.tabs.indexOfComponent(panel);
+                index = tabs.indexOfComponent(panel);
 
                 if (index == -1) return;
 
-                title(window.tabs, index, webBrowserEvent.getWebBrowser().getPageTitle());
+                title(tabs, index, webBrowserEvent.getWebBrowser().getPageTitle());
 
             }
 

@@ -50,6 +50,7 @@ public class BrowserWindow {
     @Getter
     private final JFrame frame = new JFrame(Browser.FULL_NAME + " v." + Browser.FULL_VERSION);
 
+    private int lineHeight = -1;
 
     private IWindow api;
 
@@ -65,6 +66,14 @@ public class BrowserWindow {
 
     @Getter
     private Browser.Mode mode;
+
+
+
+    private int selectedTabPage = 0;
+    private int maxTabPage = 5;
+    private Map<Integer, ModifiedTabbedPane> tabPages = Collections.synchronizedMap(new HashMap<>());
+    private Map<Integer, JToggleButton> tabButtons = Collections.synchronizedMap(new HashMap<>());
+
 
     public void initWindow(Browser.Mode mode, IAPI mapi, File configRoot) {
 
@@ -132,32 +141,123 @@ public class BrowserWindow {
 
         ModifiedTabbedPane tabs = new ModifiedTabbedPane();
 
-        tabs.setHandler((index, c) -> {
 
-            tabs.removeTabAt(index);
-            if (tabs.getTabCount() < 2) {
-                frame.setVisible(false);
 
-                List<BrowserWindow> windows = Browser.getWindows();
-                synchronized (windows) {
-                    windows.remove(BrowserWindow.this);
-                    if (windows.size() == 0) System.exit(0);
-                }
+        JPanel side = new JPanel() {
+
+            @Override
+            public Dimension getPreferredSize() {
+                return new Dimension(30, frame.getContentPane().getHeight());
             }
-            WebUtils.unloadTab(BrowserWindow.this, c);
-            update();
 
-        }, () -> {
+            @Override
+            public Dimension getMinimumSize() {
+                return getPreferredSize();
+            }
 
-            Platform.runLater(() -> newTab((String)null, true));
+            @Override
+            public Dimension getMaximumSize() {
+                return getPreferredSize();
+            }
 
-        } );
+            @Override
+            protected void paintComponent(Graphics g) {
+                super.paintComponent(g);
+
+                if(lineHeight != -1){
+
+                    try {
+                        Point p = getLocationOnScreen();
+
+                        g.setColor(ThemeManager.getAccentColor());
+                        g.drawLine(29, lineHeight - p.y, 29, getHeight());
+                    } catch (Throwable e){}
+
+                }
+
+                repaint();
+            }
+        };
+        side.setLayout(null);
+        frame.add(side, BorderLayout.WEST);
+
+        JPanel tabPanel = new JPanel();
+        CardLayout cardLayout = new CardLayout();
+
+        synchronized (tabPages){
+            tabPages.put(Integer.valueOf(selectedTabPage), tabs);
+        }
+
+        applyTabHandler(selectedTabPage, tabPanel, cardLayout, tabs);
+
+        tabPanel.setLayout(cardLayout);
+
+        for(int i = 0; i < maxTabPage; i++){
+            final int k = i;
+            JToggleButton btn = new JToggleButton((i + 1) + "");
+
+            btn.setBounds(2, 100 + 2 + (k * 30), 26, 26);
+
+            tabButtons.put(Integer.valueOf(i), btn);
+
+            final int btnselect = i;
+            btn.addActionListener((e) -> {
+
+                if(!btn.isSelected()){
+                    btn.setSelected(true);
+                    return;
+                }
+
+                if(btnselect == selectedTabPage) return;
+
+                final ModifiedTabbedPane current = tabs;
+
+                synchronized (tabPages){
+
+                    if(tabPages.containsKey(Integer.valueOf(selectedTabPage))){
+                        tabPages.replace(Integer.valueOf(selectedTabPage), current);
+                    } else {
+                        tabPages.put(Integer.valueOf(selectedTabPage), current);
+                    }
+
+                    if(tabPages.containsKey(Integer.valueOf(btnselect))){
+                        cardLayout.show(tabPanel, "tab_" + btnselect);
+                    } else {
+                        ModifiedTabbedPane p = new ModifiedTabbedPane();
+
+                        applyTabHandler(btnselect, tabPanel, cardLayout, p);
+
+                        this.tabs = p;
+                        tabPanel.add(p, "tab_" + btnselect);
+
+                        Platform.runLater(() -> newTab((String)null, true));
+                    }
+
+                }
+
+                selectedTabPage = btnselect;
+                for(int j = 0; j < maxTabPage; j++){
+                    JToggleButton b = tabButtons.get(Integer.valueOf(j));
+                    b.setSelected(j == btnselect);
+                }
+
+            });
+            side.add(btn);
+        }
+        tabButtons.get(Integer.valueOf(selectedTabPage)).setSelected(true);
+
 
         /*if(theme.tabBG() != null) tabs.setBackground(theme.tabBG());
         if(theme.tabFG() != null) tabs.setForeground(theme.tabFG());*/
 
+        int btnselect = selectedTabPage;
 
-        frame.add(tabs);
+        synchronized (tabPages){
+            tabPages.put(Integer.valueOf(btnselect), tabs);
+        }
+        tabPanel.add(tabs, "tab_" + btnselect);
+
+        frame.add(tabPanel);
 
         key = new KeyListener() {
             @Override
@@ -230,6 +330,60 @@ public class BrowserWindow {
         frame.setVisible(true);
     }
 
+    private void applyTabHandler(int i, JPanel tabPanel, CardLayout cardLayout, ModifiedTabbedPane tabs) {
+        tabs.setHandler((index, c) -> {
+
+            tabs.removeTabAt(index);
+            if (tabs.getTabCount() < 2) {
+                synchronized (tabPages){
+                    tabPages.remove(Integer.valueOf(i));
+                }
+                findTab(tabPanel, cardLayout);
+            }
+            WebUtils.unloadTab(BrowserWindow.this, c);
+            update();
+
+        }, () -> {
+
+            Platform.runLater(() -> newTab((String)null, true));
+
+        } );
+    }
+
+    private void findTab(JPanel tabPanel, CardLayout cardLayout) {
+
+        synchronized (tabPages){
+            for(Map.Entry<Integer, ModifiedTabbedPane> e : tabPages.entrySet()){
+                applyTab(e.getKey().intValue(), tabPanel, cardLayout, e.getValue());
+                return;
+            }
+        }
+
+        rmwindow();
+    }
+
+    private void applyTab(int btnselect, JPanel tabPanel, CardLayout cardLayout, ModifiedTabbedPane value) {
+        final ModifiedTabbedPane current = tabs;
+
+        cardLayout.show(tabPanel, "tab_" + btnselect);
+
+        selectedTabPage = btnselect;
+        for(int j = 0; j < maxTabPage; j++){
+            JToggleButton b = tabButtons.get(Integer.valueOf(j));
+            b.setSelected(j == btnselect);
+        }
+    }
+
+    private void rmwindow(){
+        frame.setVisible(false);
+
+        List<BrowserWindow> windows = Browser.getWindows();
+        synchronized (windows) {
+            windows.remove(BrowserWindow.this);
+            if (windows.size() == 0) System.exit(0);
+        }
+    }
+
     @Getter
     private final Map<Component, IEngine> tabLinks = Collections.synchronizedMap(new HashMap<>());
 
@@ -242,6 +396,8 @@ public class BrowserWindow {
     public Component newMediaTab(String url, boolean autoselect) {
 
         if (tabs == null) throw new RuntimeException("GUI is not initialized!");
+
+        final ModifiedTabbedPane tabs = this.tabs;
 
         if (url == null) url = Browser.HOMEPAGE;
 
@@ -265,6 +421,20 @@ public class BrowserWindow {
             public Dimension getMinimumSize() {
                 return getPreferredSize();
             }
+
+            @Override
+            protected void paintComponent(Graphics g) {
+                super.paintComponent(g);
+
+                g.setColor(ThemeManager.getAccentColor());
+                g.drawLine(0, 29, getWidth(), 29);
+
+                try {
+                    lineHeight = getLocationOnScreen().y + 29;
+                } catch (Throwable e){
+                }
+            }
+
         };
         nav.setLayout(null);
 
@@ -321,6 +491,8 @@ public class BrowserWindow {
 
         if (tabs == null) throw new RuntimeException("GUI is not initialized!");
 
+        final ModifiedTabbedPane tabs = this.tabs;
+
         if (url == null) url = Browser.HOMEPAGE;
 
         JPanel panel = new JPanel();
@@ -343,13 +515,27 @@ public class BrowserWindow {
             public Dimension getMinimumSize() {
                 return getPreferredSize();
             }
+
+
+            @Override
+            protected void paintComponent(Graphics g) {
+                super.paintComponent(g);
+
+                g.setColor(ThemeManager.getAccentColor());
+                g.drawLine(0, 29, getWidth(), 29);
+
+                try {
+                    lineHeight = getLocationOnScreen().y + 29;
+                } catch (Throwable e){
+                }
+            }
         };
         nav.setLayout(null);
 
 
         List<Runnable> handlers = new ArrayList<>();
 
-        Component main = WebUtils.createPanel(BrowserWindow.this, nav, url, new IWebEngine[1], panel, handlers);
+        Component main = WebUtils.createPanel(tabs, BrowserWindow.this, nav, url, new IWebEngine[1], panel, handlers);
 
         JPanel content = new JPanel();
 
@@ -398,6 +584,8 @@ public class BrowserWindow {
 
         if (tabs == null) throw new RuntimeException("GUI is not initialized!");
 
+        final ModifiedTabbedPane tabs = this.tabs;
+
         JPanel panel = new JPanel();
 
         JPanel nav = new JPanel() {
@@ -418,6 +606,19 @@ public class BrowserWindow {
             public Dimension getMinimumSize() {
                 return getPreferredSize();
             }
+
+            @Override
+            protected void paintComponent(Graphics g) {
+                super.paintComponent(g);
+
+                g.setColor(ThemeManager.getAccentColor());
+                g.drawLine(0, 29, getWidth(), 29);
+
+                try {
+                    lineHeight = getLocationOnScreen().y + 29;
+                } catch (Throwable e){
+                }
+            }
         };
         nav.setLayout(null);
 
@@ -425,7 +626,7 @@ public class BrowserWindow {
 
         List<Runnable> handlers = new ArrayList<>();
 
-        Component main = WebUtils.createPanel(BrowserWindow.this, nav,null, enginearray, panel, handlers);
+        Component main = WebUtils.createPanel(tabs, BrowserWindow.this, nav,null, enginearray, panel, handlers);
 
         JPanel content = new JPanel();
         content.add(nav);
@@ -474,6 +675,8 @@ public class BrowserWindow {
 
         if (tabs == null) throw new RuntimeException("GUI is not initialized!");
 
+        final ModifiedTabbedPane tabs = this.tabs;
+
         JPanel main = screen.getContentPane();
 
         JPanel panel = new JPanel();
@@ -495,6 +698,19 @@ public class BrowserWindow {
             @Override
             public Dimension getMinimumSize() {
                 return getPreferredSize();
+            }
+
+            @Override
+            protected void paintComponent(Graphics g) {
+                super.paintComponent(g);
+
+                g.setColor(ThemeManager.getAccentColor());
+                g.drawLine(0, 29, getWidth(), 29);
+
+                try {
+                    lineHeight = getLocationOnScreen().y + 29;
+                } catch (Throwable e){
+                }
             }
         };
         nav.setLayout(null);
@@ -844,20 +1060,16 @@ public class BrowserWindow {
         /*security.addMouseListener(new MouseListener() {
             @Override
             public void mouseClicked(MouseEvent e) {}
-
             @Override
             public void mousePressed(MouseEvent e) {}
-
             @Override
             public void mouseReleased(MouseEvent e) {}
-
             @Override
             public void mouseEntered(MouseEvent e) {
                 if(secure[0] == -1) return;
                 ImageIcon icon = secure[0] == 1 ? security_secure_hover : security_insecure_hover;
                 if(icon != null) security.setIcon(icon);
             }
-
             @Override
             public void mouseExited(MouseEvent e) {
                 if(secure[0] == -1) return;

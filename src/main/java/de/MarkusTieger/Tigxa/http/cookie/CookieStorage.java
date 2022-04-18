@@ -56,7 +56,7 @@ public class CookieStorage {
 
     public void load() {
 
-        File cookieFile = new File(configRoot, "tigxa-cookies.json");
+        File cookieFile = new File(configRoot, "cookies.json");
 
         if (cookieFile.exists()) {
 
@@ -180,7 +180,7 @@ public class CookieStorage {
 
     public void save() {
 
-        File cookieFile = new File(configRoot, "tigxa-cookies.json");
+        File cookieFile = new File(configRoot, "cookies.json");
 
         if (!cookieFile.exists()) {
             try {
