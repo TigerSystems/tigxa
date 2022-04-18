@@ -139,7 +139,7 @@ public class BrowserWindow {
         frame.setFocusable(true);
         if (image != null) frame.setIconImage(image);
 
-        ModifiedTabbedPane tabs = new ModifiedTabbedPane();
+        ModifiedTabbedPane tabs = new ModifiedTabbedPane(selectedTabPage);
 
 
 
@@ -222,15 +222,16 @@ public class BrowserWindow {
 
                     if(tabPages.containsKey(Integer.valueOf(btnselect))){
                         ModifiedTabbedPane p = tabPages.get(Integer.valueOf(btnselect));
-                        this.tabs = p;
+                        BrowserWindow.this.tabs = p;
 
                         cardLayout.show(tabPanel, "tab_" + btnselect);
                     } else {
-                        ModifiedTabbedPane p = new ModifiedTabbedPane();
+                        ModifiedTabbedPane p = new ModifiedTabbedPane(btnselect);
 
                         applyTabHandler(btnselect, tabPanel, cardLayout, p);
 
-                        this.tabs = p;
+                        BrowserWindow.this.tabs = p;
+
                         tabPanel.add(p, "tab_" + btnselect);
 
                         Platform.runLater(() -> newTab((String)null, true));
@@ -247,7 +248,9 @@ public class BrowserWindow {
             });
             side.add(btn);
         }
-        tabButtons.get(Integer.valueOf(selectedTabPage)).setSelected(true);
+        synchronized (tabButtons){
+            tabButtons.get(Integer.valueOf(selectedTabPage)).setSelected(true);
+        }
 
 
         /*if(theme.tabBG() != null) tabs.setBackground(theme.tabBG());
@@ -332,8 +335,8 @@ public class BrowserWindow {
     }
 
     private void rmTab(int i, JPanel tabPanel, CardLayout cardLayout, int index, Component c){
-        tabs.removeTabAt(index);
-        if (tabs.getTabCount() < 2) {
+        BrowserWindow.this.tabs.removeTabAt(index);
+        if (BrowserWindow.this.tabs.getTabCount() < 2) {
             synchronized (tabPages){
                 tabPages.remove(Integer.valueOf(i));
             }
@@ -356,11 +359,11 @@ public class BrowserWindow {
     }
 
     private void applyTab(int btnselect, JPanel tabPanel, CardLayout cardLayout, ModifiedTabbedPane value) {
-        final ModifiedTabbedPane current = tabs;
+        final ModifiedTabbedPane current = BrowserWindow.this.tabs;
 
         cardLayout.show(tabPanel, "tab_" + btnselect);
 
-        this.tabs = value;
+        BrowserWindow.this.tabs = value;
 
         selectedTabPage = btnselect;
         for(int j = 0; j < maxTabPage; j++){
@@ -390,9 +393,9 @@ public class BrowserWindow {
 
     public Component newMediaTab(String url, boolean autoselect) {
 
-        if (tabs == null) throw new RuntimeException("GUI is not initialized!");
+        if (BrowserWindow.this.tabs == null) throw new RuntimeException("GUI is not initialized!");
 
-        final ModifiedTabbedPane tabs = this.tabs;
+        final ModifiedTabbedPane tabs = BrowserWindow.this.tabs;
 
         if (url == null) url = Browser.HOMEPAGE;
 
@@ -484,9 +487,11 @@ public class BrowserWindow {
 
     public Component newTab(String url, boolean autoselect) {
 
-        if (tabs == null) throw new RuntimeException("GUI is not initialized!");
+        if (BrowserWindow.this.tabs == null) throw new RuntimeException("GUI is not initialized!");
 
-        final ModifiedTabbedPane tabs = this.tabs;
+        final ModifiedTabbedPane tabs = BrowserWindow.this.tabs;
+
+        System.out.println(tabs);
 
         if (url == null) url = Browser.HOMEPAGE;
 
@@ -577,9 +582,9 @@ public class BrowserWindow {
 
     public IWebEngine newTab(boolean autoselect) {
 
-        if (tabs == null) throw new RuntimeException("GUI is not initialized!");
+        if (BrowserWindow.this.tabs == null) throw new RuntimeException("GUI is not initialized!");
 
-        final ModifiedTabbedPane tabs = this.tabs;
+        final ModifiedTabbedPane tabs = BrowserWindow.this.tabs;
 
         JPanel panel = new JPanel();
 
@@ -668,9 +673,9 @@ public class BrowserWindow {
 
     public Component newTab(IScreen screen, boolean autoselect) {
 
-        if (tabs == null) throw new RuntimeException("GUI is not initialized!");
+        if (BrowserWindow.this.tabs == null) throw new RuntimeException("GUI is not initialized!");
 
-        final ModifiedTabbedPane tabs = this.tabs;
+        final ModifiedTabbedPane tabs = BrowserWindow.this.tabs;
 
         JPanel main = screen.getContentPane();
 

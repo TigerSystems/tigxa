@@ -31,8 +31,12 @@ public class ModifiedTabbedPane extends JTabbedPane {
     private BiConsumer<Integer, Component> closeHandler;
     private Runnable addHandler;
 
-    public ModifiedTabbedPane() {
+    @Getter
+    private final int id;
+
+    public ModifiedTabbedPane(int id) {
         super(JTabbedPane.TOP, JTabbedPane.SCROLL_TAB_LAYOUT);
+        this.id = id;
         addMouseMotionListener(new MouseMotionAdapter() {
             public void mouseDragged(MouseEvent e) {
 
@@ -212,4 +216,8 @@ public class ModifiedTabbedPane extends JTabbedPane {
         add();
     }
 
+    @Override
+    public String toString() {
+        return "ModifiedTabPane with ID: " + id;
+    }
 }
