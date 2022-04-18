@@ -221,6 +221,9 @@ public class BrowserWindow {
                     }
 
                     if(tabPages.containsKey(Integer.valueOf(btnselect))){
+                        ModifiedTabbedPane p = tabPages.get(Integer.valueOf(btnselect));
+                        this.tabs = p;
+
                         cardLayout.show(tabPanel, "tab_" + btnselect);
                     } else {
                         ModifiedTabbedPane p = new ModifiedTabbedPane();
@@ -277,18 +280,8 @@ public class BrowserWindow {
                     int index = tabs.getSelectedIndex();
 
                     Component c = tabs.getSelectedComponent();
-                    tabs.removeTabAt(index);
-                    if (tabs.getTabCount() < 2) {
-                        frame.setVisible(false);
 
-                        List<BrowserWindow> windows = Browser.getWindows();
-                        synchronized (windows) {
-                            windows.remove(BrowserWindow.this);
-                            if (windows.size() == 0) System.exit(0);
-                        }
-                    }
-                    WebUtils.unloadTab(BrowserWindow.this, c);
-                    update();
+                    rmTab(selectedTabPage, tabPanel, cardLayout, index, c);
 
                 }
 
@@ -331,23 +324,23 @@ public class BrowserWindow {
     }
 
     private void applyTabHandler(int i, JPanel tabPanel, CardLayout cardLayout, ModifiedTabbedPane tabs) {
-        tabs.setHandler((index, c) -> {
-
-            tabs.removeTabAt(index);
-            if (tabs.getTabCount() < 2) {
-                synchronized (tabPages){
-                    tabPages.remove(Integer.valueOf(i));
-                }
-                findTab(tabPanel, cardLayout);
-            }
-            WebUtils.unloadTab(BrowserWindow.this, c);
-            update();
-
-        }, () -> {
+        tabs.setHandler((index, c) -> rmTab(i, tabPanel, cardLayout, index, c), () -> {
 
             Platform.runLater(() -> newTab((String)null, true));
 
         } );
+    }
+
+    private void rmTab(int i, JPanel tabPanel, CardLayout cardLayout, int index, Component c){
+        tabs.removeTabAt(index);
+        if (tabs.getTabCount() < 2) {
+            synchronized (tabPages){
+                tabPages.remove(Integer.valueOf(i));
+            }
+            findTab(tabPanel, cardLayout);
+        }
+        WebUtils.unloadTab(BrowserWindow.this, c);
+        update();
     }
 
     private void findTab(JPanel tabPanel, CardLayout cardLayout) {
@@ -366,6 +359,8 @@ public class BrowserWindow {
         final ModifiedTabbedPane current = tabs;
 
         cardLayout.show(tabPanel, "tab_" + btnselect);
+
+        this.tabs = value;
 
         selectedTabPage = btnselect;
         for(int j = 0; j < maxTabPage; j++){
