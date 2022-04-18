@@ -408,7 +408,7 @@ public class BrowserWindow {
             @Override
             public Dimension getPreferredSize() {
                 Dimension dim = panel.getSize();
-                dim.height = 30;
+                dim.height = 34;
                 return dim;
             }
 
@@ -427,10 +427,10 @@ public class BrowserWindow {
                 super.paintComponent(g);
 
                 g.setColor(ThemeManager.getAccentColor());
-                g.drawLine(0, 29, getWidth(), 29);
+                g.drawLine(0, 33, getWidth(), 33);
 
                 try {
-                    lineHeight = getLocationOnScreen().y + 29;
+                    lineHeight = getLocationOnScreen().y + 33;
                 } catch (Throwable e){
                 }
             }
@@ -502,7 +502,7 @@ public class BrowserWindow {
             @Override
             public Dimension getPreferredSize() {
                 Dimension dim = panel.getSize();
-                dim.height = 30;
+                dim.height = 34;
                 return dim;
             }
 
@@ -522,10 +522,10 @@ public class BrowserWindow {
                 super.paintComponent(g);
 
                 g.setColor(ThemeManager.getAccentColor());
-                g.drawLine(0, 29, getWidth(), 29);
+                g.drawLine(0, 33, getWidth(), 33);
 
                 try {
-                    lineHeight = getLocationOnScreen().y + 29;
+                    lineHeight = getLocationOnScreen().y + 33;
                 } catch (Throwable e){
                 }
             }
@@ -593,7 +593,7 @@ public class BrowserWindow {
             @Override
             public Dimension getPreferredSize() {
                 Dimension dim = panel.getSize();
-                dim.height = 30;
+                dim.height = 34;
                 return dim;
             }
 
@@ -612,10 +612,10 @@ public class BrowserWindow {
                 super.paintComponent(g);
 
                 g.setColor(ThemeManager.getAccentColor());
-                g.drawLine(0, 29, getWidth(), 29);
+                g.drawLine(0, 33, getWidth(), 33);
 
                 try {
-                    lineHeight = getLocationOnScreen().y + 29;
+                    lineHeight = getLocationOnScreen().y + 33;
                 } catch (Throwable e){
                 }
             }
@@ -686,7 +686,7 @@ public class BrowserWindow {
             @Override
             public Dimension getPreferredSize() {
                 Dimension dim = panel.getSize();
-                dim.height = 30;
+                dim.height = 34;
                 return dim;
             }
 
@@ -705,10 +705,10 @@ public class BrowserWindow {
                 super.paintComponent(g);
 
                 g.setColor(ThemeManager.getAccentColor());
-                g.drawLine(0, 29, getWidth(), 29);
+                g.drawLine(0, 33, getWidth(), 33);
 
                 try {
-                    lineHeight = getLocationOnScreen().y + 29;
+                    lineHeight = getLocationOnScreen().y + 33;
                 } catch (Throwable e){
                 }
             }
