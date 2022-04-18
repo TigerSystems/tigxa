@@ -78,6 +78,7 @@ public class PasswordWindow {
         });
 
         JPasswordField pwd = new JPasswordField();
+        pwd.putClientProperty("FlatLaf.style", "showRevealButton: true");
         List<JButton> btns = new ArrayList<>();
 
         T[] result = (T[]) new Object[]{null};
