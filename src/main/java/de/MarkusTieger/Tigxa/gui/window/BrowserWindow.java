@@ -20,6 +20,8 @@ import de.MarkusTieger.Tigxa.web.WebUtils;
 import de.MarkusTieger.Tigxa.web.search.PrefixSearch;
 import javafx.application.Platform;
 import lombok.Getter;
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
 
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
@@ -33,6 +35,7 @@ import java.net.*;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.*;
+import java.util.Timer;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
@@ -74,6 +77,7 @@ public class BrowserWindow {
     private Map<Integer, ModifiedTabbedPane> tabPages = Collections.synchronizedMap(new HashMap<>());
     private Map<Integer, JToggleButton> tabButtons = Collections.synchronizedMap(new HashMap<>());
 
+    private static final Logger LOGGER = LogManager.getLogger(BrowserWindow.class);
 
     public void initWindow(Browser.Mode mode, IAPI mapi, File configRoot) {
 
@@ -210,9 +214,11 @@ public class BrowserWindow {
 
                 if(btnselect == selectedTabPage) return;
 
-                final ModifiedTabbedPane current = tabs;
+                final ModifiedTabbedPane current = BrowserWindow.this.tabs;
 
                 synchronized (tabPages){
+
+                    System.out.println(selectedTabPage + " " + current);
 
                     if(tabPages.containsKey(Integer.valueOf(selectedTabPage))){
                         tabPages.replace(Integer.valueOf(selectedTabPage), current);
@@ -222,6 +228,7 @@ public class BrowserWindow {
 
                     if(tabPages.containsKey(Integer.valueOf(btnselect))){
                         ModifiedTabbedPane p = tabPages.get(Integer.valueOf(btnselect));
+
                         BrowserWindow.this.tabs = p;
 
                         cardLayout.show(tabPanel, "tab_" + btnselect);
@@ -229,10 +236,10 @@ public class BrowserWindow {
                         ModifiedTabbedPane p = new ModifiedTabbedPane(btnselect);
 
                         applyTabHandler(btnselect, tabPanel, cardLayout, p);
-
                         BrowserWindow.this.tabs = p;
 
                         tabPanel.add(p, "tab_" + btnselect);
+                        cardLayout.show(tabPanel, "tab_" + btnselect);
 
                         Platform.runLater(() -> newTab((String)null, true));
                     }
@@ -490,8 +497,6 @@ public class BrowserWindow {
         if (BrowserWindow.this.tabs == null) throw new RuntimeException("GUI is not initialized!");
 
         final ModifiedTabbedPane tabs = BrowserWindow.this.tabs;
-
-        System.out.println(tabs);
 
         if (url == null) url = Browser.HOMEPAGE;
 
