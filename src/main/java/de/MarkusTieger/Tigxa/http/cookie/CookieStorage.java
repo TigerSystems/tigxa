@@ -5,6 +5,7 @@ import com.google.gson.GsonBuilder;
 import com.yubico.client.v2.VerificationResponse;
 import de.MarkusTieger.Tigxa.Browser;
 import de.MarkusTieger.Tigxa.gui.window.PasswordWindow;
+import de.MarkusTieger.Tigxa.lang.Translator;
 import lombok.Setter;
 
 import javax.crypto.Cipher;
@@ -42,9 +43,9 @@ public class CookieStorage {
     private VerificationResponse yubi = null;
 
     public void erease() {
-        int option = JOptionPane.showConfirmDialog(null, "Are you sure, that you want to delete the Cookie-Store?", "Cookie-Store Erease", JOptionPane.YES_NO_OPTION);
+        int option = JOptionPane.showConfirmDialog(null, Translator.translate(51), Translator.translate(52), JOptionPane.YES_NO_OPTION);
         while(option == JOptionPane.CLOSED_OPTION){
-            option = JOptionPane.showConfirmDialog(null, "Are you sure, that you want to delete the Cookie-Store?", "Cookie-Store Erease", JOptionPane.YES_NO_OPTION);
+            option = JOptionPane.showConfirmDialog(null, Translator.translate(51), Translator.translate(52), JOptionPane.YES_NO_OPTION);
         }
         if(option == JOptionPane.YES_OPTION){
             pwd = null;
@@ -74,9 +75,9 @@ public class CookieStorage {
                     while(true){
                         byte[] byt = decryptPWD(bytes);
                         if(byt == null){
-                            int option = JOptionPane.showConfirmDialog(null, "Are you sure, that you want to delete the Cookie-Store?", "Cookie-Store Erease", JOptionPane.YES_NO_OPTION);
+                            int option = JOptionPane.showConfirmDialog(null, Translator.translate(51), Translator.translate(52), JOptionPane.YES_NO_OPTION);
                             while(option == JOptionPane.CLOSED_OPTION){
-                                option = JOptionPane.showConfirmDialog(null, "Are you sure, that you want to delete the Cookie-Store?", "Cookie-Store Erease", JOptionPane.YES_NO_OPTION);
+                                option = JOptionPane.showConfirmDialog(null, Translator.translate(51), Translator.translate(52), JOptionPane.YES_NO_OPTION);
                             }
                             if(option == JOptionPane.YES_OPTION){
                                 buckets.clear();
@@ -92,9 +93,9 @@ public class CookieStorage {
                     while(true){
                         byte[] byt = decryptYUBI(bytes);
                         if(byt == null){
-                            int option = JOptionPane.showConfirmDialog(null, "Are you sure, that you want to delete the Cookie-Store?");
+                            int option = JOptionPane.showConfirmDialog(null, Translator.translate(51), Translator.translate(52), JOptionPane.YES_NO_OPTION);
                             while(option == JOptionPane.CLOSED_OPTION){
-                                option = JOptionPane.showConfirmDialog(null, "Are you sure, that you want to delete the Cookie-Store?");
+                                option = JOptionPane.showConfirmDialog(null, Translator.translate(51), Translator.translate(52), JOptionPane.YES_NO_OPTION);
                             }
                             if(option == JOptionPane.YES_OPTION){
                                 buckets.clear();
@@ -148,7 +149,7 @@ public class CookieStorage {
             }
         };
 
-        return PasswordWindow.requestYUBI("Cookie-Storage Unlock - [ Yubi-Key Auth ]", verify);
+        return PasswordWindow.requestYUBI(Translator.translate(53), verify);
     }
 
     private byte[] decryptPWD(final byte[] bytes) {
@@ -175,7 +176,7 @@ public class CookieStorage {
             }
         };
 
-        return PasswordWindow.requestPWD("Cookie-Storage Unlock - [ Password Auth ]", verify);
+        return PasswordWindow.requestPWD(Translator.translate(54), verify);
     }
 
     public void save() {
