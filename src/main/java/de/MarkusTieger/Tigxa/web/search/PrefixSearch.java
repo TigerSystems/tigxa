@@ -84,8 +84,6 @@ public class PrefixSearch {
             }
         } catch (URISyntaxException exc) {
 
-            System.out.println("CHECKING ENTRIES...");
-
             for(Map.Entry<String, String> e : map.entrySet()){
                 if(text.toLowerCase().startsWith(e.getKey().toLowerCase() + " ")){
                     try {

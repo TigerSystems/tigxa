@@ -15,6 +15,7 @@ import de.MarkusTieger.Tigxa.extension.IExtension;
 import de.MarkusTieger.Tigxa.gui.components.ModifiedTabbedPane;
 import de.MarkusTieger.Tigxa.gui.image.ImageLoader;
 import de.MarkusTieger.Tigxa.gui.theme.ThemeManager;
+import de.MarkusTieger.Tigxa.lang.Translator;
 import de.MarkusTieger.Tigxa.media.MediaUtils;
 import de.MarkusTieger.Tigxa.web.WebUtils;
 import de.MarkusTieger.Tigxa.web.search.PrefixSearch;
@@ -479,7 +480,7 @@ public class BrowserWindow {
 
         addKeyListener(panel);
 
-        tabs.addTab("Tab", panel);
+        tabs.addTab(Translator.translate(2), panel);
 
         update();
 
@@ -575,7 +576,7 @@ public class BrowserWindow {
 
         addKeyListener(panel);
 
-        tabs.addTab("Tab", panel);
+        tabs.addTab(Translator.translate(2), panel);
 
         update();
 
@@ -667,7 +668,7 @@ public class BrowserWindow {
 
         addKeyListener(panel);
 
-        tabs.addTab("Tab", panel);
+        tabs.addTab(Translator.translate(2), panel);
 
         update();
 
@@ -1063,7 +1064,7 @@ public class BrowserWindow {
 
         // int[] secure = new int[] {-1};
 
-        security.addActionListener((e) -> this.cps());
+        security.addActionListener((e) -> this.time());
 
         security.setFocusPainted(false);
         security.setContentAreaFilled(false);
@@ -1173,7 +1174,7 @@ public class BrowserWindow {
     private int click = 0;
     private boolean result = false;
 
-    private void cps() {
+    private void time() {
         if (start == -1L || (start + 15000L) < System.currentTimeMillis()) {
             start = System.currentTimeMillis();
             result = false;
@@ -1184,7 +1185,7 @@ public class BrowserWindow {
         } else {
             if (result) return;
             result = true;
-            JOptionPane.showMessageDialog(null, "Easter-EGG found:\nYour CPS are: " + (((double) click) / 10D), "Easter-EGG...", JOptionPane.INFORMATION_MESSAGE);
+            JOptionPane.showMessageDialog(null, Translator.translate(1, (((double) click) / 10D)) + "", Translator.translate(0), JOptionPane.INFORMATION_MESSAGE);
         }
     }
 

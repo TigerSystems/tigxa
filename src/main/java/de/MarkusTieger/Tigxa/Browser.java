@@ -12,6 +12,7 @@ import de.MarkusTieger.Tigxa.gui.screen.InternalScreenRegistry;
 import de.MarkusTieger.Tigxa.gui.theme.ThemeManager;
 import de.MarkusTieger.Tigxa.gui.window.BrowserWindow;
 import de.MarkusTieger.Tigxa.http.cookie.CookieManager;
+import de.MarkusTieger.Tigxa.lang.Translator;
 import de.MarkusTieger.Tigxa.media.MediaUtils;
 import de.MarkusTieger.Tigxa.update.Updater;
 import de.MarkusTieger.Tigxa.update.Version;
@@ -161,6 +162,13 @@ public class Browser {
             if(option != JOptionPane.YES_OPTION){
                 System.exit(0);
             }
+        }
+
+        LOGGER.info("Loading Language...");
+        try {
+            LOGGER.info("Language \"" + Translator.loadLanguage("/res/lang/en_us.bf").toString() + "\" loaded!");
+        } catch (IOException e) {
+            LOGGER.warn("Language load Failed!", e);
         }
 
         LOGGER.info("Initializing Web-Engine...");

@@ -9,6 +9,7 @@ import de.MarkusTieger.Tigxa.api.web.IWebEngine;
 import de.MarkusTieger.Tigxa.api.web.IWebHistory;
 import de.MarkusTieger.Tigxa.gui.components.ModifiedTabbedPane;
 import de.MarkusTieger.Tigxa.gui.window.BrowserWindow;
+import de.MarkusTieger.Tigxa.lang.Translator;
 import de.MarkusTieger.Tigxa.web.engine.djnatives.DJNativesWebEngine;
 import de.MarkusTieger.Tigxa.web.engine.fx.FXContent;
 import de.MarkusTieger.Tigxa.web.engine.none.NoneWebEngine;
@@ -103,7 +104,7 @@ public class WebUtils {
 
             JLabel label = new JLabel();
 
-            label.setText("<html><body><h2>No Engine Loaded</h2></html>");
+            label.setText(Translator.translate(40));
 
             component = label;
 
@@ -534,7 +535,7 @@ public class WebUtils {
             if(width <= 150){
                 sh += c;
             } else {
-                sh += "...";
+                sh += Translator.translate(39);
                 break;
             }
         }

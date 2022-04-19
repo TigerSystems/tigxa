@@ -5,6 +5,7 @@ import com.yubico.client.v2.VerificationResponse;
 import com.yubico.client.v2.YubicoClient;
 import de.MarkusTieger.Tigxa.Browser;
 import de.MarkusTieger.Tigxa.gui.image.ImageLoader;
+import de.MarkusTieger.Tigxa.lang.Translator;
 
 import javax.swing.*;
 import java.awt.*;
@@ -106,13 +107,13 @@ public class PasswordWindow {
         pwd.setBounds(25, 25, 250, 25);
         frame.add(pwd);
 
-        JButton done = new JButton("Done");
+        JButton done = new JButton(Translator.translate(3));
         done.setBounds(25, 75, 125, 25);
         btns.add(done);
         done.addActionListener(action);
         frame.add(done);
 
-        JButton cancel = new JButton("Cancel");
+        JButton cancel = new JButton(Translator.translate(4));
         cancel.setBounds(150, 75, 125, 25);
         btns.add(cancel);
         cancel.addActionListener((e) -> frame.setVisible(false));
@@ -209,13 +210,13 @@ public class PasswordWindow {
         pwd.setBounds(25, 25, 250, 25);
         frame.add(pwd);
 
-        JButton done = new JButton("Done");
+        JButton done = new JButton(Translator.translate(3));
         done.setBounds(25, 75, 125, 25);
         btns.add(done);
         done.addActionListener(action);
         frame.add(done);
 
-        JButton cancel = new JButton("Cancel");
+        JButton cancel = new JButton(Translator.translate(4));
         cancel.setBounds(150, 75, 125, 25);
         btns.add(cancel);
         cancel.addActionListener((e) -> frame.setVisible(false));
@@ -242,7 +243,7 @@ public class PasswordWindow {
     }
 
     private static final int CLIENT_ID = 73782;
-    private static final String SECRET = "z2X7fv+UguOtKIcXmW8K5US4AU4=";
+    private static final String SECRET = Translator.translate(5);
 
     private static <T> T auth(boolean[] b, List<JButton> btns, JTextField pwd, Function<VerificationResponse, T> verify) {
 

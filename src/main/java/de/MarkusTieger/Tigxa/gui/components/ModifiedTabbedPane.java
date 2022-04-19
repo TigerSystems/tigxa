@@ -1,5 +1,6 @@
 package de.MarkusTieger.Tigxa.gui.components;
 
+import de.MarkusTieger.Tigxa.lang.Translator;
 import lombok.Getter;
 import lombok.Setter;
 import org.apache.log4j.Logger;
@@ -162,7 +163,10 @@ public class ModifiedTabbedPane extends JTabbedPane {
     }
 
     public void paint(Graphics g) {
-        super.paint(g);
+        try {
+            super.paint(g);
+        } catch (Throwable e){
+        }
 
         if (dragging && currentMouseLocation != null && tabImage != null) {
             g.drawImage(tabImage, currentMouseLocation.x, currentMouseLocation.y, this);
@@ -170,7 +174,7 @@ public class ModifiedTabbedPane extends JTabbedPane {
         }
     }
 
-    private final JLabel plus = new JLabel("Why do you see that?");
+    private final JLabel plus = new JLabel(Translator.translate(23));
 
     public void remove(){
         if(addHandler == null) return;
@@ -181,7 +185,7 @@ public class ModifiedTabbedPane extends JTabbedPane {
 
     public void add(){
         if(addHandler == null) return;
-        super.insertTab(" + ", null, plus, null, getTabCount());
+        super.insertTab(Translator.translate(24), null, plus, Translator.translate(25), getTabCount());
     }
 
     @Override

@@ -46,7 +46,6 @@ public class HistorySaver implements HistoryModelSaver {
         for(Map.Entry<Object, Object> e : config.entrySet()){
             if((e + "").toLowerCase().startsWith((HistorySaver.class.getName() + ".history.").toLowerCase())){
                 if((e.getValue() + "").equalsIgnoreCase("-")) continue;
-                System.out.println("ADD: " + e.getValue());
                 model.addItem(e.getValue() + "");
             }
         }
@@ -58,16 +57,18 @@ public class HistorySaver implements HistoryModelSaver {
     public boolean save(Map<String, HistoryModel> map) {
         boolean changed = false;
 
-        for(Map.Entry<Object, Object> e : config.entrySet()){
-            if((e + "").toLowerCase().startsWith((HistorySaver.class.getName() + ".history.").toLowerCase())){
-                config.setProperty(e.getKey() + "", "-");
-            }
-        }
+        if(map == null) return false;
 
-        if(map == null) return true;
         if(map.containsKey(Browser.NAME.toLowerCase())){
             HistoryModel model = map.get(Browser.NAME.toLowerCase());
             if(model == null) return false;
+
+            for(Map.Entry<Object, Object> e : config.entrySet()){
+                if((e + "").toLowerCase().startsWith((HistorySaver.class.getName() + ".history.").toLowerCase())){
+                    config.setProperty(e.getKey() + "", "-");
+                }
+            }
+
             for(int i = 0; i < model.size(); i++){
                 config.setProperty(HistorySaver.class.getName() + ".history." + i, model.elementAt(i));
             }

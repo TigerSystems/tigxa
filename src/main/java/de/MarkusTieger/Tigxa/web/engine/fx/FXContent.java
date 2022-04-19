@@ -10,7 +10,9 @@ import de.MarkusTieger.Tigxa.events.*;
 import de.MarkusTieger.Tigxa.gui.image.ImageLoader;
 import de.MarkusTieger.Tigxa.gui.window.BrowserWindow;
 import de.MarkusTieger.Tigxa.http.HttpUtils;
+import de.MarkusTieger.Tigxa.lang.Translator;
 import de.MarkusTieger.Tigxa.media.MediaUtils;
+import de.MarkusTieger.Tigxa.media.engine.VLCMediaEngine;
 import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -99,7 +101,7 @@ public class FXContent {
         webEngine.setConfirmHandler(new Callback<String, Boolean>() {
             @Override
             public Boolean call(String param) {
-                int data = JOptionPane.showConfirmDialog(null, param, "Confirm", JOptionPane.YES_NO_OPTION);
+                int data = JOptionPane.showConfirmDialog(null, param, Translator.translate(41), JOptionPane.YES_NO_OPTION);
                 return Boolean.valueOf(data == JOptionPane.YES_OPTION);
             }
         });
@@ -110,7 +112,7 @@ public class FXContent {
                 AlertHandleEvent event = new AlertHandleEvent(engine, e.getData(), false);
                 window.getMapi().getEventManager().call(event);
                 if (!event.isCanceled()) {
-                    JOptionPane.showMessageDialog(null, event.getData(), "Alert", JOptionPane.INFORMATION_MESSAGE);
+                    JOptionPane.showMessageDialog(null, event.getData(), Translator.translate(42), JOptionPane.INFORMATION_MESSAGE);
                 }
             }
         });
@@ -215,14 +217,14 @@ public class FXContent {
                     }
                     final String str = s;
 
-                    JMenuItem new_tab = new JMenuItem("Open in new Tab");
+                    JMenuItem new_tab = new JMenuItem(Translator.translate(43));
                     new_tab.addActionListener((e) -> {
                         Platform.runLater(() -> {
                             window.newTab((str), true);
                         });
                     });
 
-                    JMenuItem new_window = new JMenuItem("Open in new Window");
+                    JMenuItem new_window = new JMenuItem(Translator.translate(44));
                     new_window.addActionListener((e) -> {
                         Platform.runLater(() -> {
                             BrowserWindow w = new BrowserWindow();
@@ -231,21 +233,21 @@ public class FXContent {
                         });
                     });
 
-                    JMenuItem copy = new JMenuItem("Copy to Clipboard");
+                    JMenuItem copy = new JMenuItem(Translator.translate(45));
                     copy.addActionListener((e) -> {
                         Toolkit toolkit = Toolkit.getDefaultToolkit();
                         toolkit.getSystemClipboard().setContents(new StringSelection(str), null);
                     });
 
-                    JMenuItem download = new JMenuItem("Download File");
+                    JMenuItem download = new JMenuItem(Translator.translate(46));
                     download.addActionListener((e) -> {
                         Browser.getDownloader().download(str);
                     });
 
-                    JMenu open_media = new JMenu("Open Media with");
+                    JMenu open_media = new JMenu(Translator.translate(47));
                     open_media.setEnabled(MediaUtils.isReady());
 
-                    JMenuItem media_vlc = new JMenuItem("VLC");
+                    JMenuItem media_vlc = new JMenuItem(VLCMediaEngine.NAME);
                     media_vlc.addActionListener((e) -> {
                         window.newMediaTab(str, true);
                     });
@@ -281,13 +283,13 @@ public class FXContent {
     }
 
     private static void addDefaults(JPopupMenu m, Runnable screenshot, WebEngine webEngine, Runnable devtools) {
-        JMenuItem createScreenshot = new JMenuItem("Create Screenshot");
+        JMenuItem createScreenshot = new JMenuItem(Translator.translate(48));
         createScreenshot.addActionListener((e) -> screenshot.run());
 
-        JMenuItem reloadItem = new JMenuItem("Reload");
+        JMenuItem reloadItem = new JMenuItem(Translator.translate(49));
         reloadItem.addActionListener((e) -> webEngine.reload());
 
-        JMenuItem openDevTools = new JMenuItem("Open Dev Tools");
+        JMenuItem openDevTools = new JMenuItem(Translator.translate(50));
         openDevTools.addActionListener((e) -> devtools.run());
 
         m.add(createScreenshot);

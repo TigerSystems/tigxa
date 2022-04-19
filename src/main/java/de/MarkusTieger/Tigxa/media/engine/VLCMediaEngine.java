@@ -7,6 +7,7 @@ import uk.co.caprica.vlcj.player.embedded.EmbeddedMediaPlayer;
 
 public class VLCMediaEngine implements IMediaEngine {
 
+    public static final String NAME = "VLC";
     private final EmbeddedMediaPlayer player;
 
     public VLCMediaEngine(EmbeddedMediaPlayer player){

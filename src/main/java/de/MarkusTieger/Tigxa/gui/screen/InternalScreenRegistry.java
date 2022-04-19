@@ -6,14 +6,17 @@ import de.MarkusTieger.Tigxa.Browser;
 import de.MarkusTieger.Tigxa.api.IAPI;
 import de.MarkusTieger.Tigxa.api.gui.IScreen;
 import de.MarkusTieger.Tigxa.api.gui.registry.IScreenRegistry;
+import de.MarkusTieger.Tigxa.api.impl.main.gui.screen.MainScreenRegistry;
 import de.MarkusTieger.Tigxa.gui.theme.Theme;
 import de.MarkusTieger.Tigxa.gui.theme.ThemeCategory;
 import de.MarkusTieger.Tigxa.gui.theme.ThemeManager;
 import de.MarkusTieger.Tigxa.gui.window.PasswordWindow;
 import de.MarkusTieger.Tigxa.http.cookie.CookieManager;
+import de.MarkusTieger.Tigxa.lang.Translator;
 import de.MarkusTieger.Tigxa.update.Updater;
 import de.MarkusTieger.Tigxa.update.Version;
 import lombok.Getter;
+import org.chromium.userinterface.GameScreen;
 
 import javax.speech.Central;
 import javax.speech.synthesis.Synthesizer;
@@ -24,10 +27,7 @@ import javax.swing.event.ChangeListener;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.ItemEvent;
-import java.awt.event.ItemListener;
+import java.awt.event.*;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
@@ -42,6 +42,7 @@ public class InternalScreenRegistry {
     private IScreen about;
     private IScreen settings;
     private IScreen update;
+    private IScreen chromeDino;
 
     public InternalScreenRegistry(IAPI api){
         this.api = api;
@@ -52,6 +53,7 @@ public class InternalScreenRegistry {
         initAbout();
         initSettings();
         initUpdate();
+        initChromeDino();
 
     }
 
@@ -59,10 +61,23 @@ public class InternalScreenRegistry {
         api.getGUIManager().getScreenRegistry().registerScreen(about, "about");
         api.getGUIManager().getScreenRegistry().registerScreen(settings, "settings");
         api.getGUIManager().getScreenRegistry().registerScreen(update, "update");
+        ((MainScreenRegistry)api.getGUIManager().getScreenRegistry()).registerScreen(chromeDino, "chrome", "dino");
+    }
+
+    private void initChromeDino(){
+        chromeDino = api.getGUIManager().createScreen(Translator.translate(26), "chrome://dino");
+
+        GameScreen gameScreen = new GameScreen(chromeDino.getContentPane());
+        chromeDino.getContentPane().addKeyListener(gameScreen);
+        chromeDino.getContentPane().addMouseListener(gameScreen);
+        chromeDino.getContentPane().add(gameScreen);
+
+        gameScreen.startGame();
+
     }
 
     private void initUpdate(){
-        update = api.getGUIManager().createScreen("Update", api.getNamespace() + "://update");
+        update = api.getGUIManager().createScreen(Translator.translate(27), api.getNamespace() + "://update");
 
         update.getContentPane().setLayout(null);
 
@@ -76,7 +91,7 @@ public class InternalScreenRegistry {
         bar.setBounds(25, 75, 500, 10);
         update.getContentPane().add(bar);
 
-        JButton btn = new JButton("Update");
+        JButton btn = new JButton(Translator.translate(27));
         btn.setBounds(25, 125, 100, 25);
         btn.setEnabled(false);
         update.getContentPane().add(btn);
@@ -84,7 +99,7 @@ public class InternalScreenRegistry {
         Browser.getUpdateListener().add((latest) -> {
 
             btn.setEnabled(true);
-            String txt = Browser.FULL_NAME + " v." + latest.version() + "-" + latest.build() + "-" + latest.commit();
+            String txt = Translator.translate(28, Browser.FULL_NAME, latest.version(), latest.build(), latest.commit());
             System.out.println(txt);
             label.setText(txt);
             btn.addActionListener((e) -> {
@@ -102,7 +117,7 @@ public class InternalScreenRegistry {
                         }
 
                     });
-                }, "Updater").start();
+                }, Translator.translate(29)).start();
 
             });
 
@@ -111,7 +126,7 @@ public class InternalScreenRegistry {
 
     private void initAbout(){
 
-        about = api.getGUIManager().createScreen("About", api.getNamespace() + "://about");
+        about = api.getGUIManager().createScreen(Translator.translate(30), api.getNamespace() + "://about");
 
         about.getContentPane().setLayout(null);
 
@@ -160,7 +175,7 @@ public class InternalScreenRegistry {
     }
 
     private void initSettings() {
-        settings = api.getGUIManager().createScreen("Settings", api.getNamespace() + "://settings");
+        settings = api.getGUIManager().createScreen(Translator.translate(31), api.getNamespace() + "://settings");
 
         JPanel frame = settings.getContentPane();
         frame.setLayout(null);
@@ -211,7 +226,7 @@ public class InternalScreenRegistry {
             }
         });
 
-        JButton btn = new JButton("Apply");
+        JButton btn = new JButton(Translator.translate(32));
         btn.setBounds(25, 125, 150, 25);
         btn.addActionListener(new ActionListener() {
             @Override
@@ -223,7 +238,7 @@ public class InternalScreenRegistry {
         });
         frame.add(btn);
 
-        JButton pwd = new JButton("Cookie-PWD");
+        JButton pwd = new JButton(Translator.translate(33));
         pwd.setEnabled(Browser.SAVE_COOKIES);
         pwd.setBounds(25, 175, 150, 25);
         pwd.addActionListener(new ActionListener() {
@@ -231,7 +246,7 @@ public class InternalScreenRegistry {
             public void actionPerformed(ActionEvent e) {
 
                 new Thread(() -> {
-                    char[] pwd = PasswordWindow.requestPWD("Cookie Password-Change", (value) -> {
+                    char[] pwd = PasswordWindow.requestPWD(Translator.translate(34), (value) -> {
                         return value;
                     });
 
@@ -243,7 +258,7 @@ public class InternalScreenRegistry {
                         }
                     }
 
-                    VerificationResponse yubi = PasswordWindow.requestYUBI("Cookie Yubi-Change", (value) -> {
+                    VerificationResponse yubi = PasswordWindow.requestYUBI(Translator.translate(35), (value) -> {
                         return value;
                     });
 
@@ -261,7 +276,7 @@ public class InternalScreenRegistry {
         });
         frame.add(pwd);
 
-        JCheckBox saveCookies = new JCheckBox("Save Cookies");
+        JCheckBox saveCookies = new JCheckBox(Translator.translate(36));
         saveCookies.setBounds(25, 225, 150, 25);
         saveCookies.setSelected(Browser.SAVE_COOKIES);
         saveCookies.addChangeListener(new ChangeListener() {
@@ -273,7 +288,7 @@ public class InternalScreenRegistry {
         });
         frame.add(saveCookies);
 
-        JButton erease = new JButton("Erease Cookies");
+        JButton erease = new JButton(Translator.translate(27));
         erease.setBounds(25, 275, 150, 25);
         erease.addActionListener((e) -> {
 
@@ -391,7 +406,7 @@ public class InternalScreenRegistry {
 
         @Override
         public String toString() {
-            return font == null ? "Default" : font.getName();
+            return font == null ? Translator.translate(38) : font.getName();
         }
     }
 
