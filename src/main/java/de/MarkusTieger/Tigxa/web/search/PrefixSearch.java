@@ -45,6 +45,9 @@ public class PrefixSearch {
             map.put("az", map.get("z"));
 
             map.put("git", "https://github.com/search?q=%s");
+            map.put("gh", map.get("git"));
+
+            map.put("gl", "https://about.gitlab.com/#stq=%s&stp=1");
         }
         Browser.saveConfig();
 
