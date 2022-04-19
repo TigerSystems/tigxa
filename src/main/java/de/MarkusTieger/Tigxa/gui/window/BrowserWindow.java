@@ -1147,7 +1147,6 @@ public class BrowserWindow {
 
         field.setText("about:blank");
         field.setSelectAllOnFocus(true);
-        field.addCurrentToHistory();
 
         field.addActionListener(new ActionListener() {
             @Override

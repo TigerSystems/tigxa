@@ -260,6 +260,7 @@ public class Browser {
 
         HistoryModel.setDefaultMax(Integer.MAX_VALUE);
         HistoryModel.setDefaultMaxSize(Integer.MAX_VALUE);
+        HistoryModel.saveHistory();
 
         HistoryModelSaver saver = new HistorySaver(config);
         HistoryModel.setSaver(saver);
