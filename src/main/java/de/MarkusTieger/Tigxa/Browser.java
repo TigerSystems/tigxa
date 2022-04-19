@@ -260,12 +260,10 @@ public class Browser {
 
         HistoryModel.setDefaultMax(Integer.MAX_VALUE);
         HistoryModel.setDefaultMaxSize(Integer.MAX_VALUE);
-        HistoryModel.saveHistory();
 
         HistoryModelSaver saver = new HistorySaver(config);
         HistoryModel.setSaver(saver);
         HistoryModel.loadHistory();
-
     }
 
     private static void checkUpdates() {
@@ -395,6 +393,9 @@ public class Browser {
         config.setProperty(Browser.class.getName() + ".search", SEARCH);
         config.setProperty(Browser.class.getName() + ".save_cookies", SAVE_COOKIES ? "true" : "false");
         config.setProperty(Browser.class.getName() + ".font", FONT == null ? "-" : FONT);
+
+        LOGGER.debug("Save History...");
+        HistoryModel.saveHistory();
 
         LOGGER.debug("Save Prefix-Search...");
         PrefixSearch.save(config);

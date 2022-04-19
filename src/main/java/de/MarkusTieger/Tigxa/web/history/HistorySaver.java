@@ -39,13 +39,14 @@ public class HistorySaver implements HistoryModelSaver {
             }
             
             public void update(){
-                HistoryModel.saveHistory();
+                Browser.saveConfig();
             }
         });
 
         for(Map.Entry<Object, Object> e : config.entrySet()){
             if((e + "").toLowerCase().startsWith((HistorySaver.class.getName() + ".history.").toLowerCase())){
                 if((e.getValue() + "").equalsIgnoreCase("-")) continue;
+                System.out.println("ADD: " + e.getValue());
                 model.addItem(e.getValue() + "");
             }
         }
@@ -63,6 +64,7 @@ public class HistorySaver implements HistoryModelSaver {
             }
         }
 
+        if(map == null) return true;
         if(map.containsKey(Browser.NAME.toLowerCase())){
             HistoryModel model = map.get(Browser.NAME.toLowerCase());
             if(model == null) return false;
