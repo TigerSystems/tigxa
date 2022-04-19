@@ -34,7 +34,7 @@ import java.net.*;
 import java.nio.charset.StandardCharsets;
 import java.util.function.Consumer;
 
-public class FXConent {
+public class FXContent {
 
     public record MainContentData(JFXPanel jfx, WebView webView, WebEngine webEngine,
                                   Scene scene, WebHistory history, Runnable screenshot, FXWebEngine apiEngine) {
@@ -138,7 +138,6 @@ public class FXConent {
                                 title.accept(path[path.length - 1]);
                             }
                         } else {
-                            title.accept(webEngine.getTitle());
                             loadFavicon(engine, window.getMapi(), webEngine.getLocation(), icon);
                         }
                     } catch (URISyntaxException e) {
@@ -149,6 +148,12 @@ public class FXConent {
                 WebStateChangedEvent event = new WebStateChangedEvent(engine, oldState, newState);
                 window.getMapi().getEventManager().call(event);
 
+            }
+        });
+        webEngine.titleProperty().addListener(new ChangeListener<String>() {
+            @Override
+            public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
+                title.accept(newValue);
             }
         });
 

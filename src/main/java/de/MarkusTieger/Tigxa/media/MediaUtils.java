@@ -1,20 +1,14 @@
 package de.MarkusTieger.Tigxa.media;
 
-import de.MarkusTieger.Tigxa.Browser;
 import de.MarkusTieger.Tigxa.api.engine.IEngine;
 import de.MarkusTieger.Tigxa.api.gui.IScreen;
 import de.MarkusTieger.Tigxa.api.media.IMediaEngine;
-import de.MarkusTieger.Tigxa.api.web.IWebEngine;
-import de.MarkusTieger.Tigxa.api.web.IWebHistory;
 import de.MarkusTieger.Tigxa.gui.window.BrowserWindow;
 import de.MarkusTieger.Tigxa.media.engine.VLCMediaEngine;
-import de.MarkusTieger.Tigxa.web.engine.fx.FXConent;
-import de.MarkusTieger.Tigxa.web.engine.none.NoneWebEngine;
 import lombok.Getter;
 import uk.co.caprica.vlcj.factory.MediaPlayerApi;
 import uk.co.caprica.vlcj.factory.MediaPlayerFactory;
 import uk.co.caprica.vlcj.factory.discovery.NativeDiscovery;
-import uk.co.caprica.vlcj.player.base.MediaPlayer;
 import uk.co.caprica.vlcj.player.embedded.EmbeddedMediaPlayer;
 import uk.co.caprica.vlcj.player.embedded.fullscreen.FullScreenStrategy;
 import uk.co.caprica.vlcj.player.embedded.videosurface.ComponentVideoSurface;

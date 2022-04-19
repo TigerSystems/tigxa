@@ -10,7 +10,7 @@ import de.MarkusTieger.Tigxa.api.web.IWebHistory;
 import de.MarkusTieger.Tigxa.gui.components.ModifiedTabbedPane;
 import de.MarkusTieger.Tigxa.gui.window.BrowserWindow;
 import de.MarkusTieger.Tigxa.web.engine.djnatives.DJNativesWebEngine;
-import de.MarkusTieger.Tigxa.web.engine.fx.FXConent;
+import de.MarkusTieger.Tigxa.web.engine.fx.FXContent;
 import de.MarkusTieger.Tigxa.web.engine.none.NoneWebEngine;
 import de.MarkusTieger.Tigxa.web.engine.swing.SwingWebEngine;
 
@@ -130,7 +130,7 @@ public class WebUtils {
             }};
             Runnable devtools = () -> devtoolsarray[0].run();
 
-            FXConent.MainContentData data = FXConent.createContent(window, (title) -> {
+            FXContent.MainContentData data = FXContent.createContent(window, (title) -> {
 
                         int index = -1;
 
@@ -662,8 +662,6 @@ public class WebUtils {
 
             @Override
             public void titleChanged(WebBrowserEvent webBrowserEvent) {
-                // TODO: Title
-
                 int index = -1;
 
                 index = tabs.indexOfComponent(panel);
