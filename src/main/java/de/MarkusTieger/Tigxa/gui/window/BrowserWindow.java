@@ -435,6 +435,8 @@ public class BrowserWindow {
                     lineHeight = getLocationOnScreen().y + 33;
                 } catch (Throwable e){
                 }
+
+                repaint();
             }
 
         };
@@ -530,6 +532,8 @@ public class BrowserWindow {
                     lineHeight = getLocationOnScreen().y + 33;
                 } catch (Throwable e){
                 }
+
+                repaint();
             }
         };
         nav.setLayout(null);
@@ -620,6 +624,8 @@ public class BrowserWindow {
                     lineHeight = getLocationOnScreen().y + 33;
                 } catch (Throwable e){
                 }
+
+                repaint();
             }
         };
         nav.setLayout(null);
@@ -713,6 +719,8 @@ public class BrowserWindow {
                     lineHeight = getLocationOnScreen().y + 33;
                 } catch (Throwable e){
                 }
+
+                repaint();
             }
         };
         nav.setLayout(null);
