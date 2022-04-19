@@ -1,0 +1,54 @@
+package de.MarkusTieger.Tigxa.web.history;
+
+import de.MarkusTieger.Tigxa.Browser;
+import org.gjt.sp.jedit.gui.HistoryModel;
+import org.gjt.sp.jedit.gui.HistoryModelSaver;
+
+import java.util.Collections;
+import java.util.Map;
+import java.util.Properties;
+
+public class HistorySaver implements HistoryModelSaver {
+
+    private final Properties config;
+
+    public HistorySaver(Properties config){
+        this.config = config;
+    }
+
+    @Override
+    public Map<String, HistoryModel> load(Map<String, HistoryModel> map) {
+        HistoryModel model = new HistoryModel(Browser.NAME.toLowerCase());
+
+        for(Map.Entry<Object, Object> e : config.entrySet()){
+            if((e + "").toLowerCase().startsWith((HistorySaver.class.getName() + ".history.").toLowerCase())){
+                if((e.getValue() + "").equalsIgnoreCase("-")) continue;
+                model.addItem(e.getValue() + "");
+            }
+        }
+
+        return Collections.singletonMap(Browser.NAME.toLowerCase(), model);
+    }
+
+    @Override
+    public boolean save(Map<String, HistoryModel> map) {
+        boolean changed = false;
+
+        for(Map.Entry<Object, Object> e : config.entrySet()){
+            if((e + "").toLowerCase().startsWith((HistorySaver.class.getName() + ".history.").toLowerCase())){
+                config.setProperty(e.getKey() + "", "-");
+            }
+        }
+
+        if(map.containsKey(Browser.NAME.toLowerCase())){
+            HistoryModel model = map.get(Browser.NAME.toLowerCase());
+            if(model == null) return false;
+            for(int i = 0; i < model.size(); i++){
+                config.setProperty(HistorySaver.class.getName() + ".history." + i, model.elementAt(i));
+            }
+        }
+
+        return changed;
+    }
+
+}

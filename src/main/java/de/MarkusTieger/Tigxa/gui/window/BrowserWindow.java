@@ -1,6 +1,5 @@
 package de.MarkusTieger.Tigxa.gui.window;
 
-import com.formdev.flatlaf.FlatLaf;
 import de.MarkusTieger.Tigxa.Browser;
 import de.MarkusTieger.Tigxa.api.IAPI;
 import de.MarkusTieger.Tigxa.api.engine.IEngine;
@@ -23,20 +22,17 @@ import javafx.application.Platform;
 import lombok.Getter;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
+import org.gjt.sp.jedit.gui.HistoryTextField;
 
 import javax.swing.*;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
 import javax.swing.plaf.ComponentUI;
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.net.*;
-import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.*;
-import java.util.Timer;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
@@ -1109,7 +1105,7 @@ public class BrowserWindow {
 
         nav.add(security);
 
-        JTextField field = new JTextField() {
+        HistoryTextField field = new HistoryTextField(Browser.NAME.toLowerCase(), true, true) {
 
             @Override
             public int getX() {
@@ -1147,25 +1143,16 @@ public class BrowserWindow {
                 if (update) setBounds(x, y, width, height);
             }
         };
+        System.out.println(field.getModel());
 
         field.setText("about:blank");
+        field.setSelectAllOnFocus(true);
+        field.addCurrentToHistory();
+
         field.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 PrefixSearch.search(location, field.getText());
-            }
-        });
-        field.addFocusListener(new FocusListener() {
-            @Override
-            public void focusGained(FocusEvent e) {
-                if (field.getText().isEmpty()) return;
-                field.setSelectionStart(0);
-                field.setSelectionEnd(field.getText().length());
-            }
-
-            @Override
-            public void focusLost(FocusEvent e) {
-
             }
         });
         nav.add(field);

@@ -41,6 +41,7 @@ open module de.MarkusTieger.Tigxa {
 
     // Music
     requires freetts;
+    requires jedit;
 
     exports de.MarkusTieger.Tigxa;
 }

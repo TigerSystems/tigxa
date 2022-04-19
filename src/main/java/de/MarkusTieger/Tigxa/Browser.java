@@ -17,12 +17,16 @@ import de.MarkusTieger.Tigxa.update.Updater;
 import de.MarkusTieger.Tigxa.update.Version;
 import de.MarkusTieger.Tigxa.web.TrustManager;
 import de.MarkusTieger.Tigxa.web.WebUtils;
+import de.MarkusTieger.Tigxa.web.history.HistorySaver;
 import de.MarkusTieger.Tigxa.web.search.PrefixSearch;
 import javafx.scene.web.WebView;
 import lombok.Getter;
 import lombok.Setter;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
+import org.gjt.sp.jedit.gui.HistoryModel;
+import org.gjt.sp.jedit.gui.HistoryModelSaver;
+import org.gjt.sp.jedit.jEdit;
 
 import javax.swing.*;
 import java.io.File;
@@ -198,6 +202,9 @@ public class Browser {
             CookieManager.initialize(configRoot);
         }
 
+        LOGGER.info("Initialize History...");
+        initializeHistory();
+
         LOGGER.info("Initializing Extension-API...");
 
         mainAPI = new MainAPI(configRoot);
@@ -244,6 +251,19 @@ public class Browser {
 
         LOGGER.info("Store Configurations...");
         storeConfig(config);
+
+    }
+
+    private static void initializeHistory(){
+
+        jEdit.setProperty("history.caption", "History");
+
+        HistoryModel.setDefaultMax(Integer.MAX_VALUE);
+        HistoryModel.setDefaultMaxSize(Integer.MAX_VALUE);
+
+        HistoryModelSaver saver = new HistorySaver(config);
+        HistoryModel.setSaver(saver);
+        HistoryModel.loadHistory();
 
     }
 
