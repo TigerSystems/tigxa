@@ -270,28 +270,32 @@ public class Browser {
     }
 
     private static void initializeRPC() {
-        DiscordRPC lib = DiscordRPC.INSTANCE;
-        String applicationId = "966331256226848768";
-        String steamId = "";
+        try {
+            DiscordRPC lib = DiscordRPC.INSTANCE;
+            String applicationId = "966331256226848768";
+            String steamId = "";
 
-        DiscordEventHandlers handlers = new DiscordEventHandlers();
-        handlers.ready = (user) -> LOGGER.debug("RPC Ready! User: " + user.username + "#" + user.discriminator + " (" + user.userId + ")");
-        lib.Discord_Initialize(applicationId, handlers, true, steamId);
-        DiscordRichPresence presence = new DiscordRichPresence();
-        presence.startTimestamp = System.currentTimeMillis() / 1000;
-        presence.details = "v." + Browser.FULL_VERSION;
-        presence.largeImageKey = "ico";
-        presence.largeImageText = "https://github.com/TigerSystems/tigxa-main";
-        lib.Discord_UpdatePresence(presence);
-        // in a worker thread
-        new Thread(() -> {
-            while (!Thread.currentThread().isInterrupted()) {
-                lib.Discord_RunCallbacks();
-                try {
-                    Thread.sleep(2000);
-                } catch (InterruptedException ignored) {}
-            }
-        }, "RPC-Callback-Handler").start();
+            DiscordEventHandlers handlers = new DiscordEventHandlers();
+            handlers.ready = (user) -> LOGGER.debug("RPC Ready! User: " + user.username + "#" + user.discriminator + " (" + user.userId + ")");
+            lib.Discord_Initialize(applicationId, handlers, true, steamId);
+            DiscordRichPresence presence = new DiscordRichPresence();
+            presence.startTimestamp = System.currentTimeMillis() / 1000;
+            presence.details = "v." + Browser.FULL_VERSION;
+            presence.largeImageKey = "ico";
+            presence.largeImageText = "https://github.com/TigerSystems/tigxa-main";
+            lib.Discord_UpdatePresence(presence);
+            // in a worker thread
+            new Thread(() -> {
+                while (!Thread.currentThread().isInterrupted()) {
+                    lib.Discord_RunCallbacks();
+                    try {
+                        Thread.sleep(2000);
+                    } catch (InterruptedException ignored) {}
+                }
+            }, "RPC-Callback-Handler").start();
+        } catch (Throwable e){
+            LOGGER.warn("Discord RPC can't initialized!", e);
+        }
     }
 
     private static void initializeHistory(){
