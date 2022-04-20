@@ -58,10 +58,10 @@ public class Bootstrap {
             }
             if(args[0].equalsIgnoreCase("discord-rpc")){
 
-                update();
-
                 LOGGER.info("Starting Discord-RPC Background-Worker...");
                 Browser.initializeRPC();
+
+                update();
                 return;
             }
         }
