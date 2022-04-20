@@ -3,6 +3,13 @@ open module de.MarkusTieger.Tigxa {
     // Logging
     requires log4j;
 
+    // Technical
+    requires jdk.jsobject;
+
+    requires com.google.gson;
+    requires static lombok;
+    // requires java.discord.rpc;
+
     // Web
     requires swt.all;
 
@@ -22,12 +29,6 @@ open module de.MarkusTieger.Tigxa {
     requires com.formdev.flatlaf;
     requires com.formdev.flatlaf.intellijthemes;
 
-    // Technical
-    requires jdk.jsobject;
-
-    requires com.google.gson;
-    requires static lombok;
-
     requires yubico.validation.client2;
 
     // API
@@ -42,6 +43,7 @@ open module de.MarkusTieger.Tigxa {
     // Music
     requires freetts;
     requires jedit;
+    requires com.sun.jna;
 
     exports de.MarkusTieger.Tigxa;
 }

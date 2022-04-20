@@ -1,5 +1,8 @@
 package de.MarkusTieger.Tigxa;
 
+import club.minnced.discord.rpc.DiscordEventHandlers;
+import club.minnced.discord.rpc.DiscordRPC;
+import club.minnced.discord.rpc.DiscordRichPresence;
 import com.formdev.flatlaf.FlatLightLaf;
 import de.MarkusTieger.Tigxa.api.IAPI;
 import de.MarkusTieger.Tigxa.api.impl.main.MainAPI;
@@ -197,6 +200,10 @@ public class Browser {
 
         PrefixSearch.load(config);
 
+        LOGGER.info("Initializing Discord-RPC...");
+
+        initializeRPC();
+
         LOGGER.info("Applying Theme...");
 
         if (!ThemeManager.setTheme(config)) {
@@ -260,6 +267,31 @@ public class Browser {
         LOGGER.info("Store Configurations...");
         storeConfig(config);
 
+    }
+
+    private static void initializeRPC() {
+        DiscordRPC lib = DiscordRPC.INSTANCE;
+        String applicationId = "966331256226848768";
+        String steamId = "";
+
+        DiscordEventHandlers handlers = new DiscordEventHandlers();
+        handlers.ready = (user) -> LOGGER.debug("RPC Ready! User: " + user.username + "#" + user.discriminator + " (" + user.userId + ")");
+        lib.Discord_Initialize(applicationId, handlers, true, steamId);
+        DiscordRichPresence presence = new DiscordRichPresence();
+        presence.startTimestamp = System.currentTimeMillis() / 1000;
+        presence.details = "v." + Browser.FULL_VERSION;
+        presence.largeImageKey = "ico";
+        presence.largeImageText = "https://github.com/TigerSystems/tigxa-main";
+        lib.Discord_UpdatePresence(presence);
+        // in a worker thread
+        new Thread(() -> {
+            while (!Thread.currentThread().isInterrupted()) {
+                lib.Discord_RunCallbacks();
+                try {
+                    Thread.sleep(2000);
+                } catch (InterruptedException ignored) {}
+            }
+        }, "RPC-Callback-Handler").start();
     }
 
     private static void initializeHistory(){
