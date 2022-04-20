@@ -4,6 +4,7 @@ import com.formdev.flatlaf.*;
 import com.formdev.flatlaf.intellijthemes.FlatAllIJThemes;
 import de.MarkusTieger.Tigxa.Browser;
 import de.MarkusTieger.Tigxa.gui.screen.InternalScreenRegistry;
+import de.MarkusTieger.Tigxa.gui.screen.settings.SettingsScreen;
 
 import javax.swing.*;
 import javax.swing.plaf.FontUIResource;
@@ -78,15 +79,15 @@ public class ThemeManager {
 
         GraphicsEnvironment env = GraphicsEnvironment.getLocalGraphicsEnvironment();
 
-        Map<String, InternalScreenRegistry.FontItem> map = new HashMap<>();
+        Map<String, SettingsScreen.FontItem> map = new HashMap<>();
 
         for(Font f : env.getAllFonts()){
-            InternalScreenRegistry.FontItem fi = new InternalScreenRegistry.FontItem(f);
+            SettingsScreen.FontItem fi = new SettingsScreen.FontItem(f);
             map.put(f.getName(), fi);
         }
 
         if(Browser.FONT != null){
-            InternalScreenRegistry.FontItem i = map.get(Browser.FONT);
+            SettingsScreen.FontItem i = map.get(Browser.FONT);
             if(i != null) {
                 if(i.getFont() != null) setUIFont(i.getFont());
             }
