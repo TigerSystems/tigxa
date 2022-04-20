@@ -116,19 +116,19 @@ public class SettingsScreen {
         TreeFolder root = new TreeFolder(Browser.NAME, null);
         DefaultTreeModel model = new DefaultTreeModel(root);
 
-        TreeFolder general = new TreeFolder("General", root);
+        TreeFolder general = new TreeFolder(Translator.translate(55), root);
         root.getNodes().add(general);
 
-        TreeEntry apperance = new TreeEntry("Apperance", general, buildApperancePanel(main));
+        TreeEntry apperance = new TreeEntry(Translator.translate(56), general, buildApperancePanel(main));
         general.getNodes().add(apperance);
 
-        TreeFolder web = new TreeFolder("Web", root);
+        TreeFolder web = new TreeFolder(Translator.translate(57), root);
         root.getNodes().add(web);
 
-        TreeEntry homepage = new TreeEntry("HomePage", web, buildHomePage(main));
+        TreeEntry homepage = new TreeEntry(Translator.translate(58), web, buildHomePage(main));
         web.getNodes().add(homepage);
 
-        TreeEntry cookies = new TreeEntry("Cookies", web, buildCookiesPanel(main));
+        TreeEntry cookies = new TreeEntry(Translator.translate(59), web, buildCookiesPanel(main));
         web.getNodes().add(cookies);
 
         tree.addTreeSelectionListener(new TreeSelectionListener() {

@@ -11,7 +11,7 @@ plugins {
 }
 
 group 'de.MarkusTieger'
-version '1.27.3'
+version '1.27.4'
 
 String dependencyOS = System.getProperty("os.name")
 String dependencyArch = System.getProperty("os.arch")
@@ -156,7 +156,7 @@ dependencies {
 
 
 
-    // Music
+    // Music / Voice
     implementation("net.sf.sociaal:freetts:1.2.2")
 
 
