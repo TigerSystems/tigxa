@@ -82,6 +82,7 @@ public class WebUtils {
             IEngine data = tabLinks.get(c);
             if (data == null) return;
             data.load(null);
+            tabLinks.remove(c);
         }
 
     }
@@ -520,7 +521,7 @@ public class WebUtils {
 
         Map<Component, IEngine> tabLinks = window.getTabLinks();
         synchronized (tabLinks) {
-            tabLinks.put(component, engine);
+            tabLinks.put(panel, engine);
         }
 
         return component;

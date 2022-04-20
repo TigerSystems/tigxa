@@ -347,6 +347,7 @@ public class BrowserWindow {
             }
             findTab(tabPanel, cardLayout);
         }
+
         WebUtils.unloadTab(BrowserWindow.this, c);
         update();
     }
