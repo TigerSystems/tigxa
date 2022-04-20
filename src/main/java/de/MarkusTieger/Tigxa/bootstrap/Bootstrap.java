@@ -2,6 +2,8 @@ package de.MarkusTieger.Tigxa.bootstrap;
 
 import com.formdev.flatlaf.FlatLightLaf;
 import de.MarkusTieger.Tigxa.Browser;
+import de.MarkusTieger.Tigxa.update.Updater;
+import de.MarkusTieger.Tigxa.update.Version;
 import org.apache.log4j.*;
 
 import javax.swing.*;
@@ -55,6 +57,9 @@ public class Bootstrap {
                 return;
             }
             if(args[0].equalsIgnoreCase("discord-rpc")){
+
+                update();
+
                 LOGGER.info("Starting Discord-RPC Background-Worker...");
                 Browser.initializeRPC();
                 return;
@@ -112,6 +117,34 @@ public class Bootstrap {
             }
 
         }
+    }
+
+    private static final Updater updater = new Updater();
+
+    private static void update(){
+        LOGGER.debug("Checking Update-Conditions...");
+
+        if(!updater.checkJar()) return;
+        if(updater.isUpdated()) return;
+        if(updater.isDebugBuild()) return;
+
+        LOGGER.debug("Retrieving Latest-Update...");
+
+        Version latest = updater.getLatestVersion();
+        if(latest == null){
+            LOGGER.debug("Latest Version can't found.");
+            return;
+        }
+        LOGGER.debug("Checking Current-Version...");
+        boolean update = false;
+        if(!latest.version().equalsIgnoreCase(Browser.VERSION)) update = true;
+        if(!latest.build().equalsIgnoreCase(Browser.BUILD)) update = true;
+        if(!latest.commit().equalsIgnoreCase(Browser.COMMIT_HASH)) update = true;
+
+        if(update) {
+            LOGGER.debug("Newer Update found!");
+            updater.update(latest, (e) -> {});
+        } else LOGGER.debug("Current Version is the latest.");
     }
 
 }
