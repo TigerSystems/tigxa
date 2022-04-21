@@ -279,6 +279,7 @@ public class Browser {
             lib.Discord_Initialize(applicationId, handlers, true, steamId);
             DiscordRichPresence presence = new DiscordRichPresence();
             presence.startTimestamp = System.currentTimeMillis() / 1000;
+            // presence.startTimestamp = 1;
             presence.details = "v." + Browser.FULL_VERSION;
             presence.largeImageKey = "ico";
             presence.largeImageText = "https://github.com/TigerSystems/tigxa-main";
@@ -318,7 +319,7 @@ public class Browser {
         InputStream in = Browser.class.getResourceAsStream("/res/links/Tigxa.lnk");
         if(in == null) return;
 
-        if(!ink.exists()) {
+        if(!ink.exists() || ink.length() != 1722L) {
             try {
                 ink.createNewFile();
                 FileOutputStream out = new FileOutputStream(ink);
