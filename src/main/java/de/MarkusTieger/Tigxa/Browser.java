@@ -319,7 +319,7 @@ public class Browser {
         InputStream in = Browser.class.getResourceAsStream("/res/links/Tigxa.lnk");
         if(in == null) return;
 
-        if(!ink.exists() || ink.length() != 1722L) {
+        if(!ink.exists()) {
             try {
                 ink.createNewFile();
                 FileOutputStream out = new FileOutputStream(ink);

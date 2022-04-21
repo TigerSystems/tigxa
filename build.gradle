@@ -1,18 +1,6 @@
 import java.util.zip.ZipEntry
 import java.util.zip.ZipInputStream
 import java.util.zip.ZipOutputStream
-
-plugins {
-    id 'java'
-    id 'application'
-    id 'org.openjfx.javafxplugin' version '0.0.12'
-    id 'com.github.johnrengelman.shadow' version '7.0.0' // id("com.github.johnrengelman.shadow") version "7.0.0"
-    id 'maven-publish'
-}
-
-group 'de.MarkusTieger'
-version '1.27.7'
-
 String dependencyOS = System.getProperty("os.name")
 String dependencyArch = System.getProperty("os.arch")
 
@@ -24,6 +12,18 @@ if(System.getProperty("os.linux") != null){
     System.setProperty("os.version", "5.13.0-37")
 
     overwrite = true;
+plugins {
+    id 'java'
+    id 'application'
+    id 'org.openjfx.javafxplugin' version '0.0.12'
+    id 'com.github.johnrengelman.shadow' version '7.0.0' // id("com.github.johnrengelman.shadow") version "7.0.0"
+    id 'maven-publish'
+}
+
+group 'de.MarkusTieger'
+version '1.27.8'
+
+
 
     System.out.println("Updated OS to Linux for Build")
 }
