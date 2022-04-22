@@ -13,6 +13,7 @@ import de.MarkusTieger.Tigxa.gui.theme.ThemeManager;
 import de.MarkusTieger.Tigxa.gui.window.PasswordWindow;
 import de.MarkusTieger.Tigxa.http.cookie.CookieManager;
 import de.MarkusTieger.Tigxa.lang.Translator;
+import de.MarkusTieger.Tigxa.streaming.spotify.Spotify;
 import lombok.Getter;
 
 import javax.swing.*;
@@ -24,6 +25,10 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Consumer;
@@ -131,6 +136,12 @@ public class SettingsScreen {
         TreeEntry cookies = new TreeEntry(Translator.translate(59), web, buildCookiesPanel(main));
         web.getNodes().add(cookies);
 
+        TreeFolder streaming = new TreeFolder("Streaming", root);
+        root.getNodes().add(streaming);
+
+        TreeEntry spotify = new TreeEntry("Spotify", streaming, buildSpotifyPanel(main));
+        streaming.getNodes().add(spotify);
+
         tree.addTreeSelectionListener(new TreeSelectionListener() {
             @Override
             public void valueChanged(TreeSelectionEvent e) {
@@ -144,6 +155,104 @@ public class SettingsScreen {
         });
 
         return model;
+    }
+
+    private static JPanel buildSpotifyPanel(JPanel main) {
+
+        JPanel frame = new JPanel() {
+
+            @Override
+            public Dimension getPreferredSize() {
+                Dimension max = getMaximumSize();
+                max.width = max.width - 500;
+                return max;
+            }
+
+            @Override
+            public Dimension getMinimumSize() {
+                Dimension max = getMaximumSize();
+                max.width = 300;
+                return max;
+            }
+
+            @Override
+            public Dimension getMaximumSize() {
+                return main.getSize();
+            }
+
+        };
+        frame.setLayout(null);
+
+        JComboBox<String> types = new JComboBox<>();
+        types.setBounds(25, 25, 200, 25);
+        frame.add(types);
+
+        types.addItem("COMPUTER");
+        types.addItem("TABLET");
+        types.addItem("SMARTPHONE");
+        types.addItem("SPEAKER");
+        types.addItem("TV");
+        types.addItem("AVR");
+        types.addItem("STB");
+        types.addItem("AUDIO_DONGLE");
+        types.addItem("GAME_CONSOLE");
+        types.addItem("CAST_VIDEO");
+        types.addItem("CAST_AUDIO");
+        types.addItem("AUTOMOBILE");
+        types.addItem("WEARABLE");
+        types.addItem("UNKNOWN_SPOTIFY");
+        types.addItem("CAR_THING");
+        types.addItem("UNKNOWN");
+
+        JTextField username = new JTextField();
+        username.setBounds(25, 75, 200, 25);
+        frame.add(username);
+        
+        JPasswordField password = new JPasswordField();
+        password.setBounds(25, 125, 200, 25);
+        password.putClientProperty("FlatLaf.style", "showRevealButton: true");
+        frame.add(password);
+
+        JButton apply = new JButton("Apply");
+        apply.setBounds(25, 175, 200, 25);
+        apply.addActionListener((e) -> {
+
+            try {
+                InputStream in = SettingsScreen.class.getResourceAsStream("/res/config/spotify.config.toml");
+                byte[] data = in.readAllBytes();
+                in.close();
+                String conf = new String(data, StandardCharsets.UTF_8);
+                String edited = conf.replaceAll("\\{\\{\\{ SPOTIFY_TYPE \\}\\}\\}", types.getSelectedItem() + "").replaceAll("\\{\\{\\{ SPOTIFY_USER \\}\\}\\}", username.getText()).replaceAll("\\{\\{\\{ SPOTIFY_PWD \\}\\}\\}", new String(password.getPassword()));
+
+                File f = new File(Spotify.DIR, "config.toml");
+                if(!f.exists()) f.createNewFile();
+                FileOutputStream out = new FileOutputStream(f);
+                out.write(edited.getBytes(StandardCharsets.UTF_8));
+                out.flush();
+                out.close();
+
+            } catch (Throwable ex){
+                ex.printStackTrace();
+            }
+
+        });
+        frame.add(apply);
+
+        JCheckBox enable = new JCheckBox("Enable Spotify");
+        enable.setSelected(Spotify.ENABLE);
+        enable.setBounds(25, 225, 300, 50);
+        enable.addChangeListener(new ChangeListener() {
+            @Override
+            public void stateChanged(ChangeEvent e) {
+                Spotify.ENABLE = enable.isSelected();
+                Browser.saveConfig();
+            }
+        });
+        frame.add(enable);
+
+
+        return frame;
+
     }
 
     private static JPanel buildCookiesPanel(JPanel main) {

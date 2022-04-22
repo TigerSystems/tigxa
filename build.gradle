@@ -1,6 +1,18 @@
 import java.util.zip.ZipEntry
 import java.util.zip.ZipInputStream
 import java.util.zip.ZipOutputStream
+
+plugins {
+    id 'java'
+    id 'application'
+    id 'org.openjfx.javafxplugin' version '0.0.12'
+    id 'com.github.johnrengelman.shadow' version '7.0.0' // id("com.github.johnrengelman.shadow") version "7.0.0"
+    id 'maven-publish'
+}
+
+group 'de.MarkusTieger'
+version '1.28.0'
+
 String dependencyOS = System.getProperty("os.name")
 String dependencyArch = System.getProperty("os.arch")
 
@@ -12,18 +24,6 @@ if(System.getProperty("os.linux") != null){
     System.setProperty("os.version", "5.13.0-37")
 
     overwrite = true;
-plugins {
-    id 'java'
-    id 'application'
-    id 'org.openjfx.javafxplugin' version '0.0.12'
-    id 'com.github.johnrengelman.shadow' version '7.0.0' // id("com.github.johnrengelman.shadow") version "7.0.0"
-    id 'maven-publish'
-}
-
-group 'de.MarkusTieger'
-version '1.27.8'
-
-
 
     System.out.println("Updated OS to Linux for Build")
 }
@@ -64,6 +64,7 @@ repositories {
     mavenCentral()
     // mavenLocal()
     jcenter()
+    maven { url 'https://jitpack.io' }
     maven {
         name = "Github-API"
         url = uri("https://maven.pkg.github.com/TigerSystems/tigxa-api")
@@ -148,6 +149,8 @@ dependencies {
     implementation("com.google.code.gson:gson:2.9.0")
 
     implementation('com.yubico:yubico-validation-client2:3.1.0')
+
+    // implementation("me.haga.librespot.spotifi:lovspotify:1.6.1")
 
     // implementation files('libs/rpc/java-discord-rpc.jar')
 

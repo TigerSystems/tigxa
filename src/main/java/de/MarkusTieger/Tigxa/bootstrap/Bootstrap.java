@@ -64,6 +64,12 @@ public class Bootstrap {
                 update();
                 return;
             }
+            if(args[0].equalsIgnoreCase("update-scheduler")){
+                LOGGER.info("Starting Update-Scheduler...");
+
+                update();
+                return;
+            }
         }
 
         String force_launch = System.getProperty("tigxa.force_launch");

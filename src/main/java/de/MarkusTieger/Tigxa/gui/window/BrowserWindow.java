@@ -17,6 +17,7 @@ import de.MarkusTieger.Tigxa.gui.image.ImageLoader;
 import de.MarkusTieger.Tigxa.gui.theme.ThemeManager;
 import de.MarkusTieger.Tigxa.lang.Translator;
 import de.MarkusTieger.Tigxa.media.MediaUtils;
+import de.MarkusTieger.Tigxa.streaming.spotify.Spotify;
 import de.MarkusTieger.Tigxa.web.WebUtils;
 import de.MarkusTieger.Tigxa.web.search.PrefixSearch;
 import javafx.application.Platform;
@@ -193,6 +194,15 @@ public class BrowserWindow {
         applyTabHandler(selectedTabPage, tabPanel, cardLayout, tabs);
 
         tabPanel.setLayout(cardLayout);
+
+        if(Spotify.ENABLE){
+            JButton spotify = new JButton("S");
+            spotify.setBounds(2, 300, 26, 26);
+            spotify.addActionListener((e) -> {
+                Platform.runLater(() -> newTab("http://localhost:8080", true));
+            });
+            side.add(spotify);
+        }
 
         for(int i = 0; i < maxTabPage; i++){
             final int k = i;

@@ -25,7 +25,6 @@ public class InternalScreenRegistry {
     private final IAPI api;
 
     private IScreen about;
-    private IScreen settings;
     private IScreen update;
     private IScreen chromeDino;
 
@@ -61,7 +60,7 @@ public class InternalScreenRegistry {
 
     }
 
-    private void initUpdate(){
+    private void initUpdate() {
         update = api.getGUIManager().createScreen(Translator.translate(27), api.getNamespace() + "://update");
 
         update.getContentPane().setLayout(null);
