@@ -282,6 +282,14 @@ public class Browser {
     }
 
     public static void initializeRPC() {
+
+        int modifier = 0;
+
+        try {
+            modifier = Integer.parseInt(System.getProperty("discord.modifier"));
+        } catch (Throwable e){
+        }
+
         if(System.getProperty("discord.rpc", "true").equalsIgnoreCase("false")) return;
         try {
             DiscordRPC lib = DiscordRPC.INSTANCE;
@@ -292,8 +300,8 @@ public class Browser {
             handlers.ready = Browser::handleRPCUser;
             lib.Discord_Initialize(applicationId, handlers, true, steamId);
             DiscordRichPresence presence = new DiscordRichPresence();
-            presence.startTimestamp = System.currentTimeMillis() / 1000;
-            // presence.startTimestamp = 1;
+            // presence.startTimestamp = System.currentTimeMillis() / 1000;
+            presence.startTimestamp = (System.currentTimeMillis() / 1000);
             presence.details = "v." + Browser.FULL_VERSION;
             presence.largeImageKey = "ico";
             presence.largeImageText = "https://github.com/TigerSystems/tigxa-main";
