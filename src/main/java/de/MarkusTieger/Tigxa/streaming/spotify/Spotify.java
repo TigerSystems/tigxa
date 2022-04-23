@@ -1,7 +1,5 @@
 package de.MarkusTieger.Tigxa.streaming.spotify;
 
-import de.MarkusTieger.Tigxa.bootstrap.Bootstrap;
-
 import java.io.*;
 
 public class Spotify {
@@ -25,9 +23,9 @@ public class Spotify {
             }
         }
 
-        if(jar.length() != 37864404L){
+        if(jar.length() != 37864404L) {
             try {
-                InputStream in = Spotify.class.getResourceAsStream("/res/jars/lovspotify-1.6.1.jar");
+                InputStream in = Spotify.class.getResourceAsStream("/res/jars/lovspotify-1.6.1.jar.res");
                 if(in == null) throw new IOException("JAR not found!");
                 FileOutputStream out = new FileOutputStream(jar);
                 int len;

