@@ -10,7 +10,7 @@ public class Spotify {
 
     private static boolean started = false;
 
-    public static void start(){
+    public static void start() {
         if(started) return;
         started = true;
 
