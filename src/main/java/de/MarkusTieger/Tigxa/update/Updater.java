@@ -127,4 +127,66 @@ public class Updater {
         }
     }
 
+	public void updateSafly(Version version, Consumer<Double> percend){
+        if(isDebugBuild()) throw new RuntimeException("You can't update a Debug-Build!");
+        if(!checkJar()) throw new RuntimeException("This Build of the " + Browser.FULL_NAME + " can't update.");
+
+        URL resource = Browser.class.getProtectionDomain().getCodeSource().getLocation();
+        if(resource == null) throw new RuntimeException("This Build of the " + Browser.FULL_NAME + " can't update.");
+        if(!resource.getProtocol().equalsIgnoreCase("file")) throw new RuntimeException("This Build of the " + Browser.FULL_NAME + " can't update.");
+
+        String os = getOS();
+        String arch = getARCH();
+
+        String path = "https://github.com/TigerSystems/tigxa/releases/download/" + version.version() + "-" + version.build() + "/" + Browser.NAME.toLowerCase() + "-" + version.version() + "-" + os + "-" + arch + "-all.jar";
+        try {
+
+            File target = new File(resource.toURI());
+
+            LOGGER.debug("Opening Streams...");
+
+            URL url = new URL(path);
+            HttpURLConnection con = (HttpURLConnection) url.openConnection();
+            con.setRequestProperty("User-Agent", HttpUtils.AGENT);
+            long length = con.getContentLength();
+
+            int len;
+            byte[] buffer = new byte[1024];
+
+            InputStream in = con.getInputStream();
+
+            if(!target.exists()) target.createNewFile();
+            
+            OutputStream out = new ByteArrayOutputStream();
+            
+            double readed = 0D;
+            while((len = in.read(buffer)) > 0){
+                out.write(buffer, 0, len);
+                readed += len;
+
+                double p = ((readed * 100D) / ((double) length));
+                percend.accept(p);
+
+                LOGGER.debug("Percend: " + p);
+            }
+
+            byte[] data = ((ByteArrayOutputStream)out).toByteArray();
+            
+            out = new FileOutputStream(target);
+            out.write(data);
+            
+            LOGGER.debug("Closing Streams...");
+
+            out.flush();
+            out.close();
+            in.close();
+
+            percend.accept(-1D);
+            updated = true;
+            LOGGER.info("Update Finished!");
+        } catch (Throwable e) {
+            e.printStackTrace();
+        }
+    }
+
 }

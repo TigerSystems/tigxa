@@ -7,8 +7,18 @@ import de.MarkusTieger.Tigxa.update.Version;
 import org.apache.log4j.*;
 
 import javax.swing.*;
+
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.lang.reflect.Method;
+import java.net.ServerSocket;
+import java.net.Socket;
+import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Bootstrap {
 
@@ -67,7 +77,10 @@ public class Bootstrap {
             if(args[0].equalsIgnoreCase("update-scheduler")){
                 LOGGER.info("Starting Update-Scheduler...");
 
-                update();
+                updateSafly();
+                
+                if(System.getProperty("tigxa.disable-remote") == null) startRemote();
+                
                 return;
             }
         }
@@ -125,7 +138,92 @@ public class Bootstrap {
         }
     }
 
-    private static final Updater updater = new Updater();
+    @SuppressWarnings("resource")
+	private static void startRemote() {
+		
+    	LOGGER.info("Starting Remote...");
+    	
+    	ServerSocket server;
+    	try {
+			server = new ServerSocket(53452);
+		} catch (IOException e) {
+			e.printStackTrace();
+			return;
+		}
+    	
+    	while(true) {
+    		try {
+    			Socket client = server.accept();
+    			new Thread(() -> handle(client), "Client-Handler").start();
+    		} catch (Exception e) {
+				e.printStackTrace();
+			}
+    	}
+    	
+	}
+
+	private static void handle(Socket client) {
+		
+		List<String> cmd = new ArrayList<>();
+		try {
+			Process p = null;
+			
+			BufferedReader reader = new BufferedReader(new InputStreamReader(client.getInputStream(), StandardCharsets.UTF_8));
+			String str = "";
+			while((str = reader.readLine()) != null) {
+				
+				if(p == null) {
+					if(str.equalsIgnoreCase("FINISH-SEND_REMOTE")) {
+						p = startProcess(cmd, client.getOutputStream());
+					} else cmd.add(str);
+				} else {
+					OutputStream out = p.getOutputStream();
+					out.write((str + "\n").getBytes(StandardCharsets.UTF_8));
+					out.flush();
+				}
+				
+				
+			}
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		if(!client.isClosed()) {
+			try {
+				client.close();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		
+	}
+
+	private static Process startProcess(List<String> cmd, OutputStream redirect) throws IOException {
+		ProcessBuilder builder = new ProcessBuilder(cmd);
+		Process p = builder.start();
+		
+		new Thread(() -> {
+			
+			InputStream in = p.getInputStream();
+			int len;
+			byte[] buffer = new byte[1024];
+			try {
+				while((len = in.read(buffer)) > 0) {
+					redirect.write(buffer, 0, len);
+					redirect.flush();
+				}
+			} catch(Exception e) {
+				e.printStackTrace();
+			}
+			
+		}, "Process-Reader").start();
+		
+		return p;
+	}
+
+	private static final Updater updater = new Updater();
 
     private static void update(){
         LOGGER.debug("Checking Update-Conditions...");
@@ -150,6 +248,32 @@ public class Bootstrap {
         if(update) {
             LOGGER.debug("Newer Update found!");
             updater.update(latest, (e) -> {});
+        } else LOGGER.debug("Current Version is the latest.");
+    }
+    
+    private static void updateSafly(){
+        LOGGER.debug("Checking Update-Conditions...");
+
+        if(!updater.checkJar()) return;
+        if(updater.isUpdated()) return;
+        if(updater.isDebugBuild()) return;
+
+        LOGGER.debug("Retrieving Latest-Update...");
+
+        Version latest = updater.getLatestVersion();
+        if(latest == null){
+            LOGGER.debug("Latest Version can't found.");
+            return;
+        }
+        LOGGER.debug("Checking Current-Version...");
+        boolean update = false;
+        if(!latest.version().equalsIgnoreCase(Browser.VERSION)) update = true;
+        if(!latest.build().equalsIgnoreCase(Browser.BUILD)) update = true;
+        if(!latest.commit().equalsIgnoreCase(Browser.COMMIT_HASH)) update = true;
+
+        if(update) {
+            LOGGER.debug("Newer Update found!");
+            updater.updateSafly(latest, (e) -> {});
         } else LOGGER.debug("Current Version is the latest.");
     }
 
