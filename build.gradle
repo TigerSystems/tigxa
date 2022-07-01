@@ -8,10 +8,11 @@ plugins {
     id 'org.openjfx.javafxplugin' version '0.0.12'
     id 'com.github.johnrengelman.shadow' version '7.0.0'
     id 'maven-publish'
+    id 'eclipse'
 }
 
 group 'de.MarkusTieger'
-version '1.29.0'
+version '1.29.1'
 
 String dependencyOS = System.getProperty("os.name")
 String dependencyArch = System.getProperty("os.arch")

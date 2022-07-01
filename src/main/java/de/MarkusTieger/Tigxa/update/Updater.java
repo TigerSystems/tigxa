@@ -54,9 +54,9 @@ public class Updater {
     public String getOS(){
         String testlib = "jfxmedia";
 
-        if(Browser.class.getResource("/libjfxmedia.so") != null) return "linux";
-        if(Browser.class.getResource("/jfxmedia.dll") != null) return "win";
-        if(Browser.class.getResource("/libjfxmedia.dylib") != null) return "mac";
+        if(Browser.class.getResource("/lib" + testlib + ".so") != null) return "linux";
+        if(Browser.class.getResource("/" + testlib + ".dll") != null) return "win";
+        if(Browser.class.getResource("/lib" + testlib + ".dylib") != null) return "mac";
 
         return "linux";
     }
